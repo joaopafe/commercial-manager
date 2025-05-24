@@ -1,0 +1,24 @@
+aside {
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(44, 62, 80);
+  width: 256px;
+  height: 100vh;
+}
+
+.company-name {
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  margin-top: 16px;
+  margin-left: 16px;
+  margin-bottom: 24px;
+}
+
+.aside-links {
+  display: flex;
+  flex-direction: column;
+  margin-left: 16px;
+  color: white;
+  gap: 16px;
+}

@@ -1,0 +1,77 @@
+.home {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.message {
+  font-size: 2em;
+  font-weight: bold;
+  margin-bottom: 0.67em;
+  margin-left: 0px;
+  margin-right: 0px;
+  color: #333;
+}
+
+.main-informations {
+  display: flex;
+  gap: 20px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.information-card {
+  flex: 1;
+  padding: 20px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+.information-name {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #34495e;
+}
+
+.information-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #34495e;
+}
+
+.last-sales {
+  display: flex;
+  flex-direction: column;
+  color: #333;
+}
+
+.last-sales-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.sale-table {
+  border-radius: 8px;
+  width: 100%;
+  background-color: white;
+  border-collapse: collapse;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sale-table-head {
+  display: table-header-group;
+  vertical-align: middle;
+  background-color: #ecf0f1;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}

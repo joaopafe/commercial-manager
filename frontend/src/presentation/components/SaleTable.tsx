@@ -4,7 +4,7 @@ import { SaleLine } from "./SaleLine";
 
 interface Sale {
   clientName: string;
-  saleValue: number;
+  value: number;
   date: string;
 }
 
@@ -17,8 +17,8 @@ export const SaleTable: FC<SaleTableProps> = ({ sales }) => {
     return (
       <SaleLine
         clientName={sale.clientName}
-        saleValue={sale.saleValue}
-        saleDate={sale.date}
+        value={sale.value}
+        date={sale.date}
         key={index}
       />
     );

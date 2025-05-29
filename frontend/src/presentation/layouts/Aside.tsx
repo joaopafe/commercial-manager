@@ -9,7 +9,6 @@ export const Aside = () => {
         <a href="">Estoque</a>
         <a href="">Fornecedores</a>
         <a href="">Clientes</a>
-        <a href="">Clientes</a>
         <a href="">Vendas</a>
         <a href="">Caixa</a>
         <a href="">Usuários</a>

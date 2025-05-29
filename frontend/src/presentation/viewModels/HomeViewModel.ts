@@ -107,7 +107,7 @@ export class HomeViewModel {
 
   async getLatestSales() {
     this.updateState({
-      ...this.state,
+      ...this._state,
       isSearching: true,
       isLatestSalesNotFound: false,
       latestSales: null,

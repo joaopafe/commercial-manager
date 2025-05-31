@@ -11,24 +11,28 @@ const partsMock: Piece[] = [
     name: "Pinça de freio Corsa 2011",
     category: "Freio",
     price: 137.5,
+    supplier: "GM",
   },
   {
     code: 2,
     name: "Óleo de freio DOT 4",
     category: "Freio",
     price: 28,
+    supplier: "Bosh",
   },
   {
     code: 3,
-    name: "Óleo Mobil 5W30",
+    name: "Óleo de motor 5W30",
     category: "Motor",
     price: 30.99,
+    supplier: "Mobil",
   },
   {
     code: 4,
     name: "Radiador Gol G3 S/A",
     category: "Arrefecimento",
     price: 270.0,
+    supplier: "Visconde",
   },
 ];
 

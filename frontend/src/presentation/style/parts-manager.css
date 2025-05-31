@@ -92,12 +92,14 @@ td {
 
 .name-label,
 .category-label,
+.supplier-label,
 .price-label {
   margin-bottom: 0px;
 }
 
 .name-input,
 .category-input,
+.supplier-input,
 .price-input {
   border: 1px solid #ccc;
   border-radius: 8px;

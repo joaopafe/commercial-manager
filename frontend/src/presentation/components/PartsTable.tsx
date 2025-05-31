@@ -2,13 +2,14 @@ import { FC } from "react";
 
 import { PieceLine } from "./PieceLine";
 
-import { PieceLineProps as Piece } from "./PieceLine";
+import { PieceProps as Piece } from "./PieceLine";
 
 interface PartsTableProps {
   parts: Piece[];
+  openModal(isCreateModal: boolean): void;
 }
 
-export const PartsTable: FC<PartsTableProps> = ({ parts }) => {
+export const PartsTable: FC<PartsTableProps> = ({ parts, openModal }) => {
   const pieceLines = parts.map((piece) => {
     return (
       <PieceLine
@@ -16,7 +17,9 @@ export const PartsTable: FC<PartsTableProps> = ({ parts }) => {
         name={piece.name}
         category={piece.category}
         price={piece.price}
+        supplier={piece.supplier}
         key={piece.code}
+        openModal={openModal}
       />
     );
   });
@@ -36,6 +39,9 @@ export const PartsTable: FC<PartsTableProps> = ({ parts }) => {
           </th>
           <th className="part-table-head-column" id="part-price-head">
             Preço
+          </th>
+          <th className="part-table-head-column" id="part-supplier-head">
+            Fornecedor
           </th>
           <th className="part-table-head-column" id="part-actions-head">
             Ações

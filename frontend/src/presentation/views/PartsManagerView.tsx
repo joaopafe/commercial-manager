@@ -30,6 +30,7 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
   useEffect(() => {
     partsManagerViewModel.getParts();
     partsManagerViewModel.getPieceCategories();
+    partsManagerViewModel.getSuppliers();
   }, []);
 
   const partsTable = state.isSearching ? (
@@ -37,7 +38,12 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
   ) : state.isPartsNotNotFound ? (
     <div className="information-value">Peças não encontradas</div>
   ) : (
-    <PartsTable parts={state.parts != null ? state.parts : []} />
+    <PartsTable
+      parts={state.parts != null ? state.parts : []}
+      openModal={(isCreateModal) =>
+        partsManagerViewModel.openModal(isCreateModal)
+      }
+    />
   );
 
   const categoriesInput = state.isSearching ? (
@@ -50,6 +56,22 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
         return (
           <option key={index} value={pieceCategory.toLocaleLowerCase()}>
             {pieceCategory}
+          </option>
+        );
+      })}
+    </select>
+  );
+
+  const suppliersInput = state.isSearching ? (
+    <Loader />
+  ) : state.isSuppliersNotFound ? (
+    <div className="information-value">Fornecedores não encontrados</div>
+  ) : (
+    <select className="supplier-input" name="suppliers" id="suppliers">
+      {state.suppliers?.map((supplier, index) => {
+        return (
+          <option key={index} value={supplier.toLocaleLowerCase()}>
+            {supplier}
           </option>
         );
       })}
@@ -88,6 +110,11 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
           </label>
           {categoriesInput}
 
+          <label className="supplier-label" htmlFor="">
+            Fornecedor
+          </label>
+          {suppliersInput}
+
           <label className="price-label" htmlFor="price">
             Preço:
           </label>
@@ -124,6 +151,11 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
             Categoria
           </label>
           {categoriesInput}
+
+          <label className="supplier-label" htmlFor="">
+            Fornecedor
+          </label>
+          {suppliersInput}
 
           <label className="price-label" htmlFor="price">
             Preço:

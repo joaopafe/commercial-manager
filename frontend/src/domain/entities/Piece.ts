@@ -3,4 +3,5 @@ export interface Piece {
   name: string;
   category: string;
   price: number;
+  supplier: string;
 }

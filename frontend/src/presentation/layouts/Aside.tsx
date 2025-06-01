@@ -1,18 +1,20 @@
+import { Link } from "react-router-dom";
+
 export const Aside = () => {
   return (
     <aside className="aside">
       <div className="company-name">Auto Peças</div>
 
       <div className="aside-links">
-        <a href="">Início</a>
-        <a href="">Itens</a>
-        <a href="">Estoque</a>
-        <a href="">Fornecedores</a>
-        <a href="">Clientes</a>
-        <a href="">Vendas</a>
-        <a href="">Caixa</a>
-        <a href="">Usuários</a>
-        <a href="">Configurações</a>
+        <Link to="/">Início</Link>
+        <Link to="/partsmanager">Itens</Link>
+        <Link to="/estoque">Estoque</Link>
+        <Link to="/fornecedores">Fornecedores</Link>
+        <Link to="/clientes">Clientes</Link>
+        <Link to="/vendas">Vendas</Link>
+        <Link to="/caixa">Caixa</Link>
+        <Link to="/usuarios">Usuários</Link>
+        <Link to="/configuracoes">Configurações</Link>
       </div>
     </aside>
   );

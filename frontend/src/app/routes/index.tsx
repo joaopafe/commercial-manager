@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 
 import { HomeView } from "../../presentation/views/HomeView";
 import { PartsManagerView } from "../../presentation/views/PartsManagerView";
@@ -11,21 +11,19 @@ const partsManagerViewModelFactory = new PartsManagerViewModelFactory();
 
 export const AppRoutes = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route
-          path="/"
-          element={<HomeView homeViewModelFactory={homeViewModelFactory} />}
-        />
-        <Route
-          path="/partsmanager"
-          element={
-            <PartsManagerView
-              partsManagerViewModelFactory={partsManagerViewModelFactory}
-            />
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <Routes>
+      <Route
+        path="/"
+        element={<HomeView homeViewModelFactory={homeViewModelFactory} />}
+      />
+      <Route
+        path="/partsmanager"
+        element={
+          <PartsManagerView
+            partsManagerViewModelFactory={partsManagerViewModelFactory}
+          />
+        }
+      />
+    </Routes>
   );
 };

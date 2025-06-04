@@ -8,7 +8,7 @@ export const Aside = () => {
       <div className="aside-links">
         <Link to="/">Início</Link>
         <Link to="/partsmanager">Itens</Link>
-        <Link to="/estoque">Estoque</Link>
+        <Link to="/stock">Estoque</Link>
         <Link to="/fornecedores">Fornecedores</Link>
         <Link to="/clientes">Clientes</Link>
         <Link to="/vendas">Vendas</Link>

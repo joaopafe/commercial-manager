@@ -4,6 +4,7 @@ import { PieceCategory } from "../entities/PieceCategory";
 export interface PieceDataSource {
   list(): Promise<Piece[] | null>;
   listCategories(): Promise<PieceCategory[] | null>;
+  add(piece: Piece): Promise<Piece | Error>;
 }
 
 export class PieceRepository {
@@ -23,5 +24,22 @@ export class PieceRepository {
     if (pieceCategories === null) return null;
 
     return pieceCategories;
+  }
+
+  async add(piece: Piece): Promise<Piece | Error> {
+    const isValidPiece =
+      piece.code >= 0 &&
+      piece.name.length >= 3 &&
+      piece.category.length >= 3 &&
+      piece.price > 0 &&
+      piece.supplier.length >= 3;
+
+    if (!isValidPiece) return Error("The piece is invalid");
+
+    const registeredPiece = await this.mock.add(piece);
+
+    if (registeredPiece instanceof Error) return registeredPiece;
+
+    return registeredPiece;
   }
 }

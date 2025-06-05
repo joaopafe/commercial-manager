@@ -9,12 +9,24 @@ export interface PartsManagerState {
   parts: Piece[] | null;
   pieceCategories: PieceCategory[] | null;
   suppliers: Supplier[] | null;
+
   isSearching: boolean;
+  isCreatingPiece: boolean;
+
   isPartsNotNotFound: boolean;
   isPieceCategoriesNotFound: boolean;
   isSuppliersNotFound: boolean;
+  isErrorInPieceRegistration: boolean;
+
   showCreateModal: boolean;
   showEditModal: boolean;
+
+  nameField: string;
+  priceField: number;
+
+  allowedToCreatePiece: boolean;
+
+  errorMessage: string | null;
 }
 
 export type PartsManagerStateListener = (state: PartsManagerState) => void;
@@ -29,12 +41,24 @@ export class PartsManagerViewModel {
     parts: null,
     pieceCategories: null,
     suppliers: null,
+
     isSearching: false,
+    isCreatingPiece: false,
+
     isPartsNotNotFound: false,
     isPieceCategoriesNotFound: false,
     isSuppliersNotFound: false,
+    isErrorInPieceRegistration: false,
+
     showCreateModal: false,
     showEditModal: false,
+
+    nameField: "",
+    priceField: 1,
+
+    allowedToCreatePiece: false,
+
+    errorMessage: null,
   };
 
   get state(): PartsManagerState {
@@ -128,6 +152,76 @@ export class PartsManagerViewModel {
         isSuppliersNotFound: false,
       });
     }
+  }
+
+  async createPiece(piece: Piece) {
+    this.updateState({
+      ...this._state,
+      isCreatingPiece: true,
+      isErrorInPieceRegistration: false,
+    });
+
+    const registeredPiece = await this.pieceRepository.add(piece);
+
+    if (registeredPiece instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isCreatingPiece: false,
+        isErrorInPieceRegistration: true,
+        errorMessage: registeredPiece.message,
+      });
+    }
+
+    if (!(registeredPiece instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isCreatingPiece: false,
+        isErrorInPieceRegistration: false,
+        errorMessage: "",
+      });
+
+      await this.getParts();
+    }
+  }
+
+  changePieceName(pieceName: string) {
+    const pieceNameField = pieceName.trim();
+
+    this.updateState({
+      ...this._state,
+      nameField: pieceNameField,
+    });
+
+    const pieceFields = {
+      pieceName: this._state.nameField,
+      piecePrice: this._state.priceField,
+    };
+    this.allowPieceCreation(pieceFields);
+  }
+
+  changePiecePrice(piecePrice: number) {
+    const piecePriceField = piecePrice >= 0.1 ? piecePrice : 0.1;
+
+    this.updateState({
+      ...this._state,
+      priceField: piecePriceField,
+    });
+
+    const pieceFields = {
+      pieceName: this._state.nameField,
+      piecePrice: this._state.priceField,
+    };
+    this.allowPieceCreation(pieceFields);
+  }
+
+  allowPieceCreation(pieceFields: { pieceName: string; piecePrice: number }) {
+    const allowPieceCreation =
+      pieceFields.pieceName.length >= 3 && pieceFields.piecePrice >= 0.1;
+
+    this.updateState({
+      ...this._state,
+      allowedToCreatePiece: allowPieceCreation,
+    });
   }
 
   openModal(isCreateModal: boolean) {

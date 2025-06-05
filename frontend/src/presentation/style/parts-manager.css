@@ -126,6 +126,10 @@ td {
   margin-bottom: 8px;
 }
 
+.confirm-register:disabled {
+  background-color: rgb(109, 109, 109);
+}
+
 .cancel-register {
   background-color: #e74c3c;
 }

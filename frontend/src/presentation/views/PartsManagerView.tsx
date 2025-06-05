@@ -103,7 +103,15 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
           <label className="name-label" htmlFor="name">
             Nome:
           </label>
-          <input className="name-input" type="text" id="name" />
+          <input
+            className="name-input"
+            type="text"
+            id="name"
+            value={state.nameField}
+            onChange={(e) =>
+              partsManagerViewModel.changePieceName(e.target.value)
+            }
+          />
 
           <label className="category-label" htmlFor="">
             Categoria
@@ -118,11 +126,23 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
           <label className="price-label" htmlFor="price">
             Preço:
           </label>
-          <input className="price-input" type="number" id="price" min={0.1} />
+          <input
+            className="price-input"
+            type="number"
+            id="price"
+            value={state.priceField}
+            onChange={(e) =>
+              partsManagerViewModel.changePiecePrice(parseFloat(e.target.value))
+            }
+          />
         </form>
 
         <div className="modal-buttons">
-          <button type="submit" className="confirm-register">
+          <button
+            type="submit"
+            className="confirm-register"
+            disabled={!state.allowedToCreatePiece}
+          >
             Salvar
           </button>
           <button
@@ -145,7 +165,15 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
           <label className="name-label" htmlFor="name">
             Nome:
           </label>
-          <input className="name-input" type="text" id="name" />
+          <input
+            className="name-input"
+            type="text"
+            id="name"
+            value={state.nameField}
+            onChange={(e) =>
+              partsManagerViewModel.changePieceName(e.target.value)
+            }
+          />
 
           <label className="category-label" htmlFor="">
             Categoria
@@ -160,7 +188,15 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
           <label className="price-label" htmlFor="price">
             Preço:
           </label>
-          <input className="price-input" type="number" id="price" min={0.1} />
+          <input
+            className="price-input"
+            type="number"
+            id="price"
+            value={state.priceField}
+            onChange={(e) =>
+              partsManagerViewModel.changePiecePrice(parseFloat(e.target.value))
+            }
+          />
         </form>
 
         <div className="modal-buttons">

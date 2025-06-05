@@ -58,4 +58,22 @@ export class PieceMockDataSource implements PieceDataSource {
     return pieceCategoriesMock;
     // return null;
   }
+
+  async add(piece: Piece): Promise<Piece | Error> {
+    await delay(2_000);
+
+    try {
+      partsMock.push({
+        code: piece.code,
+        name: piece.name,
+        category: piece.category,
+        price: piece.price,
+        supplier: piece.supplier,
+      });
+
+      return piece;
+    } catch {
+      return Error("Unable to register a new piece");
+    }
+  }
 }

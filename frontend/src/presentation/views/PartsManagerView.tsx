@@ -51,7 +51,15 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
   ) : state.isPieceCategoriesNotFound ? (
     <div className="information-value">Categorias não encontradas</div>
   ) : (
-    <select className="category-input" name="categories" id="category">
+    <select
+      className="category-input"
+      name="categories"
+      id="category"
+      value={state.categoryField}
+      onChange={(e) =>
+        partsManagerViewModel.changePieceCategory(e.target.value)
+      }
+    >
       {state.pieceCategories?.map((pieceCategory, index) => {
         return (
           <option key={index} value={pieceCategory.toLocaleLowerCase()}>
@@ -67,7 +75,15 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
   ) : state.isSuppliersNotFound ? (
     <div className="information-value">Fornecedores não encontrados</div>
   ) : (
-    <select className="supplier-input" name="suppliers" id="suppliers">
+    <select
+      className="supplier-input"
+      name="suppliers"
+      id="suppliers"
+      value={state.supplierField}
+      onChange={(e) =>
+        partsManagerViewModel.changePieceSupplier(e.target.value)
+      }
+    >
       {state.suppliers?.map((supplier, index) => {
         return (
           <option key={index} value={supplier.toLocaleLowerCase()}>
@@ -142,6 +158,14 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
             type="submit"
             className="confirm-register"
             disabled={!state.allowedToCreatePiece}
+            onClick={() =>
+              partsManagerViewModel.createPiece({
+                name: partsManagerViewModel.state.nameField,
+                category: partsManagerViewModel.state.categoryField,
+                price: partsManagerViewModel.state.priceField,
+                supplier: partsManagerViewModel.state.supplierField,
+              })
+            }
           >
             Salvar
           </button>

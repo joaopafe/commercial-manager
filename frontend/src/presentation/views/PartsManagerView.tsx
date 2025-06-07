@@ -62,7 +62,7 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
     >
       {state.pieceCategories?.map((pieceCategory, index) => {
         return (
-          <option key={index} value={pieceCategory.toLocaleLowerCase()}>
+          <option key={index} value={pieceCategory}>
             {pieceCategory}
           </option>
         );
@@ -86,7 +86,7 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
     >
       {state.suppliers?.map((supplier, index) => {
         return (
-          <option key={index} value={supplier.toLocaleLowerCase()}>
+          <option key={index} value={supplier}>
             {supplier}
           </option>
         );

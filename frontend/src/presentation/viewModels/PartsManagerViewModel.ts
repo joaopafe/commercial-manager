@@ -1,4 +1,7 @@
-import { PieceRepository } from "../../domain/data/PieceRepository";
+import {
+  AddPieceParams,
+  PieceRepository,
+} from "../../domain/data/PieceRepository";
 import { SupplierRepository } from "../../domain/data/SupplierRepository";
 
 import { Piece } from "../../domain/entities/Piece";
@@ -23,6 +26,8 @@ export interface PartsManagerState {
 
   nameField: string;
   priceField: number;
+  categoryField: string;
+  supplierField: string;
 
   allowedToCreatePiece: boolean;
 
@@ -55,6 +60,8 @@ export class PartsManagerViewModel {
 
     nameField: "",
     priceField: 1,
+    categoryField: "",
+    supplierField: "",
 
     allowedToCreatePiece: false,
 
@@ -123,6 +130,7 @@ export class PartsManagerViewModel {
         pieceCategories,
         isSearching: false,
         isPieceCategoriesNotFound: false,
+        categoryField: pieceCategories[0],
       });
     }
   }
@@ -150,11 +158,12 @@ export class PartsManagerViewModel {
         suppliers,
         isSearching: false,
         isSuppliersNotFound: false,
+        supplierField: suppliers[0],
       });
     }
   }
 
-  async createPiece(piece: Piece) {
+  async createPiece(piece: AddPieceParams) {
     this.updateState({
       ...this._state,
       isCreatingPiece: true,
@@ -180,20 +189,20 @@ export class PartsManagerViewModel {
         errorMessage: "",
       });
 
+      this.closeModal();
+
       await this.getParts();
     }
   }
 
   changePieceName(pieceName: string) {
-    const pieceNameField = pieceName.trim();
-
     this.updateState({
       ...this._state,
-      nameField: pieceNameField,
+      nameField: pieceName,
     });
 
     const pieceFields = {
-      pieceName: this._state.nameField,
+      pieceName: pieceName.trim(),
       piecePrice: this._state.priceField,
     };
     this.allowPieceCreation(pieceFields);
@@ -212,6 +221,20 @@ export class PartsManagerViewModel {
       piecePrice: this._state.priceField,
     };
     this.allowPieceCreation(pieceFields);
+  }
+
+  changePieceCategory(pieceCategory: string) {
+    this.updateState({
+      ...this._state,
+      categoryField: pieceCategory,
+    });
+  }
+
+  changePieceSupplier(pieceSupplier: string) {
+    this.updateState({
+      ...this._state,
+      supplierField: pieceSupplier,
+    });
   }
 
   allowPieceCreation(pieceFields: { pieceName: string; piecePrice: number }) {

@@ -65,7 +65,7 @@ export class PieceMockDataSource implements PieceDataSource {
 
     try {
       partsMock.push({
-        code: partsMock.length,
+        code: partsMock.length + 1,
         name: piece.name,
         category: piece.category,
         price: piece.price,

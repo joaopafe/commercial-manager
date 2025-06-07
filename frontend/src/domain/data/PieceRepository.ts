@@ -4,7 +4,14 @@ import { PieceCategory } from "../entities/PieceCategory";
 export interface PieceDataSource {
   list(): Promise<Piece[] | null>;
   listCategories(): Promise<PieceCategory[] | null>;
-  add(piece: Piece): Promise<Piece | Error>;
+  add(piece: AddPieceParams): Promise<Piece | Error>;
+}
+
+export interface AddPieceParams {
+  name: string;
+  category: string;
+  price: number;
+  supplier: string;
 }
 
 export class PieceRepository {
@@ -26,13 +33,12 @@ export class PieceRepository {
     return pieceCategories;
   }
 
-  async add(piece: Piece): Promise<Piece | Error> {
+  async add(piece: AddPieceParams): Promise<Piece | Error> {
     const isValidPiece =
-      piece.code >= 0 &&
       piece.name.length >= 3 &&
       piece.category.length >= 3 &&
       piece.price > 0 &&
-      piece.supplier.length >= 3;
+      piece.supplier.length >= 2;
 
     if (!isValidPiece) return Error("The piece is invalid");
 

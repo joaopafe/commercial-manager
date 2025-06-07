@@ -2,6 +2,7 @@ import { Piece } from "../domain/entities/Piece";
 import { PieceCategory } from "../domain/entities/PieceCategory";
 
 import { PieceDataSource } from "../domain/data/PieceRepository";
+import { AddPieceParams } from "../domain/data/PieceRepository";
 
 import { delay } from "../shared/utils/delay";
 
@@ -59,19 +60,19 @@ export class PieceMockDataSource implements PieceDataSource {
     // return null;
   }
 
-  async add(piece: Piece): Promise<Piece | Error> {
+  async add(piece: AddPieceParams): Promise<Piece | Error> {
     await delay(2_000);
 
     try {
       partsMock.push({
-        code: piece.code,
+        code: partsMock.length,
         name: piece.name,
         category: piece.category,
         price: piece.price,
         supplier: piece.supplier,
       });
 
-      return piece;
+      return partsMock[length - 1];
     } catch {
       return Error("Unable to register a new piece");
     }

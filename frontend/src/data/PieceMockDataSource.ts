@@ -77,4 +77,24 @@ export class PieceMockDataSource implements PieceDataSource {
       return Error("Unable to register a new piece");
     }
   }
+
+  async edit(piece: Piece): Promise<Piece | Error> {
+    try {
+      const editedPieceIndex = partsMock.findIndex(
+        (pieceRegistered) => pieceRegistered.code === piece.code
+      );
+
+      partsMock[editedPieceIndex] = {
+        code: piece.code,
+        name: piece.name,
+        category: piece.category,
+        supplier: piece.supplier,
+        price: piece.price,
+      };
+
+      return partsMock[editedPieceIndex];
+    } catch {
+      return Error("It was not possible to edit the piece");
+    }
+  }
 }

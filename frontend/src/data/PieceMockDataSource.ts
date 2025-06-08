@@ -65,7 +65,7 @@ export class PieceMockDataSource implements PieceDataSource {
 
     try {
       partsMock.push({
-        code: partsMock.length + 1,
+        code: partsMock[partsMock.length - 1].code + 1,
         name: piece.name,
         category: piece.category,
         price: piece.price,
@@ -81,7 +81,7 @@ export class PieceMockDataSource implements PieceDataSource {
   async edit(piece: Piece): Promise<Piece | Error> {
     try {
       const editedPieceIndex = partsMock.findIndex(
-        (pieceRegistered) => pieceRegistered.code === piece.code
+        (registeredPiece) => registeredPiece.code === piece.code
       );
 
       partsMock[editedPieceIndex] = {
@@ -95,6 +95,22 @@ export class PieceMockDataSource implements PieceDataSource {
       return partsMock[editedPieceIndex];
     } catch {
       return Error("It was not possible to edit the piece");
+    }
+  }
+
+  async remove(pieceCode: number): Promise<Piece | Error> {
+    try {
+      const removedPieceIndex = partsMock.findIndex(
+        (registeredPiece) => registeredPiece.code === pieceCode
+      );
+
+      const removedPiece = partsMock[removedPieceIndex];
+
+      partsMock.splice(removedPieceIndex, 1);
+
+      return removedPiece;
+    } catch {
+      return Error("It was not possible to remove the piece");
     }
   }
 }

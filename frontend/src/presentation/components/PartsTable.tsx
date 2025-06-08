@@ -7,9 +7,14 @@ import { PieceProps as Piece } from "./PieceLine";
 interface PartsTableProps {
   parts: Piece[];
   openModal(isCreateModal: boolean): void;
+  changePieceCode(pieceCode: number): void;
 }
 
-export const PartsTable: FC<PartsTableProps> = ({ parts, openModal }) => {
+export const PartsTable: FC<PartsTableProps> = ({
+  parts,
+  openModal,
+  changePieceCode,
+}) => {
   const pieceLines = parts.map((piece) => {
     return (
       <PieceLine
@@ -20,6 +25,7 @@ export const PartsTable: FC<PartsTableProps> = ({ parts, openModal }) => {
         supplier={piece.supplier}
         key={piece.code}
         openModal={openModal}
+        changePieceCode={changePieceCode}
       />
     );
   });

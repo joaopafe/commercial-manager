@@ -10,6 +10,7 @@ export interface PieceProps {
 
 export interface PieceLineProps extends PieceProps {
   openModal(isCreateModal: boolean): void;
+  changePieceCode(pieceCode: number): void;
 }
 
 export const PieceLine: FC<PieceLineProps> = ({
@@ -19,6 +20,7 @@ export const PieceLine: FC<PieceLineProps> = ({
   price,
   supplier,
   openModal,
+  changePieceCode,
 }) => {
   return (
     <tr className="piece-line">
@@ -28,7 +30,13 @@ export const PieceLine: FC<PieceLineProps> = ({
       <td className="piece-price">R$ {price}</td>
       <td className="piece-supplier">{supplier}</td>
       <td className="piece-actions">
-        <button className="edit-button" onClick={() => openModal(false)}>
+        <button
+          className="edit-button"
+          onClick={() => {
+            openModal(false);
+            changePieceCode(code);
+          }}
+        >
           Editar
         </button>
         <button className="exclude-button">Excluir</button>

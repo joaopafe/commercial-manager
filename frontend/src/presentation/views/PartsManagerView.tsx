@@ -43,6 +43,9 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
       openModal={(isCreateModal) =>
         partsManagerViewModel.openModal(isCreateModal)
       }
+      changePieceCode={(pieceCode) =>
+        partsManagerViewModel.changePieceCode(pieceCode)
+      }
     />
   );
 
@@ -160,10 +163,10 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
             disabled={!state.allowedToCreatePiece}
             onClick={() =>
               partsManagerViewModel.createPiece({
-                name: partsManagerViewModel.state.nameField,
-                category: partsManagerViewModel.state.categoryField,
-                price: partsManagerViewModel.state.priceField,
-                supplier: partsManagerViewModel.state.supplierField,
+                name: state.nameField,
+                category: state.categoryField,
+                price: state.priceField,
+                supplier: state.supplierField,
               })
             }
           >
@@ -224,7 +227,20 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
         </form>
 
         <div className="modal-buttons">
-          <button type="submit" className="confirm-register">
+          <button
+            type="submit"
+            className="confirm-register"
+            disabled={!state.allowedToCreatePiece}
+            onClick={() =>
+              partsManagerViewModel.editPiece({
+                code: state.pieceCode,
+                name: state.nameField,
+                category: state.categoryField,
+                price: state.priceField,
+                supplier: state.supplierField,
+              })
+            }
+          >
             Salvar
           </button>
           <button

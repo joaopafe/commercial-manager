@@ -11,6 +11,7 @@ export interface PieceProps {
 export interface PieceLineProps extends PieceProps {
   openModal(isCreateModal: boolean): void;
   changePieceCode(pieceCode: number): void;
+  removePiece(pieceCode: number): void;
 }
 
 export const PieceLine: FC<PieceLineProps> = ({
@@ -21,6 +22,7 @@ export const PieceLine: FC<PieceLineProps> = ({
   supplier,
   openModal,
   changePieceCode,
+  removePiece,
 }) => {
   return (
     <tr className="piece-line">
@@ -39,7 +41,9 @@ export const PieceLine: FC<PieceLineProps> = ({
         >
           Editar
         </button>
-        <button className="exclude-button">Excluir</button>
+        <button className="exclude-button" onClick={() => removePiece(code)}>
+          Excluir
+        </button>
       </td>
     </tr>
   );

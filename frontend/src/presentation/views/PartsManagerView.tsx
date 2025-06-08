@@ -46,6 +46,7 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
       changePieceCode={(pieceCode) =>
         partsManagerViewModel.changePieceCode(pieceCode)
       }
+      removePiece={(pieceCode) => partsManagerViewModel.removePiece(pieceCode)}
     />
   );
 

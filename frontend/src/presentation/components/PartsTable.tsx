@@ -8,12 +8,14 @@ interface PartsTableProps {
   parts: Piece[];
   openModal(isCreateModal: boolean): void;
   changePieceCode(pieceCode: number): void;
+  removePiece(pieceCode: number): void;
 }
 
 export const PartsTable: FC<PartsTableProps> = ({
   parts,
   openModal,
   changePieceCode,
+  removePiece,
 }) => {
   const pieceLines = parts.map((piece) => {
     return (
@@ -26,6 +28,7 @@ export const PartsTable: FC<PartsTableProps> = ({
         key={piece.code}
         openModal={openModal}
         changePieceCode={changePieceCode}
+        removePiece={removePiece}
       />
     );
   });

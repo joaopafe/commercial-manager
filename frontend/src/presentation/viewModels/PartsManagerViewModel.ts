@@ -16,12 +16,14 @@ export interface PartsManagerState {
   isSearching: boolean;
   isCreatingPiece: boolean;
   isEditingPiece: boolean;
+  isRemovingPiece: boolean;
 
   isPartsNotNotFound: boolean;
   isPieceCategoriesNotFound: boolean;
   isSuppliersNotFound: boolean;
   isErrorInPieceRegistration: boolean;
   isErrorInPieceEdition: boolean;
+  isErrorInPieceRemoval: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -53,12 +55,14 @@ export class PartsManagerViewModel {
     isSearching: false,
     isCreatingPiece: false,
     isEditingPiece: false,
+    isRemovingPiece: false,
 
     isPartsNotNotFound: false,
     isPieceCategoriesNotFound: false,
     isSuppliersNotFound: false,
     isErrorInPieceRegistration: false,
     isErrorInPieceEdition: false,
+    isErrorInPieceRemoval: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -228,6 +232,36 @@ export class PartsManagerViewModel {
       });
 
       this.closeModal();
+
+      await this.getParts();
+    }
+  }
+
+  async removePiece(pieceCode: number) {
+    this.updateState({
+      ...this._state,
+      isRemovingPiece: true,
+      isErrorInPieceRemoval: false,
+    });
+
+    const removedPiece = await this.pieceRepository.remove(pieceCode);
+
+    if (removedPiece instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isRemovingPiece: false,
+        isErrorInPieceRemoval: true,
+        errorMessage: removedPiece.message,
+      });
+    }
+
+    if (!(removedPiece instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isRemovingPiece: false,
+        isErrorInPieceRemoval: false,
+        errorMessage: "",
+      });
 
       await this.getParts();
     }

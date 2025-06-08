@@ -1,10 +1,14 @@
 import { Piece } from "../entities/Piece";
+
 import { PieceCategory } from "../entities/PieceCategory";
+
+import { isPieceValid as pieceValid } from "../validators/isPieceValid";
 
 export interface PieceDataSource {
   list(): Promise<Piece[] | null>;
   listCategories(): Promise<PieceCategory[] | null>;
   add(piece: AddPieceParams): Promise<Piece | Error>;
+  edit(piece: Piece): Promise<Piece | Error>;
 }
 
 export interface AddPieceParams {
@@ -47,5 +51,25 @@ export class PieceRepository {
     if (registeredPiece instanceof Error) return registeredPiece;
 
     return registeredPiece;
+  }
+
+  async edit(piece: Piece): Promise<Piece | Error> {
+    const parts = await this.list();
+
+    if (parts) {
+      const isPieceValid = pieceValid(piece, parts);
+
+      if (isPieceValid) {
+        const editedPiece = await this.mock.edit(piece);
+
+        if (editedPiece instanceof Error) return editedPiece;
+
+        return editedPiece;
+      }
+
+      return Error("The part is invalid for editing");
+    }
+
+    return Error("It was not possible to edit the piece");
   }
 }

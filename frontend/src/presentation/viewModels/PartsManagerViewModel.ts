@@ -15,15 +15,18 @@ export interface PartsManagerState {
 
   isSearching: boolean;
   isCreatingPiece: boolean;
+  isEditingPiece: boolean;
 
   isPartsNotNotFound: boolean;
   isPieceCategoriesNotFound: boolean;
   isSuppliersNotFound: boolean;
   isErrorInPieceRegistration: boolean;
+  isErrorInPieceEdition: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
 
+  pieceCode: number;
   nameField: string;
   priceField: number;
   categoryField: string;
@@ -49,15 +52,18 @@ export class PartsManagerViewModel {
 
     isSearching: false,
     isCreatingPiece: false,
+    isEditingPiece: false,
 
     isPartsNotNotFound: false,
     isPieceCategoriesNotFound: false,
     isSuppliersNotFound: false,
     isErrorInPieceRegistration: false,
+    isErrorInPieceEdition: false,
 
     showCreateModal: false,
     showEditModal: false,
 
+    pieceCode: 1,
     nameField: "",
     priceField: 1,
     categoryField: "",
@@ -195,6 +201,38 @@ export class PartsManagerViewModel {
     }
   }
 
+  async editPiece(piece: Piece) {
+    this.updateState({
+      ...this._state,
+      isEditingPiece: true,
+      isErrorInPieceEdition: false,
+    });
+
+    const editedPiece = await this.pieceRepository.edit(piece);
+
+    if (editedPiece instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isEditingPiece: false,
+        isErrorInPieceEdition: true,
+        errorMessage: editedPiece.message,
+      });
+    }
+
+    if (!(editedPiece instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isEditingPiece: false,
+        isErrorInPieceEdition: false,
+        errorMessage: "",
+      });
+
+      this.closeModal();
+
+      await this.getParts();
+    }
+  }
+
   changePieceName(pieceName: string) {
     this.updateState({
       ...this._state,
@@ -234,6 +272,13 @@ export class PartsManagerViewModel {
     this.updateState({
       ...this._state,
       supplierField: pieceSupplier,
+    });
+  }
+
+  changePieceCode(pieceCode: number) {
+    this.updateState({
+      ...this._state,
+      pieceCode,
     });
   }
 

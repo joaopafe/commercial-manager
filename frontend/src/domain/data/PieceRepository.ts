@@ -3,12 +3,14 @@ import { Piece } from "../entities/Piece";
 import { PieceCategory } from "../entities/PieceCategory";
 
 import { isPieceValid as pieceValid } from "../validators/isPieceValid";
+import { pieceAlreadyExists } from "../validators/pieceAlreadyExists";
 
 export interface PieceDataSource {
   list(): Promise<Piece[] | null>;
   listCategories(): Promise<PieceCategory[] | null>;
   add(piece: AddPieceParams): Promise<Piece | Error>;
   edit(piece: Piece): Promise<Piece | Error>;
+  remove(pieceCode: number): Promise<Piece | Error>;
 }
 
 export interface AddPieceParams {
@@ -57,19 +59,40 @@ export class PieceRepository {
     const parts = await this.list();
 
     if (parts) {
-      const isPieceValid = pieceValid(piece, parts);
+      const pieceExists = pieceAlreadyExists(piece.code, parts);
 
-      if (isPieceValid) {
-        const editedPiece = await this.mock.edit(piece);
+      if (pieceExists) {
+        const isPieceValid = pieceValid(piece);
 
-        if (editedPiece instanceof Error) return editedPiece;
+        if (isPieceValid) {
+          const editedPiece = await this.mock.edit(piece);
 
-        return editedPiece;
+          if (editedPiece instanceof Error) return editedPiece;
+
+          return editedPiece;
+        }
       }
 
       return Error("The part is invalid for editing");
     }
 
     return Error("It was not possible to edit the piece");
+  }
+
+  async remove(pieceCode: number): Promise<Piece | Error> {
+    const parts = await this.list();
+
+    if (parts) {
+      const pieceExists = pieceAlreadyExists(pieceCode, parts);
+
+      if (pieceExists) {
+        const removedPiece = await this.mock.remove(pieceCode);
+
+        if (removedPiece instanceof Error) return removedPiece;
+
+        return removedPiece;
+      }
+    }
+    return Error("It was not possible to remove the piece");
   }
 }

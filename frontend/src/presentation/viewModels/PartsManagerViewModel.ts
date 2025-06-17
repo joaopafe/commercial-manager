@@ -1,10 +1,12 @@
-import {
-  AddPieceParams,
-  PieceRepository,
-} from "../../domain/data/PieceRepository";
-import { SupplierRepository } from "../../domain/data/SupplierRepository";
+import { GetParts } from "../../domain/useCases/GetParts";
+import { GetPieceCategories } from "../../domain/useCases/GetPieceCategories";
+import { CreatePiece } from "../../domain/useCases/CreatePiece";
+import { EditPiece } from "../../domain/useCases/EditPiece";
+import { RemovePiece } from "../../domain/useCases/RemovePiece";
+import { GetSuppliers } from "../../domain/useCases/GetSuppliers";
 
 import { Piece } from "../../domain/entities/Piece";
+import { AddPieceParams } from "../../domain/useCases/CreatePiece";
 import { PieceCategory } from "../../domain/entities/PieceCategory";
 import { Supplier } from "../../domain/entities/Supplier";
 
@@ -43,8 +45,12 @@ export type PartsManagerStateListener = (state: PartsManagerState) => void;
 
 export class PartsManagerViewModel {
   constructor(
-    private pieceRepository: PieceRepository,
-    private supplierRepository: SupplierRepository
+    private getPartsUseCase: GetParts,
+    private getPieceCategoriesUseCase: GetPieceCategories,
+    private createPieceUseCase: CreatePiece,
+    private editPieceUseCase: EditPiece,
+    private removePieceUseCase: RemovePiece,
+    private getSuppliersUseCase: GetSuppliers
   ) {}
 
   private _state: PartsManagerState = {
@@ -96,7 +102,7 @@ export class PartsManagerViewModel {
       isSearching: true,
     });
 
-    const parts = await this.pieceRepository.list();
+    const parts = await this.getPartsUseCase.execute();
 
     if (parts === null) {
       this.updateState({
@@ -123,7 +129,7 @@ export class PartsManagerViewModel {
       isSearching: true,
     });
 
-    const pieceCategories = await this.pieceRepository.listCategories();
+    const pieceCategories = await this.getPieceCategoriesUseCase.execute();
 
     if (pieceCategories === null) {
       this.updateState({
@@ -151,7 +157,7 @@ export class PartsManagerViewModel {
       isSearching: true,
     });
 
-    const suppliers = await this.supplierRepository.list();
+    const suppliers = await this.getSuppliersUseCase.exec();
 
     if (suppliers === null) {
       this.updateState({
@@ -180,7 +186,7 @@ export class PartsManagerViewModel {
       isErrorInPieceRegistration: false,
     });
 
-    const registeredPiece = await this.pieceRepository.add(piece);
+    const registeredPiece = await this.createPieceUseCase.exec(piece);
 
     if (registeredPiece instanceof Error) {
       this.updateState({
@@ -212,7 +218,7 @@ export class PartsManagerViewModel {
       isErrorInPieceEdition: false,
     });
 
-    const editedPiece = await this.pieceRepository.edit(piece);
+    const editedPiece = await this.editPieceUseCase.exec(piece);
 
     if (editedPiece instanceof Error) {
       this.updateState({
@@ -244,7 +250,7 @@ export class PartsManagerViewModel {
       isErrorInPieceRemoval: false,
     });
 
-    const removedPiece = await this.pieceRepository.remove(pieceCode);
+    const removedPiece = await this.removePieceUseCase.exec(pieceCode);
 
     if (removedPiece instanceof Error) {
       this.updateState({

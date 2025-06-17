@@ -1,6 +1,6 @@
-import { SaleRepository } from "../../domain/data/SaleRepository";
-import { TodaySalesRepository } from "../../domain/data/TodaySalesRepository";
-import { TotalInCashRepository } from "../../domain/data/TotalInCashRepository";
+import { GetTotalInCash } from "../../domain/useCases/GetTotalInCash";
+import { GetLatestSales } from "../../domain/useCases/GetLatestSales";
+import { GetTodaySales } from "../../domain/useCases/GetTodaySales";
 
 export interface Sale {
   clientName: string;
@@ -22,9 +22,9 @@ export type HomeViewStateListener = (state: HomeViewState) => void;
 
 export class HomeViewModel {
   constructor(
-    private todaySalesRepository: TodaySalesRepository,
-    private totalInCashRepository: TotalInCashRepository,
-    private saleRepository: SaleRepository
+    private getTotalInCashUseCase: GetTotalInCash,
+    private getLatestSalesUseCase: GetLatestSales,
+    private getTodaySalesUseCase: GetTodaySales
   ) {}
 
   private _state: HomeViewState = {
@@ -55,7 +55,7 @@ export class HomeViewModel {
       isSearching: true,
     });
 
-    const todaySales = await this.todaySalesRepository.getTodaySales();
+    const todaySales = await this.getTodaySalesUseCase.execute();
 
     if (todaySales === null) {
       this.updateState({
@@ -84,7 +84,7 @@ export class HomeViewModel {
       totalInCash: null,
     });
 
-    const totalInCash = await this.totalInCashRepository.getTotalInCash();
+    const totalInCash = await this.getTotalInCashUseCase.execute();
 
     if (totalInCash === null) {
       this.updateState({
@@ -113,7 +113,7 @@ export class HomeViewModel {
       latestSales: null,
     });
 
-    const latestSales = await this.saleRepository.listLatest();
+    const latestSales = await this.getLatestSalesUseCase.execute();
 
     if (latestSales === null || latestSales.length === 0) {
       this.updateState({

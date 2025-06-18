@@ -1,9 +1,9 @@
-import { StockRepository } from "../../domain/data/StockRepository";
+import { GetStockGroup } from "../../domain/useCases/GetStockGroup";
 
-import { PieceStockCategory } from "../../domain/entities/PieceStockCategory";
+import { StockGroup } from "../../domain/entities/StockGroup";
 
 export interface StockState {
-  partsStockCategories: PieceStockCategory[] | null;
+  partsStockCategories: StockGroup[] | null;
   isSearching: boolean;
   isPartsStockCategoriesNotFound: boolean;
   showEntryStockModal: boolean;
@@ -13,7 +13,7 @@ export interface StockState {
 export type StockStateListener = (state: StockState) => void;
 
 export class StockViewModel {
-  constructor(private stockRepository: StockRepository) {}
+  constructor(private getStockGroupUseCase: GetStockGroup) {}
 
   private _state: StockState = {
     partsStockCategories: null,
@@ -41,7 +41,7 @@ export class StockViewModel {
       isSearching: true,
     });
 
-    const partsStockCategories = await this.stockRepository.list();
+    const partsStockCategories = await this.getStockGroupUseCase.exec();
 
     if (partsStockCategories === null) {
       this.updateState({

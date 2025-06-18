@@ -15,22 +15,4 @@ export class SaleRepositoryImpl implements SaleRepository {
 
     return latestSales;
   }
-
-  async listTodaySales(): Promise<TodaySales | null> {
-    const latestSales = await this.dataSource.listLatest();
-
-    if (latestSales && latestSales.length > 0) {
-      let todaySales = 0;
-
-      for (const sale of latestSales) {
-        todaySales += sale.value;
-      }
-
-      return todaySales;
-    }
-
-    if (latestSales === null) return null;
-
-    return 0;
-  }
 }

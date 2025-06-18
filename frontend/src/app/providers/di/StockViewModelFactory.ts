@@ -1,11 +1,14 @@
-// Repositores:
-import { StockRepository } from "../../../domain/data/StockRepository";
+// Use cases:
+import { GetStockGroup } from "../../../domain/useCases/GetStockGroup";
+
+// Repositores implementations:
+import { StockRepositoryImpl } from "../../../data/repositories/StockRepositoryImpl";
 
 // Data sources:
-import { StockDataSource } from "../../../domain/data/StockRepository";
+import { StockDataSource } from "../../../data/repositories/StockRepositoryImpl";
 
 // Data source implementations:
-import { StockMockDataSource } from "../../../data/StockMockDataSource";
+import { StockMockDataSource } from "../../../data/dataSources/StockMockDataSource";
 
 // ViewModel:
 import { StockViewModel } from "../../../presentation/viewModels/StockViewModel";
@@ -13,15 +16,17 @@ import { StockViewModel } from "../../../presentation/viewModels/StockViewModel"
 export class StockViewModelFactory {
   private _stockDataSource: StockDataSource;
 
-  private _stockRepository: StockRepository;
+  private _stockRepository: StockRepositoryImpl;
 
   constructor() {
     this._stockDataSource = new StockMockDataSource();
 
-    this._stockRepository = new StockRepository(this._stockDataSource);
+    this._stockRepository = new StockRepositoryImpl(this._stockDataSource);
   }
 
   makeStockViewModel() {
-    return new StockViewModel(this._stockRepository);
+    const getStockGroup = new GetStockGroup(this._stockRepository);
+
+    return new StockViewModel(getStockGroup);
   }
 }

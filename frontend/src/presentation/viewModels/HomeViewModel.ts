@@ -55,7 +55,9 @@ export class HomeViewModel {
       isSearching: true,
     });
 
-    const todaySales = await this.getTodaySalesUseCase.execute();
+    let todaySales = await this.getTodaySalesUseCase.execute();
+
+    if (todaySales instanceof Error) todaySales = null;
 
     if (todaySales === null) {
       this.updateState({

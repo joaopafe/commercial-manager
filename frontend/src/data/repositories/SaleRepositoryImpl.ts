@@ -1,5 +1,4 @@
 import { Sale } from "../../domain/entities/Sale";
-import { TodaySales } from "../../domain/entities/TodaySales";
 
 import { SaleRepository } from "../../domain/repositories/SaleRepository";
 

@@ -1,5 +1,6 @@
 // Use cases:
 import { GetStockGroup } from "../../../domain/useCases/GetStockGroup";
+import { InsertStock } from "../../../domain/useCases/InsertStock";
 
 // Repositores implementations:
 import { StockRepositoryImpl } from "../../../data/repositories/StockRepositoryImpl";
@@ -26,7 +27,8 @@ export class StockViewModelFactory {
 
   makeStockViewModel() {
     const getStockGroup = new GetStockGroup(this._stockRepository);
+    const insertStock = new InsertStock(this._stockRepository);
 
-    return new StockViewModel(getStockGroup);
+    return new StockViewModel(getStockGroup, insertStock);
   }
 }

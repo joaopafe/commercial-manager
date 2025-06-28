@@ -1,26 +1,54 @@
 import { GetStockGroup } from "../../domain/useCases/GetStockGroup";
+import { InsertStock } from "../../domain/useCases/InsertStock";
 
 import { StockGroup } from "../../domain/entities/StockGroup";
 
 export interface StockState {
   partsStockCategories: StockGroup[] | null;
+
   isSearching: boolean;
+  isInsertingStock: boolean;
+
   isPartsStockCategoriesNotFound: boolean;
+  isErrorInStockInsertion: boolean;
+
+  pieceCode: number;
+  insertionField: number;
+
+  insertionAllowed: boolean;
+
   showEntryStockModal: boolean;
   showOutputStockModal: boolean;
+
+  errorMessage: string | null;
 }
 
 export type StockStateListener = (state: StockState) => void;
 
 export class StockViewModel {
-  constructor(private getStockGroupUseCase: GetStockGroup) {}
+  constructor(
+    private getStockGroupUseCase: GetStockGroup,
+    private insertStockUseCase: InsertStock
+  ) {}
 
   private _state: StockState = {
     partsStockCategories: null,
+
     isSearching: false,
+    isInsertingStock: false,
+
     isPartsStockCategoriesNotFound: false,
+    isErrorInStockInsertion: false,
+
+    pieceCode: 1,
+    insertionField: 0,
+
+    insertionAllowed: false,
+
     showEntryStockModal: false,
     showOutputStockModal: false,
+
+    errorMessage: null,
   };
 
   get state(): StockState {
@@ -60,6 +88,73 @@ export class StockViewModel {
         isPartsStockCategoriesNotFound: false,
       });
     }
+  }
+
+  async insertStock(pieceCode: number, quantity: number) {
+    this.updateState({
+      ...this._state,
+      isInsertingStock: true,
+      isErrorInStockInsertion: false,
+    });
+
+    const stockInsertion = await this.insertStockUseCase.exec(
+      pieceCode,
+      quantity
+    );
+
+    if (stockInsertion instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isInsertingStock: false,
+        isErrorInStockInsertion: true,
+        errorMessage: stockInsertion.message,
+      });
+    }
+
+    if (!(stockInsertion instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isInsertingStock: false,
+        isErrorInStockInsertion: false,
+        errorMessage: null,
+      });
+
+      this.closeModal();
+
+      await this.getStock();
+    }
+  }
+
+  changePieceCode(pieceCode: number) {
+    console.log("chamou a porra da alteração de código de peça");
+
+    console.log("A merda do código informado:", pieceCode);
+
+    this.updateState({
+      ...this._state,
+      pieceCode,
+    });
+  }
+
+  changeInsertionField(insertion: number) {
+    const insertionField = insertion >= 0 ? Math.floor(insertion) : 0;
+
+    this.updateState({
+      ...this._state,
+      insertionField,
+    });
+
+    this.allowInsertion(insertionField);
+  }
+
+  allowInsertion(insertionField: number) {
+    const allowInsertion =
+      insertionField >= 1 && Number.isInteger(insertionField);
+
+    this.updateState({
+      ...this._state,
+      insertionAllowed: allowInsertion,
+    });
   }
 
   openModal(isEntryStockModal: boolean) {

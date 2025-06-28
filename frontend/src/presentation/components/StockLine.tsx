@@ -10,6 +10,7 @@ export interface StockProps {
 
 export interface StockLineProps extends StockProps {
   openModal(isEntryStockModal: boolean): void;
+  changePieceCode(pieceCode: number): void;
 }
 
 export const StockLine: FC<StockLineProps> = ({
@@ -19,6 +20,7 @@ export const StockLine: FC<StockLineProps> = ({
   quantity,
   price,
   openModal,
+  changePieceCode,
 }) => {
   return (
     <tr className="stock-line">
@@ -28,10 +30,22 @@ export const StockLine: FC<StockLineProps> = ({
       <td className="item-quantity">{quantity}</td>
       <td className="item-price">R$ {price}</td>
       <td className="item-actions">
-        <button className="stock-entry-button" onClick={() => openModal(true)}>
+        <button
+          className="stock-entry-button"
+          onClick={() => {
+            openModal(true);
+            changePieceCode(code);
+          }}
+        >
           Entrada
         </button>
-        <button className="stock-out-button" onClick={() => openModal(false)}>
+        <button
+          className="stock-out-button"
+          onClick={() => {
+            openModal(false);
+            changePieceCode(code);
+          }}
+        >
           Saída
         </button>
       </td>

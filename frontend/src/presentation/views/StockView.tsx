@@ -44,6 +44,9 @@ export const StockView: React.FC<StockViewProps> = ({
           openModal={(isEntryStockModal) =>
             stockViewModel.openModal(isEntryStockModal)
           }
+          changePieceCode={(pieceCode) =>
+            stockViewModel.changePieceCode(pieceCode)
+          }
           key={index}
         />
       );
@@ -70,11 +73,25 @@ export const StockView: React.FC<StockViewProps> = ({
           <label className="quantity-label" htmlFor="">
             Quantidade a adicionar:
           </label>
-          <input className="quantity-input" type="number" />
+          <input
+            className="quantity-input"
+            type="number"
+            value={state.insertionField}
+            onChange={(e) =>
+              stockViewModel.changeInsertionField(parseInt(e.target.value))
+            }
+          />
         </form>
 
         <div className="modal-buttons">
-          <button type="submit" className="confirm-register">
+          <button
+            type="submit"
+            className="confirm-register"
+            disabled={!state.insertionAllowed}
+            onClick={() =>
+              stockViewModel.insertStock(state.pieceCode, state.insertionField)
+            }
+          >
             Confirmar
           </button>
           <button

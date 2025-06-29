@@ -1,5 +1,6 @@
 import { GetStockGroup } from "../../domain/useCases/GetStockGroup";
 import { InsertStock } from "../../domain/useCases/InsertStock";
+import { RemoveStock } from "../../domain/useCases/RemoveStock";
 
 import { StockGroup } from "../../domain/entities/StockGroup";
 
@@ -8,14 +9,19 @@ export interface StockState {
 
   isSearching: boolean;
   isInsertingStock: boolean;
+  isRemovingStock: boolean;
 
   isPartsStockCategoriesNotFound: boolean;
   isErrorInStockInsertion: boolean;
+  isErrorInStockRemotion: boolean;
 
   pieceCode: number;
   insertionField: number;
+  remotionField: number;
+  totalQuantity: number;
 
   insertionAllowed: boolean;
+  remotionAllowed: boolean;
 
   showEntryStockModal: boolean;
   showOutputStockModal: boolean;
@@ -28,7 +34,8 @@ export type StockStateListener = (state: StockState) => void;
 export class StockViewModel {
   constructor(
     private getStockGroupUseCase: GetStockGroup,
-    private insertStockUseCase: InsertStock
+    private insertStockUseCase: InsertStock,
+    private removeStockUseCase: RemoveStock
   ) {}
 
   private _state: StockState = {
@@ -36,14 +43,19 @@ export class StockViewModel {
 
     isSearching: false,
     isInsertingStock: false,
+    isRemovingStock: false,
 
     isPartsStockCategoriesNotFound: false,
     isErrorInStockInsertion: false,
+    isErrorInStockRemotion: false,
 
     pieceCode: 1,
     insertionField: 0,
+    remotionField: 0,
+    totalQuantity: 0,
 
     insertionAllowed: false,
+    remotionAllowed: false,
 
     showEntryStockModal: false,
     showOutputStockModal: false,
@@ -125,14 +137,52 @@ export class StockViewModel {
     }
   }
 
+  async remotionStock(pieceCode: number, quantity: number) {
+    this.updateState({
+      ...this._state,
+      isRemovingStock: true,
+      isErrorInStockRemotion: false,
+    });
+
+    const stockRemotion = await this.removeStockUseCase.exec(
+      pieceCode,
+      quantity
+    );
+
+    if (stockRemotion instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isRemovingStock: false,
+        isErrorInStockRemotion: true,
+        errorMessage: stockRemotion.message,
+      });
+    }
+
+    if (!(stockRemotion instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isRemovingStock: false,
+        isErrorInStockRemotion: false,
+        errorMessage: null,
+      });
+
+      this.closeModal();
+
+      await this.getStock();
+    }
+  }
+
   changePieceCode(pieceCode: number) {
-    console.log("chamou a porra da alteração de código de peça");
-
-    console.log("A merda do código informado:", pieceCode);
-
     this.updateState({
       ...this._state,
       pieceCode,
+    });
+  }
+
+  changeTotalQuantity(totalQuantity: number) {
+    this.updateState({
+      ...this._state,
+      totalQuantity,
     });
   }
 
@@ -147,6 +197,21 @@ export class StockViewModel {
     this.allowInsertion(insertionField);
   }
 
+  changeRemotionField(remotionQuantity: number, totalQuantity: number) {
+    let remotionField =
+      remotionQuantity >= 0 ? Math.floor(remotionQuantity) : 0;
+
+    remotionField =
+      remotionField > totalQuantity ? totalQuantity : remotionField;
+
+    this.updateState({
+      ...this._state,
+      remotionField,
+    });
+
+    this.allowRemotion(remotionField, totalQuantity);
+  }
+
   allowInsertion(insertionField: number) {
     const allowInsertion =
       insertionField >= 1 && Number.isInteger(insertionField);
@@ -157,10 +222,24 @@ export class StockViewModel {
     });
   }
 
+  allowRemotion(remotionQuantity: number, totalQuantity: number) {
+    const allowRemotion =
+      remotionQuantity >= 1 &&
+      Number.isInteger(remotionQuantity) &&
+      remotionQuantity <= totalQuantity;
+
+    this.updateState({
+      ...this._state,
+      remotionAllowed: allowRemotion,
+    });
+  }
+
   openModal(isEntryStockModal: boolean) {
     if (isEntryStockModal) {
       this.updateState({
         ...this._state,
+        insertionField: 0,
+        insertionAllowed: false,
         showEntryStockModal: true,
         showOutputStockModal: false,
       });
@@ -169,6 +248,8 @@ export class StockViewModel {
     if (!isEntryStockModal) {
       this.updateState({
         ...this._state,
+        remotionField: 0,
+        remotionAllowed: false,
         showEntryStockModal: false,
         showOutputStockModal: true,
       });

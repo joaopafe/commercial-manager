@@ -8,12 +8,14 @@ interface StockTableProps {
   items: StockProps[];
   openModal(isEntryStockModal: boolean): void;
   changePieceCode(pieceCode: number): void;
+  changeTotalQuantity(totalQuantity: number): void;
 }
 
 export const StockTable: FC<StockTableProps> = ({
   items,
   openModal,
   changePieceCode,
+  changeTotalQuantity,
 }) => {
   const stockLines = items.map((item) => {
     return (
@@ -26,6 +28,7 @@ export const StockTable: FC<StockTableProps> = ({
         key={item.code}
         openModal={openModal}
         changePieceCode={changePieceCode}
+        changeTotalQuantity={changeTotalQuantity}
       />
     );
   });

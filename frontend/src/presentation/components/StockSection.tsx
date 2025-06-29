@@ -7,6 +7,7 @@ interface StockSectionProps {
   items: StockProps[];
   openModal(isEntryStockModal: boolean): void;
   changePieceCode(pieceCode: number): void;
+  changeTotalQuantity(totalQuantity: number): void;
 }
 
 export const StockSection: FC<StockSectionProps> = ({
@@ -14,6 +15,7 @@ export const StockSection: FC<StockSectionProps> = ({
   items,
   openModal,
   changePieceCode,
+  changeTotalQuantity,
 }) => {
   return (
     <div className="stock-section-category">
@@ -23,6 +25,7 @@ export const StockSection: FC<StockSectionProps> = ({
         items={items}
         openModal={openModal}
         changePieceCode={changePieceCode}
+        changeTotalQuantity={changeTotalQuantity}
       />
     </div>
   );

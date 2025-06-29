@@ -11,6 +11,7 @@ export interface StockProps {
 export interface StockLineProps extends StockProps {
   openModal(isEntryStockModal: boolean): void;
   changePieceCode(pieceCode: number): void;
+  changeTotalQuantity(totalQuantity: number): void;
 }
 
 export const StockLine: FC<StockLineProps> = ({
@@ -21,6 +22,7 @@ export const StockLine: FC<StockLineProps> = ({
   price,
   openModal,
   changePieceCode,
+  changeTotalQuantity,
 }) => {
   return (
     <tr className="stock-line">
@@ -44,6 +46,7 @@ export const StockLine: FC<StockLineProps> = ({
           onClick={() => {
             openModal(false);
             changePieceCode(code);
+            changeTotalQuantity(quantity);
           }}
         >
           Saída

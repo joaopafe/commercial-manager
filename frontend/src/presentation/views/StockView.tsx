@@ -47,6 +47,9 @@ export const StockView: React.FC<StockViewProps> = ({
           changePieceCode={(pieceCode) =>
             stockViewModel.changePieceCode(pieceCode)
           }
+          changeTotalQuantity={(totalQuantity) =>
+            stockViewModel.changeTotalQuantity(totalQuantity)
+          }
           key={index}
         />
       );
@@ -116,11 +119,28 @@ export const StockView: React.FC<StockViewProps> = ({
           <label className="quantity-label" htmlFor="">
             Quantidade a remover:
           </label>
-          <input className="quantity-input" type="number" />
+          <input
+            className="quantity-input"
+            type="number"
+            value={state.remotionField}
+            onChange={(e) =>
+              stockViewModel.changeRemotionField(
+                parseInt(e.target.value),
+                state.totalQuantity
+              )
+            }
+          />
         </form>
 
         <div className="modal-buttons">
-          <button type="submit" className="confirm-register">
+          <button
+            type="submit"
+            className="confirm-register"
+            disabled={!state.remotionAllowed}
+            onClick={() =>
+              stockViewModel.remotionStock(state.pieceCode, state.remotionField)
+            }
+          >
             Confirmar
           </button>
           <button

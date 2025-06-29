@@ -8,6 +8,10 @@ export interface StockDataSource {
     pieceCode: number,
     quantity: number
   ): Promise<StockGroup[] | Error>;
+  removeStock(
+    pieceCode: number,
+    quantity: number
+  ): Promise<StockGroup[] | Error>;
 }
 
 export class StockRepositoryImpl implements StockRepository {
@@ -32,6 +36,8 @@ export class StockRepositoryImpl implements StockRepository {
     pieceCode: number,
     quantity: number
   ): Promise<StockGroup[] | Error> {
-    return Error("It was not possible to remove stock");
+    const stockGroups = await this.dataSource.removeStock(pieceCode, quantity);
+
+    return stockGroups;
   }
 }

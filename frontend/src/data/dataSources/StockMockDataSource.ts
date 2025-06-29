@@ -72,7 +72,7 @@ const stockGroups: StockGroup[] = [
 
 export class StockMockDataSource implements StockDataSource {
   async list(): Promise<StockGroup[] | null> {
-    await delay(2_000);
+    await delay(1_000);
 
     return stockGroups;
     // return null
@@ -101,5 +101,30 @@ export class StockMockDataSource implements StockDataSource {
     if (wasUpdatedQuantity) return stockGroups;
 
     return Error("It was not possible to insert stock");
+  }
+
+  async removeStock(
+    pieceCode: number,
+    quantity: number
+  ): Promise<StockGroup[] | Error> {
+    await delay(1_000);
+
+    let wasUpdatedQuantity = false;
+
+    for (const stockGroup of stockGroups) {
+      const editedPiece = stockGroup.partsStock.find(
+        (piece) => piece.code === pieceCode
+      );
+
+      if (editedPiece) {
+        editedPiece.quantity -= quantity;
+
+        wasUpdatedQuantity = true;
+      }
+    }
+
+    if (wasUpdatedQuantity) return stockGroups;
+
+    return Error("It was not possible to remove stock");
   }
 }

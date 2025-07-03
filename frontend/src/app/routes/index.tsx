@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { HomeView } from "../../presentation/views/HomeView";
 import { PartsManagerView } from "../../presentation/views/PartsManagerView";
 import { StockView } from "../../presentation/views/StockView";
+import { SuppliersManagerView } from "../../presentation/views/SuppliersManagerView";
 
 import { HomeViewModelFactory } from "../providers/di/HomeViewModelFactory";
 import { PartsManagerViewModelFactory } from "../providers/di/PartsManagerViewModelFactory";
@@ -31,6 +32,7 @@ export const AppRoutes = () => {
         path="/stock"
         element={<StockView stockViewModelFactory={stockViewModelFactory} />}
       />
+      <Route path="/suppliersmanager" element={<SuppliersManagerView />} />
     </Routes>
   );
 };

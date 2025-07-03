@@ -90,17 +90,15 @@ td {
   flex-direction: column;
 }
 
+.cnpj-label,
 .name-label,
-.category-label,
-.supplier-label,
-.price-label {
+.phone-label {
   margin-bottom: 0px;
 }
 
+.cnpj-input,
 .name-input,
-.category-input,
-.supplier-input,
-.price-input {
+.phone-input {
   border: 1px solid #ccc;
   border-radius: 8px;
   margin-bottom: 8px;

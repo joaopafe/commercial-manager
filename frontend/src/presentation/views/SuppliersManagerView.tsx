@@ -36,6 +36,68 @@ export const SuppliersManagerView = () => {
           },
         ]}
       />
+
+      <div className="supplier-modal" style={{ display: "none" }}>
+        <div className="supplier-modal-title">Cadastrar Fornecedor</div>
+
+        <form className="supplier-modal-form">
+          <label className="cnpj-label" htmlFor="cnpj">
+            CNPJ:
+          </label>
+          <input className="cnpj-input" type="text" id="cnpj" />
+
+          <label className="name-label" htmlFor="cnpj">
+            Nome:
+          </label>
+          <input className="name-input" type="text" id="cnpj" />
+
+          <label className="phone-label" htmlFor="cnpj">
+            Telefone:
+          </label>
+          <input className="phone-input" type="text" id="cnpj" />
+        </form>
+
+        <div className="modal-buttons">
+          <button type="submit" className="confirm-register">
+            Salvar
+          </button>
+
+          <button type="submit" className="cancel-register">
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+      <div className="supplier-modal" style={{ display: "none" }}>
+        <div className="supplier-modal-title">Editar Fornecedor</div>
+
+        <form className="supplier-modal-form">
+          <label className="cnpj-label" htmlFor="cnpj">
+            CNPJ:
+          </label>
+          <input className="cnpj-input" type="text" id="cnpj" />
+
+          <label className="name-label" htmlFor="cnpj">
+            Nome:
+          </label>
+          <input className="name-input" type="text" id="cnpj" />
+
+          <label className="phone-label" htmlFor="cnpj">
+            Telefone:
+          </label>
+          <input className="phone-input" type="text" id="cnpj" />
+        </form>
+
+        <div className="modal-buttons">
+          <button type="submit" className="confirm-register">
+            Salvar
+          </button>
+
+          <button type="submit" className="cancel-register">
+            Cancelar
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

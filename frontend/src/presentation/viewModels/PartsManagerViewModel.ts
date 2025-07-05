@@ -174,7 +174,7 @@ export class PartsManagerViewModel {
         suppliers,
         isSearching: false,
         isSuppliersNotFound: false,
-        supplierField: suppliers[0],
+        supplierField: suppliers[0].name,
       });
     }
   }

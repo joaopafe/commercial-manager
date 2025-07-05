@@ -90,8 +90,8 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
     >
       {state.suppliers?.map((supplier, index) => {
         return (
-          <option key={index} value={supplier}>
-            {supplier}
+          <option key={index} value={supplier.name}>
+            {supplier.name}
           </option>
         );
       })}

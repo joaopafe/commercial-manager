@@ -8,10 +8,12 @@ import { SuppliersManagerView } from "../../presentation/views/SuppliersManagerV
 import { HomeViewModelFactory } from "../providers/di/HomeViewModelFactory";
 import { PartsManagerViewModelFactory } from "../providers/di/PartsManagerViewModelFactory";
 import { StockViewModelFactory } from "../providers/di/StockViewModelFactory";
+import { SuppliersManagerViewModelFactory } from "../providers/di/SuppliersManagerViewModelFactory";
 
 const homeViewModelFactory = new HomeViewModelFactory();
 const partsManagerViewModelFactory = new PartsManagerViewModelFactory();
 const stockViewModelFactory = new StockViewModelFactory();
+const suppliersManagerViewModelFactory = new SuppliersManagerViewModelFactory();
 
 export const AppRoutes = () => {
   return (
@@ -32,7 +34,14 @@ export const AppRoutes = () => {
         path="/stock"
         element={<StockView stockViewModelFactory={stockViewModelFactory} />}
       />
-      <Route path="/suppliersmanager" element={<SuppliersManagerView />} />
+      <Route
+        path="/suppliersmanager"
+        element={
+          <SuppliersManagerView
+            supplierManagerViewModelFactory={suppliersManagerViewModelFactory}
+          />
+        }
+      />
     </Routes>
   );
 };

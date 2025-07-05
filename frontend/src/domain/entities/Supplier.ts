@@ -1,1 +1,6 @@
-export type Supplier = string;
+export interface Supplier {
+  code: number;
+  cnpj: string;
+  name: string;
+  phone: string;
+}

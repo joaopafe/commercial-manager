@@ -1,27 +1,53 @@
 import { Piece } from "../entities/Piece";
+
 import { PieceRepository } from "../repositories/PieceRepository";
+import { SupplierRepository } from "../repositories/SupplierRepository";
+
+import { isPieceValid as pieceValid } from "../validators/isPieceValid";
+import { supplierAlreadyExists } from "../validators/supplierAlreadyExists";
+import { categoryAlreadyExists } from "../validators/categoryAlreadyExists";
 
 export interface AddPieceParams {
   name: string;
-  category: string;
+  categoryCode: number;
   price: number;
-  supplier: string;
+  supplierCode: number;
 }
 
 export class CreatePiece {
-  constructor(private pieceRepository: PieceRepository) {}
+  constructor(
+    private pieceRepository: PieceRepository,
+    private supplierRepository: SupplierRepository
+  ) {}
 
   async exec(piece: AddPieceParams): Promise<Piece | Error> {
-    const isValidPiece =
-      piece.name.length >= 3 &&
-      piece.category.length >= 3 &&
-      piece.price > 0 &&
-      piece.supplier.length >= 2;
+    const isPieceValid = pieceValid(piece);
+    if (!isPieceValid) return Error("The piece is invalid");
 
-    if (!isValidPiece) return Error("The piece is invalid");
+    const suppliers = await this.supplierRepository.list();
+    const pieceCategories = await this.pieceRepository.listCategories();
 
-    const registeredPiece = await this.pieceRepository.addPiece(piece);
+    if (suppliers && pieceCategories) {
+      const supplierExists = supplierAlreadyExists(
+        piece.supplierCode,
+        suppliers
+      );
+      const pieceCategoryExists = categoryAlreadyExists(
+        piece.categoryCode,
+        pieceCategories
+      );
 
-    return registeredPiece;
+      if (supplierExists && pieceCategoryExists) {
+        const registeredPiece = await this.pieceRepository.addPiece(piece);
+
+        return registeredPiece;
+      }
+
+      return supplierExists
+        ? Error("The piece category code is invalid")
+        : Error("The supplier code is invalid");
+    }
+
+    return Error("It was not possible to create piece");
   }
 }

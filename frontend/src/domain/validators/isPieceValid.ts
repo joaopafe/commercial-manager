@@ -1,11 +1,11 @@
-import { Piece } from "../entities/Piece";
+import { AddPieceParams } from "../useCases/CreatePiece";
 
-export const isPieceValid = (piece: Piece) => {
+export const isPieceValid = (piece: AddPieceParams) => {
   const isPieceValid =
     piece.name.length >= 3 &&
-    piece.category.length >= 3 &&
-    piece.supplier.length >= 2 &&
-    piece.price >= 0.1;
+    piece.categoryCode >= 1 &&
+    piece.supplierCode >= 1 &&
+    piece.price > 0;
 
   if (isPieceValid) return true;
 

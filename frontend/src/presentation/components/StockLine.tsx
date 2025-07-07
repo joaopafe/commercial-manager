@@ -4,6 +4,7 @@ export interface StockProps {
   code: number;
   name: string;
   supplier: string;
+  supplierCode?: number;
   quantity: number;
   price: number;
 }

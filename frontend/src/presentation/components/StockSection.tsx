@@ -1,10 +1,14 @@
 import { FC } from "react";
-import { StockProps } from "./StockLine";
+
 import { StockTable } from "./StockTable";
+
+import { Supplier } from "../../domain/entities/Supplier";
+import { PieceStock } from "../../domain/entities/PieceStock";
 
 interface StockSectionProps {
   category: string;
-  items: StockProps[];
+  suppliers: Supplier[];
+  items: PieceStock[];
   openModal(isEntryStockModal: boolean): void;
   changePieceCode(pieceCode: number): void;
   changeTotalQuantity(totalQuantity: number): void;
@@ -13,6 +17,7 @@ interface StockSectionProps {
 export const StockSection: FC<StockSectionProps> = ({
   category,
   items,
+  suppliers,
   openModal,
   changePieceCode,
   changeTotalQuantity,
@@ -23,6 +28,7 @@ export const StockSection: FC<StockSectionProps> = ({
 
       <StockTable
         items={items}
+        suppliers={suppliers}
         openModal={openModal}
         changePieceCode={changePieceCode}
         changeTotalQuantity={changeTotalQuantity}

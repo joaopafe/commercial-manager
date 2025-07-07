@@ -1,1 +1,4 @@
-export type PieceCategory = string;
+export interface PieceCategory {
+  code: number;
+  category: string;
+}

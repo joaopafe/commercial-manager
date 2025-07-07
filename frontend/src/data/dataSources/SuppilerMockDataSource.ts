@@ -57,7 +57,7 @@ const suppliersMock: Supplier[] = [
 
 export class SupplierMockDataSource implements SupplierDataSource {
   async list(): Promise<Supplier[] | null> {
-    await delay(2_000);
+    await delay(500);
 
     return suppliersMock;
     // return null

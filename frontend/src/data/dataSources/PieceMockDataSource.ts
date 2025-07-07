@@ -11,66 +11,66 @@ const partsMock: Piece[] = [
   {
     code: 1,
     name: "Pinça de freio Corsa 2011",
-    category: "Freio",
+    categoryCode: 2,
     price: 137.5,
-    supplier: "GM",
+    supplierCode: 2,
   },
   {
     code: 2,
     name: "Óleo de freio DOT 4",
-    category: "Freio",
+    categoryCode: 2,
     price: 28,
-    supplier: "Bosh",
+    supplierCode: 6,
   },
   {
     code: 3,
     name: "Óleo de motor 5W30",
-    category: "Motor",
+    categoryCode: 1,
     price: 30.99,
-    supplier: "Mobil",
+    supplierCode: 4,
   },
   {
     code: 4,
     name: "Radiador Gol G3 S/A",
-    category: "Arrefecimento",
+    categoryCode: 3,
     price: 270.0,
-    supplier: "Visconde",
+    supplierCode: 1,
   },
 ];
 
 const pieceCategoriesMock: PieceCategory[] = [
-  "Motor",
-  "Freio",
-  "Arrefecimento",
-  "Direção",
-  "Suspensão",
+  { code: 1, category: "Motor" },
+  { code: 2, category: "Freio" },
+  { code: 3, category: "Arrefecimento" },
+  { code: 4, category: "Direção" },
+  { code: 5, category: "Suspensão" },
 ];
 
 export class PieceMockDataSource implements PieceDataSource {
   async list(): Promise<Piece[] | null> {
-    await delay(2_000);
+    await delay(500);
 
     return partsMock;
     // return null;
   }
 
   async listCategories(): Promise<PieceCategory[] | null> {
-    await delay(2_000);
+    await delay(500);
 
     return pieceCategoriesMock;
     // return null;
   }
 
   async add(piece: AddPieceParams): Promise<Piece | Error> {
-    await delay(2_000);
+    await delay(500);
 
     try {
       partsMock.push({
         code: partsMock[partsMock.length - 1].code + 1,
         name: piece.name,
-        category: piece.category,
+        categoryCode: piece.categoryCode,
         price: piece.price,
-        supplier: piece.supplier,
+        supplierCode: piece.supplierCode,
       });
 
       return partsMock[length - 1];
@@ -88,8 +88,8 @@ export class PieceMockDataSource implements PieceDataSource {
       partsMock[editedPieceIndex] = {
         code: piece.code,
         name: piece.name,
-        category: piece.category,
-        supplier: piece.supplier,
+        categoryCode: piece.categoryCode,
+        supplierCode: piece.supplierCode,
         price: piece.price,
       };
 

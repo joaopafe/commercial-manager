@@ -40,6 +40,10 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
   ) : (
     <PartsTable
       parts={state.parts != null ? state.parts : []}
+      suppliers={state.suppliers != null ? state.suppliers : []}
+      pieceCategories={
+        state.pieceCategories != null ? state.pieceCategories : []
+      }
       openModal={(isCreateModal) =>
         partsManagerViewModel.openModal(isCreateModal)
       }
@@ -59,18 +63,29 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
       className="category-input"
       name="categories"
       id="category"
-      value={state.categoryField}
-      onChange={(e) =>
-        partsManagerViewModel.changePieceCategory(e.target.value)
-      }
+      value={state.categoryCode}
+      onChange={(e) => {
+        const selectedCode = Number(e.target.value);
+        let selectedCategory;
+
+        if (state.pieceCategories) {
+          selectedCategory = state.pieceCategories.find(
+            (c) => c.code === selectedCode
+          );
+        }
+        if (selectedCategory) {
+          partsManagerViewModel.changePieceCategoryField(
+            selectedCategory.category
+          );
+          partsManagerViewModel.changePieceCategoryCode(selectedCategory.code);
+        }
+      }}
     >
-      {state.pieceCategories?.map((pieceCategory, index) => {
-        return (
-          <option key={index} value={pieceCategory}>
-            {pieceCategory}
-          </option>
-        );
-      })}
+      {state.pieceCategories?.map((pieceCategory) => (
+        <option key={pieceCategory.code} value={pieceCategory.code}>
+          {pieceCategory.category}
+        </option>
+      ))}
     </select>
   );
 
@@ -82,19 +97,28 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
     <select
       className="supplier-input"
       name="suppliers"
-      id="suppliers"
-      value={state.supplierField}
-      onChange={(e) =>
-        partsManagerViewModel.changePieceSupplier(e.target.value)
-      }
+      id="supplier"
+      value={state.supplierCode}
+      onChange={(e) => {
+        const selectedCode = Number(e.target.value);
+        let selectedSupplier;
+
+        if (state.suppliers) {
+          selectedSupplier = state.suppliers.find(
+            (c) => c.code === selectedCode
+          );
+        }
+        if (selectedSupplier) {
+          partsManagerViewModel.changePieceSupplierField(selectedSupplier.name);
+          partsManagerViewModel.changePieceSupplierCode(selectedSupplier.code);
+        }
+      }}
     >
-      {state.suppliers?.map((supplier, index) => {
-        return (
-          <option key={index} value={supplier.name}>
-            {supplier.name}
-          </option>
-        );
-      })}
+      {state.suppliers?.map((supplier) => (
+        <option key={supplier.code} value={supplier.code}>
+          {supplier.name}
+        </option>
+      ))}
     </select>
   );
 
@@ -165,9 +189,9 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
             onClick={() =>
               partsManagerViewModel.createPiece({
                 name: state.nameField,
-                category: state.categoryField,
+                categoryCode: state.categoryCode,
                 price: state.priceField,
-                supplier: state.supplierField,
+                supplierCode: state.supplierCode,
               })
             }
           >
@@ -236,9 +260,9 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
               partsManagerViewModel.editPiece({
                 code: state.pieceCode,
                 name: state.nameField,
-                category: state.categoryField,
+                categoryCode: state.categoryCode,
                 price: state.priceField,
-                supplier: state.supplierField,
+                supplierCode: state.supplierCode,
               })
             }
           >

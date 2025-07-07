@@ -41,8 +41,14 @@ export class PartsManagerViewModelFactory {
   makePartsManagerViewModel() {
     const getParts = new GetParts(this._pieceRepository);
     const getPieceCategories = new GetPieceCategories(this._pieceRepository);
-    const createPiece = new CreatePiece(this._pieceRepository);
-    const editPiece = new EditPiece(this._pieceRepository);
+    const createPiece = new CreatePiece(
+      this._pieceRepository,
+      this._supplierRepository
+    );
+    const editPiece = new EditPiece(
+      this._pieceRepository,
+      this._supplierRepository
+    );
     const removePiece = new RemovePiece(this._pieceRepository);
     const getSuppliers = new GetSuppliers(this._supplierRepository);
 

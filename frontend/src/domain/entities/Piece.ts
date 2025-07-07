@@ -1,7 +1,7 @@
 export interface Piece {
   code: number;
   name: string;
-  category: string;
+  categoryCode: number;
   price: number;
-  supplier: string;
+  supplierCode: number;
 }

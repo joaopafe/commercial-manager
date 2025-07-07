@@ -1,11 +1,14 @@
 import { GetStockGroup } from "../../domain/useCases/GetStockGroup";
 import { InsertStock } from "../../domain/useCases/InsertStock";
 import { RemoveStock } from "../../domain/useCases/RemoveStock";
+import { GetSuppliers } from "../../domain/useCases/GetSuppliers";
 
 import { StockGroup } from "../../domain/entities/StockGroup";
+import { Supplier } from "../../domain/entities/Supplier";
 
 export interface StockState {
   partsStockCategories: StockGroup[] | null;
+  suppliers: Supplier[] | null;
 
   isSearching: boolean;
   isInsertingStock: boolean;
@@ -14,6 +17,7 @@ export interface StockState {
   isPartsStockCategoriesNotFound: boolean;
   isErrorInStockInsertion: boolean;
   isErrorInStockRemotion: boolean;
+  isSuppliersNotFound: boolean;
 
   pieceCode: number;
   insertionField: number;
@@ -35,11 +39,13 @@ export class StockViewModel {
   constructor(
     private getStockGroupUseCase: GetStockGroup,
     private insertStockUseCase: InsertStock,
-    private removeStockUseCase: RemoveStock
+    private removeStockUseCase: RemoveStock,
+    private getSuppliersUseCase: GetSuppliers
   ) {}
 
   private _state: StockState = {
     partsStockCategories: null,
+    suppliers: null,
 
     isSearching: false,
     isInsertingStock: false,
@@ -48,6 +54,7 @@ export class StockViewModel {
     isPartsStockCategoriesNotFound: false,
     isErrorInStockInsertion: false,
     isErrorInStockRemotion: false,
+    isSuppliersNotFound: false,
 
     pieceCode: 1,
     insertionField: 0,
@@ -98,6 +105,33 @@ export class StockViewModel {
         partsStockCategories,
         isSearching: false,
         isPartsStockCategoriesNotFound: false,
+      });
+    }
+  }
+
+  async getSuppliers() {
+    this.updateState({
+      ...this._state,
+      isSearching: true,
+    });
+
+    const suppliers = await this.getSuppliersUseCase.exec();
+
+    if (suppliers === null) {
+      this.updateState({
+        ...this._state,
+        suppliers: null,
+        isSearching: false,
+        isSuppliersNotFound: true,
+      });
+    }
+
+    if (suppliers) {
+      this.updateState({
+        ...this._state,
+        suppliers,
+        isSearching: false,
+        isSuppliersNotFound: false,
       });
     }
   }

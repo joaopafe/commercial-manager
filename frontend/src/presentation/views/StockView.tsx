@@ -29,6 +29,7 @@ export const StockView: React.FC<StockViewProps> = ({
 
   useEffect(() => {
     stockViewModel.getStock();
+    stockViewModel.getSuppliers();
   }, []);
 
   const stockSections = state.isSearching ? (
@@ -41,6 +42,7 @@ export const StockView: React.FC<StockViewProps> = ({
         <StockSection
           category={partsStockCategory.category}
           items={partsStockCategory.partsStock}
+          suppliers={state.suppliers ? state.suppliers : []}
           openModal={(isEntryStockModal) =>
             stockViewModel.openModal(isEntryStockModal)
           }

@@ -2,10 +2,14 @@ import { FC } from "react";
 
 import { PieceLine } from "./PieceLine";
 
-import { PieceProps as Piece } from "./PieceLine";
+import { Piece } from "../../domain/entities/Piece";
+import { Supplier } from "../../domain/entities/Supplier";
+import { PieceCategory } from "../../domain/entities/PieceCategory";
 
 interface PartsTableProps {
   parts: Piece[];
+  suppliers: Supplier[];
+  pieceCategories: PieceCategory[];
   openModal(isCreateModal: boolean): void;
   changePieceCode(pieceCode: number): void;
   removePiece(pieceCode: number): void;
@@ -13,18 +17,27 @@ interface PartsTableProps {
 
 export const PartsTable: FC<PartsTableProps> = ({
   parts,
+  suppliers,
+  pieceCategories,
   openModal,
   changePieceCode,
   removePiece,
 }) => {
   const pieceLines = parts.map((piece) => {
+    const supplier = suppliers.find(
+      (supplier) => supplier.code === piece.supplierCode
+    );
+    const pieceCategory = pieceCategories.find(
+      (pieceCategory) => pieceCategory.code === piece.categoryCode
+    );
+
     return (
       <PieceLine
         code={piece.code}
         name={piece.name}
-        category={piece.category}
+        category={pieceCategory ? pieceCategory.category : ""}
         price={piece.price}
-        supplier={piece.supplier}
+        supplier={supplier ? supplier.name : ""}
         key={piece.code}
         openModal={openModal}
         changePieceCode={changePieceCode}

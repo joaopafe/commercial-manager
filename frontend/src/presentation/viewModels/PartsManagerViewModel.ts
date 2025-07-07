@@ -34,7 +34,9 @@ export interface PartsManagerState {
   nameField: string;
   priceField: number;
   categoryField: string;
+  categoryCode: number;
   supplierField: string;
+  supplierCode: number;
 
   allowedToCreatePiece: boolean;
 
@@ -77,7 +79,9 @@ export class PartsManagerViewModel {
     nameField: "",
     priceField: 1,
     categoryField: "",
+    categoryCode: 1,
     supplierField: "",
+    supplierCode: 1,
 
     allowedToCreatePiece: false,
 
@@ -146,7 +150,7 @@ export class PartsManagerViewModel {
         pieceCategories,
         isSearching: false,
         isPieceCategoriesNotFound: false,
-        categoryField: pieceCategories[0],
+        categoryField: pieceCategories[0].category,
       });
     }
   }
@@ -301,17 +305,31 @@ export class PartsManagerViewModel {
     this.allowPieceCreation(pieceFields);
   }
 
-  changePieceCategory(pieceCategory: string) {
+  changePieceCategoryField(pieceCategory: string) {
     this.updateState({
       ...this._state,
       categoryField: pieceCategory,
     });
   }
 
-  changePieceSupplier(pieceSupplier: string) {
+  changePieceCategoryCode(pieceCategory: number) {
+    this.updateState({
+      ...this._state,
+      categoryCode: pieceCategory,
+    });
+  }
+
+  changePieceSupplierField(pieceSupplier: string) {
     this.updateState({
       ...this._state,
       supplierField: pieceSupplier,
+    });
+  }
+
+  changePieceSupplierCode(pieceSupplier: number) {
+    this.updateState({
+      ...this._state,
+      supplierCode: pieceSupplier,
     });
   }
 

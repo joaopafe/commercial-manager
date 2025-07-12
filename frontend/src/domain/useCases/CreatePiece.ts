@@ -3,7 +3,7 @@ import { Piece } from "../entities/Piece";
 import { PieceRepository } from "../repositories/PieceRepository";
 import { SupplierRepository } from "../repositories/SupplierRepository";
 
-import { isPieceValid as pieceValid } from "../validators/isPieceValid";
+import { isValidPiece as pieceValid } from "../validators/isValidPiece";
 import { supplierAlreadyExists } from "../validators/supplierAlreadyExists";
 import { categoryAlreadyExists } from "../validators/categoryAlreadyExists";
 

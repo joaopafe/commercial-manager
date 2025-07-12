@@ -1,6 +1,6 @@
 import { AddPieceParams } from "../useCases/CreatePiece";
 
-export const isPieceValid = (piece: AddPieceParams) => {
+export const isValidPiece = (piece: AddPieceParams) => {
   const isPieceValid =
     piece.name.length >= 3 &&
     piece.categoryCode >= 1 &&

@@ -1,5 +1,7 @@
 import { Supplier } from "../../domain/entities/Supplier";
 
+import { AddSupplierParams } from "../../domain/useCases/CreateSupplier";
+
 import { SupplierDataSource } from "../repositories/SupplierRepositoryImpl";
 
 import { delay } from "../../shared/utils/delay";
@@ -60,6 +62,23 @@ export class SupplierMockDataSource implements SupplierDataSource {
     await delay(500);
 
     return suppliersMock;
-    // return null
+    // return null;
+  }
+
+  async add(supplier: AddSupplierParams): Promise<Supplier | Error> {
+    await delay(500);
+
+    try {
+      suppliersMock.push({
+        code: suppliersMock[suppliersMock.length - 1].code + 1,
+        cnpj: supplier.cnpj,
+        name: supplier.name,
+        phone: supplier.phone,
+      });
+
+      return suppliersMock[length - 1];
+    } catch {
+      return Error("Unable to register a new supplier");
+    }
   }
 }

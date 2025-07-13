@@ -7,6 +7,7 @@ import { AddSupplierParams } from "../../domain/useCases/CreateSupplier";
 export interface SupplierDataSource {
   list(): Promise<Supplier[] | null>;
   add(supplier: AddSupplierParams): Promise<Supplier | Error>;
+  edit(supplier: Supplier): Promise<Supplier | Error>;
 }
 
 export class SupplierRepositoryImpl implements SupplierRepository {
@@ -22,5 +23,11 @@ export class SupplierRepositoryImpl implements SupplierRepository {
     const createdSupplier = await this.dataSource.add(supplier);
 
     return createdSupplier;
+  }
+
+  async edit(supplier: Supplier): Promise<Supplier | Error> {
+    const editedSupplier = await this.dataSource.edit(supplier);
+
+    return editedSupplier;
   }
 }

@@ -8,6 +8,7 @@ export interface SupplierDataSource {
   list(): Promise<Supplier[] | null>;
   add(supplier: AddSupplierParams): Promise<Supplier | Error>;
   edit(supplier: Supplier): Promise<Supplier | Error>;
+  remove(supplierCode: number): Promise<Supplier | Error>;
 }
 
 export class SupplierRepositoryImpl implements SupplierRepository {
@@ -29,5 +30,11 @@ export class SupplierRepositoryImpl implements SupplierRepository {
     const editedSupplier = await this.dataSource.edit(supplier);
 
     return editedSupplier;
+  }
+
+  async remove(supplierCode: number): Promise<Supplier | Error> {
+    const removedSupplier = await this.dataSource.remove(supplierCode);
+
+    return removedSupplier;
   }
 }

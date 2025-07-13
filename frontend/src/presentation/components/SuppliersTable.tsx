@@ -6,9 +6,17 @@ import { SupplierProps as Supplier } from "./SupplierLine";
 
 interface SupplierTableProps {
   suppliers: Supplier[];
+  openModal(isCreateModal: boolean): void;
+  changeSupplierCode(supplierCode: number): void;
+  removeSupplier(supplierCode: number): void;
 }
 
-export const SuppliersTable: FC<SupplierTableProps> = ({ suppliers }) => {
+export const SuppliersTable: FC<SupplierTableProps> = ({
+  suppliers,
+  openModal,
+  changeSupplierCode,
+  removeSupplier,
+}) => {
   const supplierLines = suppliers.map((supplier) => {
     return (
       <SupplierLine
@@ -17,6 +25,9 @@ export const SuppliersTable: FC<SupplierTableProps> = ({ suppliers }) => {
         name={supplier.name}
         phone={supplier.phone}
         key={supplier.code}
+        openModal={openModal}
+        changeSupplierCode={changeSupplierCode}
+        removeSupplier={removeSupplier}
       />
     );
   });

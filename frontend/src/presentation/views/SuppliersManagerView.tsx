@@ -38,6 +38,15 @@ export const SuppliersManagerView: React.FC<SuppliersManagerViewProps> = ({
   ) : (
     <SuppliersTable
       suppliers={state.suppliers != null ? state.suppliers : []}
+      openModal={(isCreateModal) =>
+        suppliersManagerViewModel.openModal(isCreateModal)
+      }
+      changeSupplierCode={(supplierCode) =>
+        suppliersManagerViewModel.changeSupplierCode(supplierCode)
+      }
+      removeSupplier={(supplierCode) =>
+        suppliersManagerViewModel.removeSupplier(supplierCode)
+      }
     />
   );
 
@@ -46,68 +55,158 @@ export const SuppliersManagerView: React.FC<SuppliersManagerViewProps> = ({
       <div className="header">
         <div className="message">Gerenciamento de Fornecedores</div>
 
-        <button className="new-supplier-button">Novo Fornecedor</button>
+        <button
+          className="new-supplier-button"
+          onClick={() => suppliersManagerViewModel.openModal(true)}
+        >
+          Novo Fornecedor
+        </button>
       </div>
 
       {suppliersTable}
 
-      <div className="supplier-modal" style={{ display: "none" }}>
+      <div
+        className="supplier-modal"
+        style={{ display: state.showCreateModal ? "flex" : "none" }}
+      >
         <div className="supplier-modal-title">Cadastrar Fornecedor</div>
 
         <form className="supplier-modal-form">
           <label className="cnpj-label" htmlFor="cnpj">
             CNPJ:
           </label>
-          <input className="cnpj-input" type="text" id="cnpj" />
+          <input
+            className="cnpj-input"
+            type="text"
+            id="cnpj"
+            value={state.cnpjField}
+            onChange={(e) =>
+              suppliersManagerViewModel.changeSupplierCNPJ(e.target.value)
+            }
+          />
 
           <label className="name-label" htmlFor="cnpj">
             Nome:
           </label>
-          <input className="name-input" type="text" id="cnpj" />
+          <input
+            className="name-input"
+            type="text"
+            id="cnpj"
+            value={state.nameField}
+            onChange={(e) =>
+              suppliersManagerViewModel.changeSupplierName(e.target.value)
+            }
+          />
 
           <label className="phone-label" htmlFor="cnpj">
             Telefone:
           </label>
-          <input className="phone-input" type="text" id="cnpj" />
+          <input
+            className="phone-input"
+            type="text"
+            id="cnpj"
+            value={state.phoneField}
+            onChange={(e) =>
+              suppliersManagerViewModel.changeSupplierPhone(e.target.value)
+            }
+          />
         </form>
 
         <div className="modal-buttons">
-          <button type="submit" className="confirm-register">
+          <button
+            type="submit"
+            className="confirm-register"
+            disabled={!state.allowedToCreateSupplier}
+            onClick={() =>
+              suppliersManagerViewModel.createSupplier({
+                cnpj: state.cnpjField,
+                name: state.nameField,
+                phone: state.phoneField,
+              })
+            }
+          >
             Salvar
           </button>
 
-          <button type="submit" className="cancel-register">
+          <button
+            type="submit"
+            className="cancel-register"
+            onClick={() => suppliersManagerViewModel.closeModal()}
+          >
             Cancelar
           </button>
         </div>
       </div>
 
-      <div className="supplier-modal" style={{ display: "none" }}>
+      <div
+        className="supplier-modal"
+        style={{ display: state.showEditModal ? "flex" : "none" }}
+      >
         <div className="supplier-modal-title">Editar Fornecedor</div>
 
         <form className="supplier-modal-form">
           <label className="cnpj-label" htmlFor="cnpj">
             CNPJ:
           </label>
-          <input className="cnpj-input" type="text" id="cnpj" />
+          <input
+            className="cnpj-input"
+            type="text"
+            id="cnpj"
+            value={state.cnpjField}
+            onChange={(e) =>
+              suppliersManagerViewModel.changeSupplierCNPJ(e.target.value)
+            }
+          />
 
           <label className="name-label" htmlFor="cnpj">
             Nome:
           </label>
-          <input className="name-input" type="text" id="cnpj" />
+          <input
+            className="name-input"
+            type="text"
+            id="cnpj"
+            value={state.nameField}
+            onChange={(e) =>
+              suppliersManagerViewModel.changeSupplierName(e.target.value)
+            }
+          />
 
           <label className="phone-label" htmlFor="cnpj">
             Telefone:
           </label>
-          <input className="phone-input" type="text" id="cnpj" />
+          <input
+            className="phone-input"
+            type="text"
+            id="cnpj"
+            value={state.phoneField}
+            onChange={(e) =>
+              suppliersManagerViewModel.changeSupplierPhone(e.target.value)
+            }
+          />
         </form>
 
         <div className="modal-buttons">
-          <button type="submit" className="confirm-register">
+          <button
+            type="submit"
+            className="confirm-register"
+            disabled={!state.allowedToCreateSupplier}
+            onClick={() =>
+              suppliersManagerViewModel.editSupplier({
+                code: state.supplierCode,
+                cnpj: state.cnpjField,
+                name: state.nameField,
+                phone: state.phoneField,
+              })
+            }
+          >
             Salvar
           </button>
 
-          <button type="submit" className="cancel-register">
+          <button
+            type="submit"
+            className="cancel-register"
+            onClick={() => suppliersManagerViewModel.closeModal()}
+          >
             Cancelar
           </button>
         </div>

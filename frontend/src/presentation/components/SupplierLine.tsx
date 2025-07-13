@@ -7,11 +7,20 @@ export interface SupplierProps {
   phone: string;
 }
 
-export const SupplierLine: FC<SupplierProps> = ({
+export interface SupplierLineProps extends SupplierProps {
+  openModal(isCreateModal: boolean): void;
+  changeSupplierCode(supplierCode: number): void;
+  removeSupplier(supplierCode: number): void;
+}
+
+export const SupplierLine: FC<SupplierLineProps> = ({
   code,
   cnpj,
   name,
   phone,
+  openModal,
+  changeSupplierCode,
+  removeSupplier,
 }) => {
   return (
     <tr className="supplier-line">
@@ -20,8 +29,18 @@ export const SupplierLine: FC<SupplierProps> = ({
       <td className="supplier-name">{name}</td>
       <td className="supplier-phone">{phone}</td>
       <td className="supplier-actions">
-        <button className="edit-button">Editar</button>
-        <button className="exclude-button">Excluir</button>
+        <button
+          className="edit-button"
+          onClick={() => {
+            openModal(false);
+            changeSupplierCode(code);
+          }}
+        >
+          Editar
+        </button>
+        <button className="exclude-button" onClick={() => removeSupplier(code)}>
+          Excluir
+        </button>
       </td>
     </tr>
   );

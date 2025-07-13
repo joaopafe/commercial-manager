@@ -105,7 +105,7 @@ export class SupplierMockDataSource implements SupplierDataSource {
     try {
       const removedSupplierIndex = suppliersMock.findIndex(
         (registeredSupplier) => {
-          registeredSupplier.code === supplierCode;
+          return registeredSupplier.code === supplierCode;
         }
       );
 

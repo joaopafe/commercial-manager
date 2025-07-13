@@ -100,4 +100,22 @@ export class SupplierMockDataSource implements SupplierDataSource {
       return Error("It was not possible to edit the supplier");
     }
   }
+
+  async remove(supplierCode: number): Promise<Supplier | Error> {
+    try {
+      const removedSupplierIndex = suppliersMock.findIndex(
+        (registeredSupplier) => {
+          registeredSupplier.code === supplierCode;
+        }
+      );
+
+      const removedSupplier = suppliersMock[removedSupplierIndex];
+
+      suppliersMock.splice(removedSupplierIndex, 1);
+
+      return removedSupplier;
+    } catch {
+      return Error("It was not possible to remove the supplier");
+    }
+  }
 }

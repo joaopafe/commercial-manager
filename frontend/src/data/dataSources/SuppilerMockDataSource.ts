@@ -81,4 +81,23 @@ export class SupplierMockDataSource implements SupplierDataSource {
       return Error("Unable to register a new supplier");
     }
   }
+
+  async edit(supplier: Supplier): Promise<Supplier | Error> {
+    try {
+      const editedSupplierIndex = suppliersMock.findIndex(
+        (registeredSupplier) => registeredSupplier.code === supplier.code
+      );
+
+      suppliersMock[editedSupplierIndex] = {
+        code: supplier.code,
+        cnpj: supplier.cnpj,
+        name: supplier.name,
+        phone: supplier.phone,
+      };
+
+      return suppliersMock[editedSupplierIndex];
+    } catch {
+      return Error("It was not possible to edit the supplier");
+    }
+  }
 }

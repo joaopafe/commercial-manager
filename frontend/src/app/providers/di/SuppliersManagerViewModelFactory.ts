@@ -1,5 +1,8 @@
 // Use cases:
 import { GetSuppliers } from "../../../domain/useCases/GetSuppliers";
+import { CreateSupplier } from "../../../domain/useCases/CreateSupplier";
+import { EditSupplier } from "../../../domain/useCases/EditSupplier";
+import { RemoveSupplier } from "../../../domain/useCases/RemoveSupplier";
 
 // Repositories implementations:
 import { SupplierRepositoryImpl } from "../../../data/repositories/SupplierRepositoryImpl";
@@ -28,7 +31,15 @@ export class SuppliersManagerViewModelFactory {
 
   makeSuppliersManagerViewModel() {
     const getSuppliers = new GetSuppliers(this._supplierRepository);
+    const createSupplier = new CreateSupplier(this._supplierRepository);
+    const editSupplier = new EditSupplier(this._supplierRepository);
+    const removeSupplier = new RemoveSupplier(this._supplierRepository);
 
-    return new SuppliersManagerViewModel(getSuppliers);
+    return new SuppliersManagerViewModel(
+      getSuppliers,
+      createSupplier,
+      editSupplier,
+      removeSupplier
+    );
   }
 }

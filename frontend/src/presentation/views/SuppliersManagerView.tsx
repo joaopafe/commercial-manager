@@ -4,6 +4,7 @@ import { SuppliersManagerViewModelFactory } from "../../app/providers/di/Supplie
 
 import { SuppliersTable } from "../components/SuppliersTable";
 import { Loader } from "../components/Loader";
+import { Toast } from "../components/Toast";
 
 interface SuppliersManagerViewProps {
   supplierManagerViewModelFactory: SuppliersManagerViewModelFactory;
@@ -211,6 +212,12 @@ export const SuppliersManagerView: React.FC<SuppliersManagerViewProps> = ({
           </button>
         </div>
       </div>
+
+      <Toast
+        message={state.message}
+        status={state.toastStatus}
+        show={state.showToast}
+      />
     </div>
   );
 };

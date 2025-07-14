@@ -11,6 +11,7 @@ import "./presentation/style/home.css";
 import "./presentation/style/parts-manager.css";
 import "./presentation/style/stock.css";
 import "./presentation/style/suppliers-manager.css";
+import "./presentation/style/toast.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

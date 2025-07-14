@@ -6,6 +6,8 @@ import { RemoveSupplier } from "../../domain/useCases/RemoveSupplier";
 import { Supplier } from "../../domain/entities/Supplier";
 import { AddSupplierParams } from "../../domain/useCases/CreateSupplier";
 
+import { delay } from "../../shared/utils/delay";
+
 export interface SuppliersManagerState {
   suppliers: Supplier[] | null;
 
@@ -29,7 +31,9 @@ export interface SuppliersManagerState {
 
   allowedToCreateSupplier: boolean;
 
-  errorMessage: string | null;
+  showToast: boolean;
+  toastStatus: "success" | "error";
+  message: string;
 }
 
 export type SuppliersManagerStateListener = (
@@ -67,7 +71,9 @@ export class SuppliersManagerViewModel {
 
     allowedToCreateSupplier: false,
 
-    errorMessage: null,
+    showToast: false,
+    toastStatus: "success",
+    message: "",
   };
 
   get state(): SuppliersManagerState {
@@ -124,8 +130,10 @@ export class SuppliersManagerViewModel {
         ...this._state,
         isCreatingSupplier: false,
         isErrorInSupplierRegistration: true,
-        errorMessage: registeredSupplier.message,
+        message: registeredSupplier.message,
       });
+
+      await this.showToast(registeredSupplier.message, "error");
     }
 
     if (!(registeredSupplier instanceof Error)) {
@@ -133,12 +141,14 @@ export class SuppliersManagerViewModel {
         ...this._state,
         isCreatingSupplier: false,
         isErrorInSupplierRegistration: false,
-        errorMessage: "",
+        message: "",
       });
 
       this.closeModal();
 
       await this.getSuppliers();
+
+      await this.showToast("Supplier successfully created", "success");
     }
   }
 
@@ -156,8 +166,10 @@ export class SuppliersManagerViewModel {
         ...this._state,
         isEditingSupplier: false,
         isErrorInSupplierEdition: true,
-        errorMessage: editedSupplier.message,
+        message: editedSupplier.message,
       });
+
+      await this.showToast(editedSupplier.message, "error");
     }
 
     if (!(editedSupplier instanceof Error)) {
@@ -165,12 +177,14 @@ export class SuppliersManagerViewModel {
         ...this._state,
         isEditingSupplier: false,
         isErrorInSupplierEdition: false,
-        errorMessage: "",
+        message: "",
       });
 
       this.closeModal();
 
       await this.getSuppliers();
+
+      await this.showToast("Supplier successfully edited", "success");
     }
   }
 
@@ -188,8 +202,10 @@ export class SuppliersManagerViewModel {
         ...this._state,
         isRemovingSupplier: false,
         isErrorInSupplierRemoval: true,
-        errorMessage: removedSupplier.message,
+        message: removedSupplier.message,
       });
+
+      await this.showToast(removedSupplier.message, "error");
     }
 
     if (!(removedSupplier instanceof Error)) {
@@ -197,10 +213,12 @@ export class SuppliersManagerViewModel {
         ...this._state,
         isRemovingSupplier: false,
         isErrorInSupplierRemoval: false,
-        errorMessage: "",
+        message: "",
       });
 
       await this.getSuppliers();
+
+      await this.showToast("Supplier successfully deleted", "success");
     }
   }
 
@@ -301,6 +319,22 @@ export class SuppliersManagerViewModel {
       ...this._state,
       showCreateModal: false,
       showEditModal: false,
+    });
+  }
+
+  async showToast(message: string, status: "success" | "error") {
+    this.updateState({
+      ...this._state,
+      showToast: true,
+      toastStatus: status,
+      message,
+    });
+
+    await delay(2_000);
+
+    this.updateState({
+      ...this._state,
+      showToast: false,
     });
   }
 }

@@ -4,6 +4,7 @@ import { StockViewModelFactory } from "../../app/providers/di/StockViewModelFact
 
 import { StockSection } from "../components/StockSection";
 import { Loader } from "../components/Loader";
+import { Toast } from "../components/Toast";
 
 interface StockViewProps {
   stockViewModelFactory: StockViewModelFactory;
@@ -154,6 +155,12 @@ export const StockView: React.FC<StockViewProps> = ({
           </button>
         </div>
       </div>
+
+      <Toast
+        message={state.message}
+        status={state.toastStatus}
+        show={state.showToast}
+      />
     </div>
   );
 };

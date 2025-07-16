@@ -4,6 +4,7 @@ import { PartsManagerViewModelFactory } from "../../app/providers/di/PartsManage
 
 import { PartsTable } from "../components/PartsTable";
 import { Loader } from "../components/Loader";
+import { Toast } from "../components/Toast";
 
 interface PartsManagerViewProps {
   partsManagerViewModelFactory: PartsManagerViewModelFactory;
@@ -277,6 +278,12 @@ export const PartsManagerView: React.FC<PartsManagerViewProps> = ({
           </button>
         </div>
       </div>
+
+      <Toast
+        message={state.message}
+        status={state.toastStatus}
+        show={state.showToast}
+      />
     </div>
   );
 };

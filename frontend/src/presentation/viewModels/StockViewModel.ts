@@ -6,6 +6,8 @@ import { GetSuppliers } from "../../domain/useCases/GetSuppliers";
 import { StockGroup } from "../../domain/entities/StockGroup";
 import { Supplier } from "../../domain/entities/Supplier";
 
+import { delay } from "../../shared/utils/delay";
+
 export interface StockState {
   partsStockCategories: StockGroup[] | null;
   suppliers: Supplier[] | null;
@@ -30,7 +32,9 @@ export interface StockState {
   showEntryStockModal: boolean;
   showOutputStockModal: boolean;
 
-  errorMessage: string | null;
+  showToast: boolean;
+  toastStatus: "success" | "error";
+  message: string;
 }
 
 export type StockStateListener = (state: StockState) => void;
@@ -67,7 +71,9 @@ export class StockViewModel {
     showEntryStockModal: false,
     showOutputStockModal: false,
 
-    errorMessage: null,
+    showToast: false,
+    toastStatus: "success",
+    message: "",
   };
 
   get state(): StockState {
@@ -153,8 +159,10 @@ export class StockViewModel {
         ...this._state,
         isInsertingStock: false,
         isErrorInStockInsertion: true,
-        errorMessage: stockInsertion.message,
+        message: stockInsertion.message,
       });
+
+      await this.showToast(this._state.message, "error");
     }
 
     if (!(stockInsertion instanceof Error)) {
@@ -162,12 +170,14 @@ export class StockViewModel {
         ...this._state,
         isInsertingStock: false,
         isErrorInStockInsertion: false,
-        errorMessage: null,
+        message: "",
       });
 
       this.closeModal();
 
       await this.getStock();
+
+      await this.showToast("Stock was inserted successfully", "success");
     }
   }
 
@@ -188,8 +198,10 @@ export class StockViewModel {
         ...this._state,
         isRemovingStock: false,
         isErrorInStockRemotion: true,
-        errorMessage: stockRemotion.message,
+        message: stockRemotion.message,
       });
+
+      await this.showToast(this._state.message, "error");
     }
 
     if (!(stockRemotion instanceof Error)) {
@@ -197,12 +209,14 @@ export class StockViewModel {
         ...this._state,
         isRemovingStock: false,
         isErrorInStockRemotion: false,
-        errorMessage: null,
+        message: "",
       });
 
       this.closeModal();
 
       await this.getStock();
+
+      await this.showToast("Stock was removed successfully", "success");
     }
   }
 
@@ -295,6 +309,22 @@ export class StockViewModel {
       ...this._state,
       showEntryStockModal: false,
       showOutputStockModal: false,
+    });
+  }
+
+  async showToast(message: string, status: "success" | "error") {
+    this.updateState({
+      ...this._state,
+      showToast: true,
+      toastStatus: status,
+      message,
+    });
+
+    await delay(2_000);
+
+    this.updateState({
+      ...this._state,
+      showToast: false,
     });
   }
 }

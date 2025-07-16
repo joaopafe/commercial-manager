@@ -10,11 +10,11 @@ export const Aside = () => {
         <Link to="/partsmanager">Itens</Link>
         <Link to="/stock">Estoque</Link>
         <Link to="/suppliersmanager">Fornecedores</Link>
-        <Link to="/clientes">Clientes</Link>
-        <Link to="/vendas">Vendas</Link>
-        <Link to="/caixa">Caixa</Link>
-        <Link to="/usuarios">Usuários</Link>
-        <Link to="/configuracoes">Configurações</Link>
+        <Link to="/customers">Clientes</Link>
+        <Link to="/sales">Vendas</Link>
+        <Link to="/cash">Caixa</Link>
+        <Link to="/users">Usuários</Link>
+        <Link to="/settings">Configurações</Link>
       </div>
     </aside>
   );

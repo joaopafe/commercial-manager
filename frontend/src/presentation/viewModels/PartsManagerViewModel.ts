@@ -10,6 +10,8 @@ import { AddPieceParams } from "../../domain/useCases/CreatePiece";
 import { PieceCategory } from "../../domain/entities/PieceCategory";
 import { Supplier } from "../../domain/entities/Supplier";
 
+import { delay } from "../../shared/utils/delay";
+
 export interface PartsManagerState {
   parts: Piece[] | null;
   pieceCategories: PieceCategory[] | null;
@@ -40,7 +42,9 @@ export interface PartsManagerState {
 
   allowedToCreatePiece: boolean;
 
-  errorMessage: string | null;
+  showToast: boolean;
+  toastStatus: "success" | "error";
+  message: string;
 }
 
 export type PartsManagerStateListener = (state: PartsManagerState) => void;
@@ -85,7 +89,9 @@ export class PartsManagerViewModel {
 
     allowedToCreatePiece: false,
 
-    errorMessage: null,
+    showToast: false,
+    toastStatus: "success",
+    message: "",
   };
 
   get state(): PartsManagerState {
@@ -142,6 +148,8 @@ export class PartsManagerViewModel {
         isSearching: false,
         isPieceCategoriesNotFound: true,
       });
+
+      await this.showToast("It was not possible to get the suppliers", "error");
     }
 
     if (pieceCategories) {
@@ -170,6 +178,8 @@ export class PartsManagerViewModel {
         isSearching: false,
         isSuppliersNotFound: true,
       });
+
+      await this.showToast("It was not possible to get the suppliers", "error");
     }
 
     if (suppliers) {
@@ -197,8 +207,10 @@ export class PartsManagerViewModel {
         ...this._state,
         isCreatingPiece: false,
         isErrorInPieceRegistration: true,
-        errorMessage: registeredPiece.message,
+        message: registeredPiece.message,
       });
+
+      await this.showToast(registeredPiece.message, "error");
     }
 
     if (!(registeredPiece instanceof Error)) {
@@ -206,12 +218,14 @@ export class PartsManagerViewModel {
         ...this._state,
         isCreatingPiece: false,
         isErrorInPieceRegistration: false,
-        errorMessage: "",
+        message: "",
       });
 
       this.closeModal();
 
       await this.getParts();
+
+      await this.showToast("Piece successfully create", "success");
     }
   }
 
@@ -229,8 +243,10 @@ export class PartsManagerViewModel {
         ...this._state,
         isEditingPiece: false,
         isErrorInPieceEdition: true,
-        errorMessage: editedPiece.message,
+        message: editedPiece.message,
       });
+
+      await this.showToast(editedPiece.message, "error");
     }
 
     if (!(editedPiece instanceof Error)) {
@@ -238,12 +254,14 @@ export class PartsManagerViewModel {
         ...this._state,
         isEditingPiece: false,
         isErrorInPieceEdition: false,
-        errorMessage: "",
+        message: "",
       });
 
       this.closeModal();
 
       await this.getParts();
+
+      await this.showToast("Piece successfully edited", "success");
     }
   }
 
@@ -261,8 +279,10 @@ export class PartsManagerViewModel {
         ...this._state,
         isRemovingPiece: false,
         isErrorInPieceRemoval: true,
-        errorMessage: removedPiece.message,
+        message: removedPiece.message,
       });
+
+      await this.showToast(removedPiece.message, "error");
     }
 
     if (!(removedPiece instanceof Error)) {
@@ -270,10 +290,12 @@ export class PartsManagerViewModel {
         ...this._state,
         isRemovingPiece: false,
         isErrorInPieceRemoval: false,
-        errorMessage: "",
+        message: "",
       });
 
       await this.getParts();
+
+      await this.showToast("Piece successfully deleted", "success");
     }
   }
 
@@ -373,6 +395,22 @@ export class PartsManagerViewModel {
       ...this._state,
       showCreateModal: false,
       showEditModal: false,
+    });
+  }
+
+  async showToast(message: string, status: "success" | "error") {
+    this.updateState({
+      ...this._state,
+      showToast: true,
+      toastStatus: status,
+      message,
+    });
+
+    await delay(2_000);
+
+    this.updateState({
+      ...this._state,
+      showToast: false,
     });
   }
 }

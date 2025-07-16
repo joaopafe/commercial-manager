@@ -3,7 +3,7 @@ aside {
   flex-direction: column;
   background-color: rgb(44, 62, 80);
   width: 256px;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .company-name {

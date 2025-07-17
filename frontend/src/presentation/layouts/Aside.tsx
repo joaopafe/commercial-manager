@@ -10,7 +10,7 @@ export const Aside = () => {
         <Link to="/partsmanager">Itens</Link>
         <Link to="/stock">Estoque</Link>
         <Link to="/suppliersmanager">Fornecedores</Link>
-        <Link to="/customers">Clientes</Link>
+        <Link to="/customersmanager">Clientes</Link>
         <Link to="/sales">Vendas</Link>
         <Link to="/cash">Caixa</Link>
         <Link to="/users">Usuários</Link>

@@ -37,7 +37,7 @@ export const SuppliersTable: FC<SupplierTableProps> = ({
       <thead className="suppliers-table-head">
         <tr>
           <th className="suppliers-table-head-column" id="supplier-code-head">
-            Códigp
+            Código
           </th>
           <th className="suppliers-table-head-column" id="supplier-cnpj-head">
             CNPJ

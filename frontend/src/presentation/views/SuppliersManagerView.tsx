@@ -86,26 +86,26 @@ export const SuppliersManagerView: React.FC<SuppliersManagerViewProps> = ({
             }
           />
 
-          <label className="name-label" htmlFor="cnpj">
+          <label className="name-label" htmlFor="name">
             Nome:
           </label>
           <input
             className="name-input"
             type="text"
-            id="cnpj"
+            id="name"
             value={state.nameField}
             onChange={(e) =>
               suppliersManagerViewModel.changeSupplierName(e.target.value)
             }
           />
 
-          <label className="phone-label" htmlFor="cnpj">
+          <label className="phone-label" htmlFor="phone">
             Telefone:
           </label>
           <input
             className="phone-input"
             type="text"
-            id="cnpj"
+            id="phone"
             value={state.phoneField}
             onChange={(e) =>
               suppliersManagerViewModel.changeSupplierPhone(e.target.value)

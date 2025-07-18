@@ -1,5 +1,7 @@
 import { Customer } from "../../domain/entities/Customer";
 
+import { AddCustomerParams } from "../../domain/useCases/CreateCustomer";
+
 import { CustomerDataSource } from "../repositories/CustomerRepositoryImpl";
 
 import { delay } from "../../shared/utils/delay";
@@ -41,5 +43,23 @@ export class CustomerMockDataSource implements CustomerDataSource {
 
     return customersMock;
     // return null
+  }
+
+  async add(customer: AddCustomerParams): Promise<Customer | Error> {
+    await delay(500);
+
+    try {
+      customersMock.push({
+        code: customersMock[customersMock.length - 1].code + 1,
+        cpf: customer.cpf,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+      });
+
+      return customersMock[length - 1];
+    } catch {
+      return Error("Unable to register a new customer");
+    }
   }
 }

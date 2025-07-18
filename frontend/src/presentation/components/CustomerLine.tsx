@@ -10,6 +10,7 @@ export interface CustomerProps {
 
 export interface CustomerLineProps extends CustomerProps {
   openModal(isCreateModal: boolean): void;
+  changeCustomerCode(customerCode: number): void;
 }
 
 export const CustomerLine: FC<CustomerLineProps> = ({
@@ -19,6 +20,7 @@ export const CustomerLine: FC<CustomerLineProps> = ({
   email,
   phone,
   openModal,
+  changeCustomerCode,
 }) => {
   return (
     <tr>
@@ -32,6 +34,7 @@ export const CustomerLine: FC<CustomerLineProps> = ({
           className="edit-button"
           onClick={() => {
             openModal(false);
+            changeCustomerCode(code);
           }}
         >
           Editar

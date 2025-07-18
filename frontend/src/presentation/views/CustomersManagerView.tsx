@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { CustomersManagerViewModelFactory } from "../../app/providers/di/CustomersManagerViewModelFactory";
 
 import { Loader } from "../components/Loader";
+import { Toast } from "../components/Toast";
 import { CustomersTable } from "../components/CustomersTable";
 
 interface CustomersManagerViewProps {
@@ -41,6 +42,9 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
       openModal={(isCreateModal) =>
         customersManagerViewModel.openModal(isCreateModal)
       }
+      changeCustomerCode={(customerCode) =>
+        customersManagerViewModel.changeCustomerCode(customerCode)
+      }
     />
   );
 
@@ -73,8 +77,10 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
             className="cpf-input"
             type="text"
             id="cpf"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.cpfField}
+            onChange={(e) =>
+              customersManagerViewModel.changeCustomerCPF(e.target.value)
+            }
           />
 
           <label className="name-label" htmlFor="name">
@@ -84,8 +90,10 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
             className="name-input"
             type="text"
             id="name"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.nameField}
+            onChange={(e) =>
+              customersManagerViewModel.changeCustomerName(e.target.value)
+            }
           />
 
           <label className="email-label" htmlFor="email">
@@ -95,8 +103,10 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
             className="email-input"
             type="text"
             id="email"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.emailField}
+            onChange={(e) =>
+              customersManagerViewModel.changeCustomerEmail(e.target.value)
+            }
           />
 
           <label className="phone-label" htmlFor="phone">
@@ -106,8 +116,10 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
             className="phone-input"
             type="text"
             id="phone"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.phoneField}
+            onChange={(e) =>
+              customersManagerViewModel.changeCustomerPhone(e.target.value)
+            }
           />
         </form>
 
@@ -115,8 +127,15 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
           <button
             type="submit"
             className="confirm-register"
-            disabled={false}
-            onClick={() => console.log("")}
+            disabled={!state.allowedToCreateCustomer}
+            onClick={() =>
+              customersManagerViewModel.createCustomer({
+                cpf: state.cpfField,
+                name: state.nameField,
+                email: state.emailField,
+                phone: state.phoneField,
+              })
+            }
           >
             Salvar
           </button>
@@ -124,7 +143,7 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
           <button
             type="submit"
             className="cancel-register"
-            onClick={() => console.log("")}
+            onClick={() => customersManagerViewModel.closeModal()}
           >
             Cancelar
           </button>
@@ -202,6 +221,12 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
           </button>
         </div>
       </div>
+
+      <Toast
+        message={state.message}
+        status={state.toastStatus}
+        show={state.showToast}
+      />
     </div>
   );
 };

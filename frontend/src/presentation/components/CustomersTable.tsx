@@ -7,11 +7,13 @@ import { CustomerProps as Customer } from "./CustomerLine";
 interface CustomerTableProps {
   customers: Customer[];
   openModal(isCreateModal: boolean): void;
+  changeCustomerCode(customerCode: number): void;
 }
 
 export const CustomersTable: FC<CustomerTableProps> = ({
   customers,
   openModal,
+  changeCustomerCode,
 }) => {
   const customerLines = customers.map((customer) => {
     return (
@@ -23,6 +25,7 @@ export const CustomersTable: FC<CustomerTableProps> = ({
         phone={customer.phone}
         key={customer.code}
         openModal={openModal}
+        changeCustomerCode={changeCustomerCode}
       />
     );
   });

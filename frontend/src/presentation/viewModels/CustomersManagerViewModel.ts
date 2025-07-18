@@ -1,4 +1,8 @@
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
+import {
+  AddCustomerParams,
+  CreateCustomer,
+} from "../../domain/useCases/CreateCustomer";
 
 import { Customer } from "../../domain/entities/Customer";
 
@@ -8,11 +12,25 @@ export interface CustomersManagerState {
   customers: Customer[] | null;
 
   isSearching: boolean;
+  isCreatingCustomer: boolean;
 
   isCustomersNotFound: boolean;
+  isErrorInCustomerRegistration: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
+
+  customerCode: number;
+  cpfField: string;
+  nameField: string;
+  emailField: string;
+  phoneField: string;
+
+  allowedToCreateCustomer: boolean;
+
+  showToast: boolean;
+  toastStatus: "success" | "error";
+  message: string;
 }
 
 export type CustomersManagerStateListener = (
@@ -20,17 +38,34 @@ export type CustomersManagerStateListener = (
 ) => void;
 
 export class CustomersManagerViewModel {
-  constructor(private getCustomersUseCase: GetCustomers) {}
+  constructor(
+    private getCustomersUseCase: GetCustomers,
+    private createCustomerUseCase: CreateCustomer
+  ) {}
 
   private _state: CustomersManagerState = {
     customers: null,
 
     isSearching: false,
+    isCreatingCustomer: false,
 
     isCustomersNotFound: false,
+    isErrorInCustomerRegistration: false,
 
     showCreateModal: false,
     showEditModal: false,
+
+    customerCode: 1,
+    cpfField: "",
+    nameField: "",
+    emailField: "",
+    phoneField: "",
+
+    allowedToCreateCustomer: false,
+
+    showToast: false,
+    toastStatus: "success",
+    message: "",
   };
 
   get state(): CustomersManagerState {
@@ -71,6 +106,139 @@ export class CustomersManagerViewModel {
     }
   }
 
+  async createCustomer(customer: AddCustomerParams) {
+    this.updateState({
+      ...this._state,
+      isCreatingCustomer: true,
+      isErrorInCustomerRegistration: false,
+    });
+
+    const registeredCustomer = await this.createCustomerUseCase.exec(customer);
+
+    if (registeredCustomer instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isCreatingCustomer: false,
+        isErrorInCustomerRegistration: true,
+        message: registeredCustomer.message,
+      });
+
+      await this.showToast(registeredCustomer.message, "error");
+    }
+
+    if (!(registeredCustomer instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isCreatingCustomer: false,
+        isErrorInCustomerRegistration: false,
+        message: "",
+      });
+
+      this.closeModal();
+
+      await this.getCustomers();
+
+      await this.showToast("Customer successfully created", "success");
+    }
+  }
+
+  changeCustomerCPF(customerCPF: string) {
+    const customerCPFField = customerCPF.replace(/[^0-9.-]/g, "");
+
+    this.updateState({
+      ...this._state,
+      cpfField: customerCPFField,
+    });
+
+    const customerFields = {
+      cpf: this._state.cpfField,
+      name: this._state.nameField,
+      email: this._state.emailField,
+      phone: this._state.phoneField,
+    };
+
+    this.allowCustomerCreation(customerFields);
+  }
+
+  changeCustomerName(customerName: string) {
+    const customerNameField = customerName.replace(/[^\p{L}\s]/gu, "");
+
+    this.updateState({
+      ...this._state,
+      nameField: customerNameField,
+    });
+
+    const customerFields = {
+      cpf: this._state.cpfField,
+      name: this._state.nameField,
+      email: this._state.emailField,
+      phone: this._state.phoneField,
+    };
+
+    this.allowCustomerCreation(customerFields);
+  }
+
+  changeCustomerEmail(customerEmail: string) {
+    const customerNameField = customerEmail.trim();
+
+    this.updateState({
+      ...this._state,
+      emailField: customerNameField,
+    });
+
+    const customerFields = {
+      cpf: this._state.cpfField,
+      name: this._state.nameField,
+      email: this._state.emailField,
+      phone: this._state.phoneField,
+    };
+
+    this.allowCustomerCreation(customerFields);
+  }
+
+  changeCustomerPhone(customerPhone: string) {
+    const customerPhoneField = customerPhone.replace(/[^0-9()\-\s]/g, "");
+
+    this.updateState({
+      ...this._state,
+      phoneField: customerPhoneField,
+    });
+
+    const customerFields = {
+      cpf: this._state.cpfField,
+      name: this._state.nameField,
+      email: this._state.emailField,
+      phone: this._state.phoneField,
+    };
+
+    this.allowCustomerCreation(customerFields);
+  }
+
+  changeCustomerCode(customerCode: number) {
+    this.updateState({
+      ...this._state,
+      customerCode,
+    });
+  }
+
+  allowCustomerCreation(customerFields: {
+    cpf: string;
+    name: string;
+    email: string;
+    phone: string;
+  }) {
+    const allowCustomerCreation =
+      customerFields.cpf.length >= 11 &&
+      customerFields.name.length >= 3 &&
+      customerFields.email.length >= 6 &&
+      customerFields.phone.length >= 10;
+
+    this.updateState({
+      ...this._state,
+      allowedToCreateCustomer: allowCustomerCreation,
+    });
+  }
+
   openModal(isCreateModal: boolean) {
     if (isCreateModal) {
       this.updateState({
@@ -94,6 +262,22 @@ export class CustomersManagerViewModel {
       ...this._state,
       showCreateModal: false,
       showEditModal: false,
+    });
+  }
+
+  async showToast(message: string, status: "success" | "error") {
+    this.updateState({
+      ...this._state,
+      showToast: true,
+      toastStatus: status,
+      message,
+    });
+
+    await delay(2_000);
+
+    this.updateState({
+      ...this._state,
+      showToast: false,
     });
   }
 }

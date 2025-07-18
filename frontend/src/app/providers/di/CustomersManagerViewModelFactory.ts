@@ -1,5 +1,6 @@
 // Use cases:
 import { GetCustomers } from "../../../domain/useCases/GetCustomers";
+import { CreateCustomer } from "../../../domain/useCases/CreateCustomer";
 
 // Repositores implementations:
 import { CustomerRepositoryImpl } from "../../../data/repositories/CustomerRepositoryImpl";
@@ -28,7 +29,8 @@ export class CustomersManagerViewModelFactory {
 
   makeCustomersManagerViewModel() {
     const getCustomers = new GetCustomers(this._customerRepository);
+    const createCustomer = new CreateCustomer(this._customerRepository);
 
-    return new CustomersManagerViewModel(getCustomers);
+    return new CustomersManagerViewModel(getCustomers, createCustomer);
   }
 }

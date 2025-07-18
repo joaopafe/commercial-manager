@@ -1,9 +1,12 @@
 import { Customer } from "../../domain/entities/Customer";
 
+import { AddCustomerParams } from "../../domain/useCases/CreateCustomer";
+
 import { CustomerRepository } from "../../domain/repositories/CustomerRepository";
 
 export interface CustomerDataSource {
   list(): Promise<Customer[] | null>;
+  add(customer: AddCustomerParams): Promise<Customer | Error>;
 }
 
 export class CustomerRepositoryImpl implements CustomerRepository {
@@ -13,5 +16,11 @@ export class CustomerRepositoryImpl implements CustomerRepository {
     const customers = await this.dataSource.list();
 
     return customers;
+  }
+
+  async create(customer: AddCustomerParams): Promise<Customer | Error> {
+    const createdCustomer = await this.dataSource.add(customer);
+
+    return createdCustomer;
   }
 }

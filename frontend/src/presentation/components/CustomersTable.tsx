@@ -8,12 +8,14 @@ interface CustomerTableProps {
   customers: Customer[];
   openModal(isCreateModal: boolean): void;
   changeCustomerCode(customerCode: number): void;
+  removeCustomer(customerCode: number): void;
 }
 
 export const CustomersTable: FC<CustomerTableProps> = ({
   customers,
   openModal,
   changeCustomerCode,
+  removeCustomer,
 }) => {
   const customerLines = customers.map((customer) => {
     return (
@@ -26,6 +28,7 @@ export const CustomersTable: FC<CustomerTableProps> = ({
         key={customer.code}
         openModal={openModal}
         changeCustomerCode={changeCustomerCode}
+        removeCustomer={removeCustomer}
       />
     );
   });

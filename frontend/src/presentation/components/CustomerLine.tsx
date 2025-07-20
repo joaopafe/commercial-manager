@@ -11,6 +11,7 @@ export interface CustomerProps {
 export interface CustomerLineProps extends CustomerProps {
   openModal(isCreateModal: boolean): void;
   changeCustomerCode(customerCode: number): void;
+  removeCustomer(customerCode: number): void;
 }
 
 export const CustomerLine: FC<CustomerLineProps> = ({
@@ -21,6 +22,7 @@ export const CustomerLine: FC<CustomerLineProps> = ({
   phone,
   openModal,
   changeCustomerCode,
+  removeCustomer,
 }) => {
   return (
     <tr>
@@ -39,7 +41,9 @@ export const CustomerLine: FC<CustomerLineProps> = ({
         >
           Editar
         </button>
-        <button className="exclude-button">Excluir</button>
+        <button className="exclude-button" onClick={() => removeCustomer(code)}>
+          Excluir
+        </button>
       </td>
     </tr>
   );

@@ -45,6 +45,9 @@ export const CustomersManagerView: React.FC<CustomersManagerViewProps> = ({
       changeCustomerCode={(customerCode) =>
         customersManagerViewModel.changeCustomerCode(customerCode)
       }
+      removeCustomer={(customerCode) =>
+        customersManagerViewModel.removeCustomer(customerCode)
+      }
     />
   );
 

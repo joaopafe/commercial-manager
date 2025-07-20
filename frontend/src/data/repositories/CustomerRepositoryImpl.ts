@@ -7,6 +7,7 @@ import { CustomerRepository } from "../../domain/repositories/CustomerRepository
 export interface CustomerDataSource {
   list(): Promise<Customer[] | null>;
   add(customer: AddCustomerParams): Promise<Customer | Error>;
+  edit(customer: Customer): Promise<Customer | Error>;
 }
 
 export class CustomerRepositoryImpl implements CustomerRepository {
@@ -22,5 +23,11 @@ export class CustomerRepositoryImpl implements CustomerRepository {
     const createdCustomer = await this.dataSource.add(customer);
 
     return createdCustomer;
+  }
+
+  async edit(customer: Customer): Promise<Customer | Error> {
+    const editedCustomer = await this.dataSource.edit(customer);
+
+    return editedCustomer;
   }
 }

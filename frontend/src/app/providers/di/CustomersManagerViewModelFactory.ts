@@ -2,6 +2,7 @@
 import { GetCustomers } from "../../../domain/useCases/GetCustomers";
 import { CreateCustomer } from "../../../domain/useCases/CreateCustomer";
 import { EditCustomer } from "../../../domain/useCases/EditCustomer";
+import { RemoveCustomer } from "../../../domain/useCases/RemoveCustomer";
 
 // Repositores implementations:
 import { CustomerRepositoryImpl } from "../../../data/repositories/CustomerRepositoryImpl";
@@ -32,11 +33,13 @@ export class CustomersManagerViewModelFactory {
     const getCustomers = new GetCustomers(this._customerRepository);
     const createCustomer = new CreateCustomer(this._customerRepository);
     const editCustomer = new EditCustomer(this._customerRepository);
+    const removeCustomer = new RemoveCustomer(this._customerRepository);
 
     return new CustomersManagerViewModel(
       getCustomers,
       createCustomer,
-      editCustomer
+      editCustomer,
+      removeCustomer
     );
   }
 }

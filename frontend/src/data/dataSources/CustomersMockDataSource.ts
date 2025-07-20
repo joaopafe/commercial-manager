@@ -62,4 +62,26 @@ export class CustomerMockDataSource implements CustomerDataSource {
       return Error("Unable to register a new customer");
     }
   }
+
+  async edit(customer: Customer): Promise<Customer | Error> {
+    await delay(300);
+
+    try {
+      const editedCustomerIndex = customersMock.findIndex(
+        (registeredCustomer) => registeredCustomer.code === customer.code
+      );
+
+      customersMock[editedCustomerIndex] = {
+        code: customer.code,
+        cpf: customer.cpf,
+        name: customer.name,
+        email: customer.email,
+        phone: customer.phone,
+      };
+
+      return customersMock[editedCustomerIndex];
+    } catch {
+      return Error("It was not possible to edit the customer");
+    }
+  }
 }

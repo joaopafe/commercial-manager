@@ -84,4 +84,22 @@ export class CustomerMockDataSource implements CustomerDataSource {
       return Error("It was not possible to edit the customer");
     }
   }
+
+  async remove(customerCode: number): Promise<Customer | Error> {
+    try {
+      const removedCustomerIndex = customersMock.findIndex(
+        (registeredCustomer) => {
+          return registeredCustomer.code === customerCode;
+        }
+      );
+
+      const removedCustomer = customersMock[removedCustomerIndex];
+
+      customersMock.splice(removedCustomerIndex, 1);
+
+      return removedCustomer;
+    } catch {
+      return Error("It was not possible to remove the customer");
+    }
+  }
 }

@@ -1,10 +1,9 @@
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
-import {
-  AddCustomerParams,
-  CreateCustomer,
-} from "../../domain/useCases/CreateCustomer";
+import { CreateCustomer } from "../../domain/useCases/CreateCustomer";
+import { EditCustomer } from "../../domain/useCases/EditCustomer";
 
 import { Customer } from "../../domain/entities/Customer";
+import { AddCustomerParams } from "../../domain/useCases/CreateCustomer";
 
 import { delay } from "../../shared/utils/delay";
 
@@ -13,9 +12,11 @@ export interface CustomersManagerState {
 
   isSearching: boolean;
   isCreatingCustomer: boolean;
+  isEditingCustomer: boolean;
 
   isCustomersNotFound: boolean;
   isErrorInCustomerRegistration: boolean;
+  isErrorInCustomerEdition: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -40,7 +41,8 @@ export type CustomersManagerStateListener = (
 export class CustomersManagerViewModel {
   constructor(
     private getCustomersUseCase: GetCustomers,
-    private createCustomerUseCase: CreateCustomer
+    private createCustomerUseCase: CreateCustomer,
+    private editCustomerUseCase: EditCustomer
   ) {}
 
   private _state: CustomersManagerState = {
@@ -48,9 +50,11 @@ export class CustomersManagerViewModel {
 
     isSearching: false,
     isCreatingCustomer: false,
+    isEditingCustomer: false,
 
     isCustomersNotFound: false,
     isErrorInCustomerRegistration: false,
+    isErrorInCustomerEdition: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -139,6 +143,42 @@ export class CustomersManagerViewModel {
       await this.getCustomers();
 
       await this.showToast("Customer successfully created", "success");
+    }
+  }
+
+  async editCustomer(customer: Customer) {
+    this.updateState({
+      ...this._state,
+      isEditingCustomer: true,
+      isErrorInCustomerEdition: false,
+    });
+
+    const editedCustomer = await this.editCustomerUseCase.exec(customer);
+
+    if (editedCustomer instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isEditingCustomer: false,
+        isErrorInCustomerEdition: true,
+        message: editedCustomer.message,
+      });
+
+      await this.showToast(editedCustomer.message, "error");
+    }
+
+    if (!(editedCustomer instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isEditingCustomer: false,
+        isErrorInCustomerEdition: false,
+        message: "",
+      });
+
+      this.closeModal();
+
+      await this.getCustomers();
+
+      await this.showToast("Customer successfully edited", "success");
     }
   }
 

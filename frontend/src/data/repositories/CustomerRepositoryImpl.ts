@@ -8,6 +8,7 @@ export interface CustomerDataSource {
   list(): Promise<Customer[] | null>;
   add(customer: AddCustomerParams): Promise<Customer | Error>;
   edit(customer: Customer): Promise<Customer | Error>;
+  remove(customerCode: number): Promise<Customer | Error>;
 }
 
 export class CustomerRepositoryImpl implements CustomerRepository {
@@ -29,5 +30,11 @@ export class CustomerRepositoryImpl implements CustomerRepository {
     const editedCustomer = await this.dataSource.edit(customer);
 
     return editedCustomer;
+  }
+
+  async remove(customerCode: number): Promise<Customer | Error> {
+    const removedCustomer = await this.dataSource.remove(customerCode);
+
+    return removedCustomer;
   }
 }

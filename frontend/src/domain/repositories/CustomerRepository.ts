@@ -6,4 +6,5 @@ export interface CustomerRepository {
   list(): Promise<Customer[] | null>;
   create(customer: AddCustomerParams): Promise<Customer | Error>;
   edit(customer: Customer): Promise<Customer | Error>;
+  remove(customerCode: number): Promise<Customer | Error>;
 }

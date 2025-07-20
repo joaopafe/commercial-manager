@@ -1,6 +1,7 @@
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
 import { CreateCustomer } from "../../domain/useCases/CreateCustomer";
 import { EditCustomer } from "../../domain/useCases/EditCustomer";
+import { RemoveCustomer } from "../../domain/useCases/RemoveCustomer";
 
 import { Customer } from "../../domain/entities/Customer";
 import { AddCustomerParams } from "../../domain/useCases/CreateCustomer";
@@ -13,10 +14,12 @@ export interface CustomersManagerState {
   isSearching: boolean;
   isCreatingCustomer: boolean;
   isEditingCustomer: boolean;
+  isRemovingCustomer: boolean;
 
   isCustomersNotFound: boolean;
   isErrorInCustomerRegistration: boolean;
   isErrorInCustomerEdition: boolean;
+  isErrorInCustomerRemoval: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -42,7 +45,8 @@ export class CustomersManagerViewModel {
   constructor(
     private getCustomersUseCase: GetCustomers,
     private createCustomerUseCase: CreateCustomer,
-    private editCustomerUseCase: EditCustomer
+    private editCustomerUseCase: EditCustomer,
+    private removeCustomerUseCase: RemoveCustomer
   ) {}
 
   private _state: CustomersManagerState = {
@@ -51,10 +55,12 @@ export class CustomersManagerViewModel {
     isSearching: false,
     isCreatingCustomer: false,
     isEditingCustomer: false,
+    isRemovingCustomer: false,
 
     isCustomersNotFound: false,
     isErrorInCustomerRegistration: false,
     isErrorInCustomerEdition: false,
+    isErrorInCustomerRemoval: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -179,6 +185,40 @@ export class CustomersManagerViewModel {
       await this.getCustomers();
 
       await this.showToast("Customer successfully edited", "success");
+    }
+  }
+
+  async removeCustomer(customerCode: number) {
+    this.updateState({
+      ...this._state,
+      isRemovingCustomer: true,
+      isErrorInCustomerRemoval: false,
+    });
+
+    const removedCustomer = await this.removeCustomerUseCase.exec(customerCode);
+
+    if (removedCustomer instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isRemovingCustomer: false,
+        isErrorInCustomerRemoval: true,
+        message: removedCustomer.message,
+      });
+
+      await this.showToast(removedCustomer.message, "error");
+    }
+
+    if (!(removedCustomer instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isRemovingCustomer: false,
+        isErrorInCustomerRemoval: false,
+        message: "",
+      });
+
+      await this.getCustomers();
+
+      await this.showToast("Customer successfully deleted", "success");
     }
   }
 

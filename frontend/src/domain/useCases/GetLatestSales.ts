@@ -1,12 +1,20 @@
-import { SaleRepository } from "../repositories/SaleRepository";
+import { GeneralSale } from "../entities/GeneralSale";
 
 export class GetLatestSales {
-  constructor(private saleRepository: SaleRepository) {}
+  exec(allSales: GeneralSale[]) {
+    if (allSales.length > 5) {
+      const latestSales: GeneralSale[] = [];
 
-  async execute() {
-    const latestSales = await this.saleRepository.listLatest();
+      for (let i = 0; i <= 4; i++) {
+        latestSales.push(allSales[i]);
+      }
 
-    if (latestSales === null) Error("Unable to get latest sales");
+      return latestSales;
+    }
+
+    const latestSales: GeneralSale[] = [];
+
+    for (const sale of allSales) latestSales.push(sale);
 
     return latestSales;
   }

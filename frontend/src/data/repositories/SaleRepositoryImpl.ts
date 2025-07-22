@@ -1,17 +1,25 @@
-import { Sale } from "../../domain/entities/Sale";
+import { ServiceSale } from "../../domain/entities/ServiceSale";
+import { ProductSale } from "../../domain/entities/ProductSale";
 
 import { SaleRepository } from "../../domain/repositories/SaleRepository";
 
 export interface SaleDataSource {
-  listLatest(): Promise<Sale[] | null>;
+  listServiceSales(): Promise<ServiceSale[] | null>;
+  listProductSales(): Promise<ProductSale[] | null>;
 }
 
 export class SaleRepositoryImpl implements SaleRepository {
   constructor(private dataSource: SaleDataSource) {}
 
-  async listLatest(): Promise<Sale[] | null> {
-    const latestSales = await this.dataSource.listLatest();
+  async listServiceSales(): Promise<ServiceSale[] | null> {
+    const serviceSales = await this.dataSource.listServiceSales();
 
-    return latestSales;
+    return serviceSales;
+  }
+
+  async listProductSales(): Promise<ProductSale[] | null> {
+    const productSales = await this.dataSource.listProductSales();
+
+    return productSales;
   }
 }

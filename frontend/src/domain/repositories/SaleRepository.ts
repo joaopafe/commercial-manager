@@ -1,5 +1,7 @@
-import { Sale } from "../entities/Sale";
+import { ServiceSale } from "../entities/ServiceSale";
+import { ProductSale } from "../entities/ProductSale";
 
 export interface SaleRepository {
-  listLatest(): Promise<Sale[] | null>;
+  listServiceSales(): Promise<ServiceSale[] | null>;
+  listProductSales(): Promise<ProductSale[] | null>;
 }

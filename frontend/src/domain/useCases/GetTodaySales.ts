@@ -1,25 +1,25 @@
 import { TodaySales } from "../entities/TodaySales";
-
-import { SaleRepository } from "../repositories/SaleRepository";
+import { GeneralSale } from "../entities/GeneralSale";
 
 export class GetTodaySales {
-  constructor(private saleRepository: SaleRepository) {}
+  constructor() {}
 
-  async execute(): Promise<TodaySales | Error> {
-    const latestSales = await this.saleRepository.listLatest();
+  exec(allSales: GeneralSale[]): TodaySales {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    if (latestSales && latestSales.length > 0) {
-      let todaySales = 0;
+    const todaysFilteredSales = allSales.filter((sale) => {
+      const saleDate = new Date(sale.date);
+      saleDate.setHours(0, 0, 0, 0);
+      return saleDate.getTime() === today.getTime();
+    });
 
-      for (const sale of latestSales) {
-        todaySales += sale.value;
-      }
+    let todaySales = 0;
 
-      return todaySales;
+    for (let i = 0; i < todaysFilteredSales.length; i++) {
+      todaySales += todaysFilteredSales[i].value;
     }
 
-    if (latestSales === null) Error("Unable to get today's sales");
-
-    return 0;
+    return todaySales;
   }
 }

@@ -26,7 +26,7 @@ export const AppRoutes = () => {
         element={<HomeView homeViewModelFactory={homeViewModelFactory} />}
       />
       <Route
-        path="/partsmanager"
+        path="/parts-manager"
         element={
           <PartsManagerView
             partsManagerViewModelFactory={partsManagerViewModelFactory}
@@ -38,7 +38,7 @@ export const AppRoutes = () => {
         element={<StockView stockViewModelFactory={stockViewModelFactory} />}
       />
       <Route
-        path="/suppliersmanager"
+        path="/suppliers-manager"
         element={
           <SuppliersManagerView
             supplierManagerViewModelFactory={suppliersManagerViewModelFactory}
@@ -46,7 +46,7 @@ export const AppRoutes = () => {
         }
       />
       <Route
-        path="customersmanager"
+        path="customers-manager"
         element={
           <CustomersManagerView
             customerManagerViewModelFactory={customersManagerViewModelFactory}

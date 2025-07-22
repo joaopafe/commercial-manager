@@ -22,3 +22,15 @@ aside {
   color: white;
   gap: 16px;
 }
+
+summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.links-section {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 8px;
+}

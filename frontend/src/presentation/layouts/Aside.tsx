@@ -7,11 +7,36 @@ export const Aside = () => {
 
       <div className="aside-links">
         <Link to="/">Início</Link>
-        <Link to="/partsmanager">Itens</Link>
+        <Link to="/parts-manager">Itens</Link>
         <Link to="/stock">Estoque</Link>
-        <Link to="/suppliersmanager">Fornecedores</Link>
-        <Link to="/customersmanager">Clientes</Link>
-        <Link to="/sales">Vendas</Link>
+        <Link to="/suppliers-manager">Fornecedores</Link>
+        <Link to="/customers-manager">Clientes</Link>
+        <div className="accordion">
+          <details>
+            <summary>Vendas</summary>
+            <ul className="links-section">
+              <li>
+                <Link to="/service-sales">Vendas de serviço</Link>
+              </li>
+              <li>
+                <Link to="/product-sales">Vendas de produto</Link>
+              </li>
+            </ul>
+          </details>
+        </div>
+        <div className="accordion">
+          <details>
+            <summary>Compras</summary>
+            <ul className="links-section">
+              <li>
+                <Link to="/service-purchases">Compras de serviço</Link>
+              </li>
+              <li>
+                <Link to="/product-purchases">Compras de produto</Link>
+              </li>
+            </ul>
+          </details>
+        </div>
         <Link to="/cash">Caixa</Link>
         <Link to="/users">Usuários</Link>
         <Link to="/settings">Configurações</Link>

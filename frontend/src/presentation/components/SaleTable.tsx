@@ -2,14 +2,9 @@ import { FC } from "react";
 
 import { SaleLine } from "./SaleLine";
 
-interface Sale {
-  clientName: string;
-  value: number;
-  date: string;
-}
-
+import { GeneralSale } from "../../domain/entities/GeneralSale";
 interface SaleTableProps {
-  sales: Sale[];
+  sales: GeneralSale[];
 }
 
 export const SaleTable: FC<SaleTableProps> = ({ sales }) => {
@@ -17,8 +12,9 @@ export const SaleTable: FC<SaleTableProps> = ({ sales }) => {
     return (
       <SaleLine
         clientName={sale.clientName}
+        description={sale.name}
         value={sale.value}
-        date={sale.date}
+        date={sale.date.toLocaleDateString()}
         key={index}
       />
     );
@@ -30,6 +26,9 @@ export const SaleTable: FC<SaleTableProps> = ({ sales }) => {
         <tr>
           <th className="sale-table-head-column" id="client-head">
             Cliente
+          </th>
+          <th className="sale-table-head-column" id="description-head">
+            Descrição
           </th>
           <th className="sale-table-head-column" id="sale-value-head">
             Valor

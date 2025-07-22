@@ -1,19 +1,22 @@
 import { GetTotalInCash } from "../../domain/useCases/GetTotalInCash";
-import { GetLatestSales } from "../../domain/useCases/GetLatestSales";
+import { GetAllSales } from "../../domain/useCases/GetAllSales";
 import { GetTodaySales } from "../../domain/useCases/GetTodaySales";
+import { GetLatestSales } from "../../domain/useCases/GetLatestSales";
 
-export interface Sale {
-  clientName: string;
-  value: number;
-  date: string;
-}
+import { TodaySales } from "../../domain/entities/TodaySales";
+import { TotalInCash } from "../../domain/entities/TotalInCash";
+import { GeneralSale } from "../../domain/entities/GeneralSale";
 
 export interface HomeViewState {
-  todaySales: number | null;
-  totalInCash: number | null;
-  latestSales: Sale[] | null;
-  isSearching: boolean;
-  isSalesNotFound: boolean;
+  todaySales: TodaySales | null;
+  totalInCash: TotalInCash | null;
+  latestSales: GeneralSale[] | null;
+
+  isSearchingTodaySales: boolean;
+  isSearchingTotalInCash: boolean;
+  isSearchingLatestSales: boolean;
+
+  isTodaySalesNotFound: boolean;
   isTotalInCashNotFound: boolean;
   isLatestSalesNotFound: boolean;
 }
@@ -23,18 +26,23 @@ export type HomeViewStateListener = (state: HomeViewState) => void;
 export class HomeViewModel {
   constructor(
     private getTotalInCashUseCase: GetTotalInCash,
-    private getLatestSalesUseCase: GetLatestSales,
-    private getTodaySalesUseCase: GetTodaySales
+    private getAllSalesUseCase: GetAllSales,
+    private getTodaySalesUseCase: GetTodaySales,
+    private getLatestSalesUseCase: GetLatestSales
   ) {}
 
   private _state: HomeViewState = {
     todaySales: null,
-    totalInCash: null,
     latestSales: null,
-    isSearching: false,
-    isSalesNotFound: false,
-    isTotalInCashNotFound: false,
+    totalInCash: null,
+
+    isSearchingTodaySales: false,
+    isSearchingLatestSales: false,
+    isSearchingTotalInCash: false,
+
+    isTodaySalesNotFound: false,
     isLatestSalesNotFound: false,
+    isTotalInCashNotFound: false,
   };
 
   get state(): HomeViewState {
@@ -49,98 +57,66 @@ export class HomeViewModel {
     this.stateListener?.(this._state);
   }
 
-  async getTodaySales() {
+  async getAllInformations() {
     this.updateState({
       ...this._state,
-      isSearching: true,
-    });
-
-    let todaySales = await this.getTodaySalesUseCase.execute();
-
-    if (todaySales instanceof Error) todaySales = null;
-
-    if (todaySales === null) {
-      this.updateState({
-        ...this._state,
-        isSearching: false,
-        isSalesNotFound: true,
-        todaySales: null,
-      });
-    }
-
-    if (todaySales) {
-      this.updateState({
-        ...this._state,
-        isSearching: false,
-        isSalesNotFound: false,
-        todaySales,
-      });
-    }
-  }
-
-  async getTotalInCash() {
-    this.updateState({
-      ...this._state,
-      isSearching: true,
-      isTotalInCashNotFound: false,
-      totalInCash: null,
-    });
-
-    const totalInCash = await this.getTotalInCashUseCase.execute();
-
-    if (totalInCash === null) {
-      this.updateState({
-        ...this._state,
-        isSearching: false,
-        isTotalInCashNotFound: true,
-        totalInCash: null,
-      });
-    }
-
-    if (totalInCash) {
-      this.updateState({
-        ...this._state,
-        isSearching: false,
-        isTotalInCashNotFound: false,
-        totalInCash,
-      });
-    }
-  }
-
-  async getLatestSales() {
-    this.updateState({
-      ...this._state,
-      isSearching: true,
+      isSearchingTodaySales: true,
+      isSearchingLatestSales: true,
+      isSearchingTotalInCash: true,
+      isTodaySalesNotFound: false,
       isLatestSalesNotFound: false,
-      latestSales: null,
+      isTotalInCashNotFound: false,
     });
 
-    const latestSales = await this.getLatestSalesUseCase.execute();
+    const allSales = await this.getAllSalesUseCase.exec();
 
-    if (latestSales === null || latestSales.length === 0) {
+    if (allSales instanceof Error) {
       this.updateState({
         ...this._state,
-        isSearching: false,
+        isSearchingTodaySales: false,
+        isSearchingLatestSales: false,
+        isSearchingTotalInCash: false,
+        isTodaySalesNotFound: true,
         isLatestSalesNotFound: true,
-        latestSales: null,
+        isTotalInCashNotFound: true,
       });
     }
 
-    if (latestSales && latestSales.length > 0) {
-      const latestSalesFormatted: Sale[] = latestSales.map((sale) => {
-        return {
-          clientName: sale.clientName,
-          value: sale.value,
-          date: sale.date.toLocaleDateString(),
-        };
-      });
+    if (!(allSales instanceof Error)) {
+      const todaySales = this.getTodaySalesUseCase.exec(allSales);
+      const latestSales = this.getLatestSalesUseCase.exec(allSales);
 
-      this.updateState({
-        ...this._state,
-        isSearching: false,
-        isLatestSalesNotFound: false,
-        latestSales: latestSalesFormatted,
-      });
+      const totalInCash = await this.getTotalInCashUseCase.exec();
+
+      if (totalInCash === null) {
+        this.updateState({
+          ...this._state,
+          todaySales,
+          latestSales,
+          totalInCash: null,
+          isSearchingTodaySales: false,
+          isSearchingTotalInCash: false,
+          isSearchingLatestSales: false,
+          isTodaySalesNotFound: false,
+          isLatestSalesNotFound: false,
+          isTotalInCashNotFound: true,
+        });
+      }
+
+      if (totalInCash) {
+        this.updateState({
+          ...this._state,
+          todaySales,
+          latestSales,
+          totalInCash,
+          isSearchingTodaySales: false,
+          isSearchingTotalInCash: false,
+          isSearchingLatestSales: false,
+          isTodaySalesNotFound: false,
+          isLatestSalesNotFound: false,
+          isTotalInCashNotFound: false,
+        });
+      }
     }
   }
 }

@@ -26,22 +26,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ homeViewModelFactory }) => {
   });
 
   useEffect(() => {
-    homeViewModel.getTodaySales();
-    homeViewModel.getTotalInCash();
-    homeViewModel.getLatestSales();
+    homeViewModel.getAllInformations();
   }, []);
 
-  const salesToday = state.isSearching ? (
+  const todaySales = state.isSearchingTodaySales ? (
     <Loader />
-  ) : state.isSalesNotFound ? (
+  ) : state.isTodaySalesNotFound ? (
     <div className="information-value">Vendas não encontradas</div>
   ) : (
     <div className="information-value">R$ {state.todaySales}</div>
   );
 
-  const totalInCash = state.isSearching ? (
+  const totalInCash = state.isSearchingTotalInCash ? (
     <Loader />
-  ) : state.isSalesNotFound ? (
+  ) : state.isTotalInCashNotFound ? (
     <div className="information-value">Caixa não encontrado</div>
   ) : (
     <div className="information-value">R$ {state.totalInCash}</div>
@@ -54,7 +52,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ homeViewModelFactory }) => {
       <div className="main-informations">
         <div className="information-card" id="sales-today">
           <div className="information-name">Vendas Hoje</div>
-          {salesToday}
+          {todaySales}
         </div>
 
         <div className="information-card" id="cash">
@@ -66,7 +64,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ homeViewModelFactory }) => {
       <div className="last-sales">
         <div className="last-sales-title">Últimas vendas</div>
 
-        {state.isSearching && <Loader />}
+        {state.isSearchingLatestSales && <Loader />}
 
         {state.latestSales && <SaleTable sales={state.latestSales} />}
 

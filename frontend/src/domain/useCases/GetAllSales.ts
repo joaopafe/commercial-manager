@@ -4,7 +4,7 @@ import { PieceRepository } from "../repositories/PieceRepository";
 
 import { serviceSaleMapper } from "../mappers/serviceSaleMapper";
 import { productSaleMapper } from "../mappers/productSaleMapper";
-import { salesAggregator } from "../aggregators/SalesAggregator";
+import { salesAggregator } from "../aggregators/salesAggregator";
 
 export class GetAllSales {
   constructor(
@@ -12,6 +12,7 @@ export class GetAllSales {
     private customerRepository: CustomerRepository,
     private pieceRepository: PieceRepository
   ) {}
+
   async exec() {
     const serviceSales = await this.saleRepository.listServiceSales();
     const productSales = await this.saleRepository.listProductSales();
@@ -37,6 +38,6 @@ export class GetAllSales {
       return Error("It was not possible to get the product sales");
     if (customers === null)
       return Error("It was not possible to get the customers");
-    return Error("It was not possible to get the x");
+    return Error("It was not possible to get the parts");
   }
 }

@@ -9,12 +9,12 @@ export const productPurchaseMapper = (
   parts: Piece[]
 ): GeneralPurchase[] => {
   const mappedProductPurchases = productPurchases.map((productPurchase) => {
-    const supplier = suppliers.find((supplier) => {
-      return supplier.code === productPurchase.supplierId;
-    });
-
     const piece = parts.find((piece) => {
       return piece.code === productPurchase.pieceId;
+    });
+
+    const supplier = suppliers.find((supplier) => {
+      return supplier.code === piece?.supplierCode;
     });
 
     return {

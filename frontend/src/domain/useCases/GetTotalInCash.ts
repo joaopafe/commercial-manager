@@ -1,12 +1,15 @@
-import { TotalInCashRepository } from "../repositories/TotalInCashRepository";
+import { GeneralSale } from "../entities/GeneralSale";
+import { GeneralPurchase } from "../entities/GeneralPurchase";
 
 export class GetTotalInCash {
-  constructor(private totalInCashRepository: TotalInCashRepository) {}
+  async exec(allSales: GeneralSale[], allPurchases: GeneralPurchase[]) {
+    let totalSales = 0;
+    for (const sale of allSales) totalSales += sale.value;
 
-  async exec() {
-    const totalInCash = await this.totalInCashRepository.getTotalInCash();
+    let totalPurchases = 0;
+    for (const purchase of allPurchases) totalPurchases += purchase.value;
 
-    if (totalInCash === null) Error("Unable to get total cash on hand");
+    const totalInCash = totalSales - totalPurchases;
 
     return totalInCash;
   }

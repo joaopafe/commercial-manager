@@ -2,11 +2,11 @@ import { GetTotalInCash } from "../../domain/useCases/GetTotalInCash";
 import { GetAllSales } from "../../domain/useCases/GetAllSales";
 import { GetTodaySales } from "../../domain/useCases/GetTodaySales";
 import { GetLatestSales } from "../../domain/useCases/GetLatestSales";
+import { GetAllPurchases } from "../../domain/useCases/GetAllPurchases";
 
 import { TodaySales } from "../../domain/entities/TodaySales";
 import { TotalInCash } from "../../domain/entities/TotalInCash";
 import { GeneralSale } from "../../domain/entities/GeneralSale";
-
 export interface HomeViewState {
   todaySales: TodaySales | null;
   totalInCash: TotalInCash | null;
@@ -28,7 +28,8 @@ export class HomeViewModel {
     private getTotalInCashUseCase: GetTotalInCash,
     private getAllSalesUseCase: GetAllSales,
     private getTodaySalesUseCase: GetTodaySales,
-    private getLatestSalesUseCase: GetLatestSales
+    private getLatestSalesUseCase: GetLatestSales,
+    private getAllPurchasesUseCase: GetAllPurchases
   ) {}
 
   private _state: HomeViewState = {
@@ -86,24 +87,22 @@ export class HomeViewModel {
       const todaySales = this.getTodaySalesUseCase.exec(allSales);
       const latestSales = this.getLatestSalesUseCase.exec(allSales);
 
-      const totalInCash = await this.getTotalInCashUseCase.exec();
+      const purchases = await this.getAllPurchasesUseCase.exec();
 
-      if (totalInCash === null) {
+      if (purchases instanceof Error) {
         this.updateState({
           ...this._state,
-          todaySales,
-          latestSales,
-          totalInCash: null,
-          isSearchingTodaySales: false,
           isSearchingTotalInCash: false,
-          isSearchingLatestSales: false,
-          isTodaySalesNotFound: false,
-          isLatestSalesNotFound: false,
           isTotalInCashNotFound: true,
         });
       }
 
-      if (totalInCash) {
+      if (!(purchases instanceof Error)) {
+        const totalInCash = await this.getTotalInCashUseCase.exec(
+          allSales,
+          purchases
+        );
+
         this.updateState({
           ...this._state,
           todaySales,

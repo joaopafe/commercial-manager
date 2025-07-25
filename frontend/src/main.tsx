@@ -13,6 +13,7 @@ import "./presentation/style/parts-manager.css";
 import "./presentation/style/stock.css";
 import "./presentation/style/suppliers-manager.css";
 import "./presentation/style/customers-manager.css";
+import "./presentation/style/service-sale.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -145,4 +145,26 @@ export class SaleMockDataSource implements SaleDataSource {
       return Error("It was not possible to edit the service sale");
     }
   }
+
+  async removeServiceSale(
+    serviceSaleCode: number
+  ): Promise<ServiceSale | Error> {
+    await delay(100);
+
+    try {
+      const removedServiceSaleIndex = serviceSalesMock.findIndex(
+        (registeredServiceSale) => {
+          return registeredServiceSale.id === serviceSaleCode;
+        }
+      );
+
+      const removedServiceSale = serviceSalesMock[removedServiceSaleIndex];
+
+      serviceSalesMock.splice(removedServiceSaleIndex, 1);
+
+      return removedServiceSale;
+    } catch {
+      return Error("It was not possible to remove the service sale");
+    }
+  }
 }

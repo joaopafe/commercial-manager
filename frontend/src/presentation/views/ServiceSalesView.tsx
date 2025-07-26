@@ -47,6 +47,9 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
       changeServiceSaleCode={(serviceSaleCode) =>
         serviceSalesViewModel.changeServiceSaleCode(serviceSaleCode)
       }
+      removeServiceSale={(serviceSaleCode) =>
+        serviceSalesViewModel.removeServiceSale(serviceSaleCode)
+      }
     />
   );
 

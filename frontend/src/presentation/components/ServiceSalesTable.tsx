@@ -10,6 +10,7 @@ interface ServiceSalesTableProps {
   customers: Customer[];
   openModal(isCreateModal: boolean): void;
   changeServiceSaleCode(serviceSaleCode: number): void;
+  removeServiceSale(serviceSaleCode: number): void;
 }
 
 export const ServiceSalesTable: FC<ServiceSalesTableProps> = ({
@@ -17,6 +18,7 @@ export const ServiceSalesTable: FC<ServiceSalesTableProps> = ({
   customers,
   openModal,
   changeServiceSaleCode,
+  removeServiceSale,
 }) => {
   const serviceSaleLines = serviceSales.map((serviceSale) => {
     const customer = customers.find((customer) => {
@@ -32,6 +34,7 @@ export const ServiceSalesTable: FC<ServiceSalesTableProps> = ({
         date={serviceSale.date}
         openModal={openModal}
         changeServiceSaleCode={changeServiceSaleCode}
+        removeServiceSale={removeServiceSale}
         key={serviceSale.id}
       />
     );

@@ -11,6 +11,7 @@ export interface ServiceSaleProps {
 export interface ServiceSaleLineProps extends ServiceSaleProps {
   openModal(isCreateModal: boolean): void;
   changeServiceSaleCode(serviceSaleCode: number): void;
+  removeServiceSale(serviceSaleCode: number): void;
 }
 
 export const ServiceSaleLine: FC<ServiceSaleLineProps> = ({
@@ -21,6 +22,7 @@ export const ServiceSaleLine: FC<ServiceSaleLineProps> = ({
   date,
   openModal,
   changeServiceSaleCode,
+  removeServiceSale,
 }) => {
   return (
     <tr className="service-sale-line" key={code}>
@@ -39,7 +41,12 @@ export const ServiceSaleLine: FC<ServiceSaleLineProps> = ({
         >
           Editar
         </button>
-        <button className="exclude-button">Excluir</button>
+        <button
+          className="exclude-button"
+          onClick={() => removeServiceSale(code)}
+        >
+          Excluir
+        </button>
       </td>
     </tr>
   );

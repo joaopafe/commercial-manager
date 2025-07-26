@@ -9,4 +9,5 @@ export interface SaleRepository {
     serviceSale: AddServiceSaleParams
   ): Promise<ServiceSale | Error>;
   editServiceSale(serviceSale: ServiceSale): Promise<ServiceSale | Error>;
+  removeServiceSale(serviceSaleCode: number): Promise<ServiceSale | Error>;
 }

@@ -2,6 +2,7 @@
 import { GetServiceSales } from "../../../domain/useCases/GetServiceSales";
 import { GetCustomers } from "../../../domain/useCases/GetCustomers";
 import { CreateServiceSale } from "../../../domain/useCases/CreateServiceSale";
+import { EditServiceSale } from "../../../domain/useCases/EditServiceSale";
 
 // Repositories implementations:
 import { SaleRepositoryImpl } from "../../../data/repositories/SaleRepositoryImpl";
@@ -42,11 +43,16 @@ export class ServiceSalesViewModelFactory {
       this._saleRepository,
       this._customerRepository
     );
+    const editServiceSale = new EditServiceSale(
+      this._saleRepository,
+      this._customerRepository
+    );
 
     return new ServiceSalesViewModel(
       getServiceSales,
       getCustomer,
-      createServiceSale
+      createServiceSale,
+      editServiceSale
     );
   }
 }

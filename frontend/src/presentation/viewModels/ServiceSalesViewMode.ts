@@ -1,6 +1,7 @@
 import { GetServiceSales } from "../../domain/useCases/GetServiceSales";
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
 import { CreateServiceSale } from "../../domain/useCases/CreateServiceSale";
+import { EditServiceSale } from "../../domain/useCases/EditServiceSale";
 
 import { ServiceSale } from "../../domain/entities/ServiceSale";
 import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
@@ -15,10 +16,12 @@ export interface ServiceSalesState {
   isSearchingServiceSales: boolean;
   isSearchingCustomers: boolean;
   isCreatingServiceSale: boolean;
+  isEditingServiceSale: boolean;
 
   isServiceSalesNotFound: boolean;
   isCustomersNotFound: boolean;
   isErrorInServiceSaleRegistration: boolean;
+  isErrorInServiceSaleEdition: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -43,7 +46,8 @@ export class ServiceSalesViewModel {
   constructor(
     private getServiceSalesUseCase: GetServiceSales,
     private getCustomersUseCase: GetCustomers,
-    private createServiceSaleUseCase: CreateServiceSale
+    private createServiceSaleUseCase: CreateServiceSale,
+    private editServiceSaleUseCase: EditServiceSale
   ) {}
 
   private _state: ServiceSalesState = {
@@ -53,10 +57,12 @@ export class ServiceSalesViewModel {
     isSearchingServiceSales: false,
     isSearchingCustomers: false,
     isCreatingServiceSale: false,
+    isEditingServiceSale: false,
 
     isServiceSalesNotFound: false,
     isCustomersNotFound: false,
     isErrorInServiceSaleRegistration: false,
+    isErrorInServiceSaleEdition: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -177,6 +183,44 @@ export class ServiceSalesViewModel {
       await this.getServiceSales();
 
       await this.showToast("Service sale successfully create", "success");
+    }
+  }
+
+  async editServiceSale(serviceSale: ServiceSale) {
+    this.updateState({
+      ...this._state,
+      isEditingServiceSale: true,
+      isErrorInServiceSaleEdition: false,
+    });
+
+    const editedServiceSale = await this.editServiceSaleUseCase.exec(
+      serviceSale
+    );
+
+    if (editedServiceSale instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isEditingServiceSale: false,
+        isErrorInServiceSaleEdition: true,
+        message: editedServiceSale.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(editedServiceSale instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isEditingServiceSale: false,
+        isErrorInServiceSaleEdition: false,
+        message: "Service sale successfully edited",
+      });
+
+      this.closeModal();
+
+      await this.getServiceSales();
+
+      await this.showToast(this._state.message, "success");
     }
   }
 

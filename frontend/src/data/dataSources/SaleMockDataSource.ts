@@ -121,4 +121,28 @@ export class SaleMockDataSource implements SaleDataSource {
       return Error("Unable to register a new service sale");
     }
   }
+
+  async editServiceSale(
+    serviceSale: ServiceSale
+  ): Promise<ServiceSale | Error> {
+    await delay(100);
+
+    try {
+      const editedServiceSaleIndex = serviceSalesMock.findIndex(
+        (registeredServiceSale) => registeredServiceSale.id === serviceSale.id
+      );
+
+      serviceSalesMock[editedServiceSaleIndex] = {
+        id: serviceSale.id,
+        name: serviceSale.name,
+        clientId: serviceSale.clientId,
+        value: serviceSale.value,
+        date: serviceSale.date,
+      };
+
+      return serviceSalesMock[editedServiceSaleIndex];
+    } catch {
+      return Error("It was not possible to edit the service sale");
+    }
+  }
 }

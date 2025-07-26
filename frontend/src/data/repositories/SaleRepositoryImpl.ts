@@ -1,11 +1,16 @@
 import { ServiceSale } from "../../domain/entities/ServiceSale";
 import { ProductSale } from "../../domain/entities/ProductSale";
 
+import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
+
 import { SaleRepository } from "../../domain/repositories/SaleRepository";
 
 export interface SaleDataSource {
   listServiceSales(): Promise<ServiceSale[] | null>;
   listProductSales(): Promise<ProductSale[] | null>;
+  addServiceSale(
+    serviceSale: AddServiceSaleParams
+  ): Promise<ServiceSale | Error>;
 }
 
 export class SaleRepositoryImpl implements SaleRepository {
@@ -21,5 +26,15 @@ export class SaleRepositoryImpl implements SaleRepository {
     const productSales = await this.dataSource.listProductSales();
 
     return productSales;
+  }
+
+  async addServiceSale(
+    serviceSale: AddServiceSaleParams
+  ): Promise<ServiceSale | Error> {
+    const registeredServiceSale = await this.dataSource.addServiceSale(
+      serviceSale
+    );
+
+    return registeredServiceSale;
   }
 }

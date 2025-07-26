@@ -1,6 +1,7 @@
 // Use cases:
 import { GetServiceSales } from "../../../domain/useCases/GetServiceSales";
 import { GetCustomers } from "../../../domain/useCases/GetCustomers";
+import { CreateServiceSale } from "../../../domain/useCases/CreateServiceSale";
 
 // Repositories implementations:
 import { SaleRepositoryImpl } from "../../../data/repositories/SaleRepositoryImpl";
@@ -37,7 +38,15 @@ export class ServiceSalesViewModelFactory {
   makeServiceSalesViewModel() {
     const getServiceSales = new GetServiceSales(this._saleRepository);
     const getCustomer = new GetCustomers(this._customerRepository);
+    const createServiceSale = new CreateServiceSale(
+      this._saleRepository,
+      this._customerRepository
+    );
 
-    return new ServiceSalesViewModel(getServiceSales, getCustomer);
+    return new ServiceSalesViewModel(
+      getServiceSales,
+      getCustomer,
+      createServiceSale
+    );
   }
 }

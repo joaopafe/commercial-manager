@@ -44,6 +44,9 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
       openModal={(isCreateModal) =>
         serviceSalesViewModel.openModal(isCreateModal)
       }
+      changeServiceSaleCode={(serviceSaleCode) =>
+        serviceSalesViewModel.changeServiceSaleCode(serviceSaleCode)
+      }
     />
   );
 
@@ -114,8 +117,10 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
             className="description-input"
             type="text"
             id="description"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.descriptionField}
+            onChange={(e) =>
+              serviceSalesViewModel.changeDescriptionField(e.target.value)
+            }
           />
 
           <label className="value-label" htmlFor="value">
@@ -125,8 +130,10 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
             className="value-input"
             type="number"
             id="value"
-            value={1}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.valueField}
+            onChange={(e) =>
+              serviceSalesViewModel.changeValueField(parseInt(e.target.value))
+            }
           />
 
           <label className="date-label" htmlFor="date">
@@ -136,8 +143,10 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
             className="date-input"
             type="date"
             id="date"
-            value={"15/09/2024"}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.dateField}
+            onChange={(e) =>
+              serviceSalesViewModel.changeDateField(e.target.value)
+            }
           />
         </form>
 
@@ -145,15 +154,25 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
           <button
             type="submit"
             className="confirm-register"
-            disabled={false}
-            onClick={() => console.log("Registrando venda...")}
+            disabled={!state.allowedToCreateServiceSale}
+            onClick={() => {
+              const [year, month, day] = state.dateField.split("-").map(Number);
+              const localDate = new Date(year, month - 1, day);
+
+              serviceSalesViewModel.createServiceSale({
+                clientId: state.customerCode,
+                name: state.descriptionField,
+                value: state.valueField,
+                date: localDate,
+              });
+            }}
           >
             Salvar
           </button>
           <button
             type="submit"
             className="cancel-register"
-            onClick={() => console.log("Cancelando venda")}
+            onClick={() => serviceSalesViewModel.closeModal()}
           >
             Cancelar
           </button>
@@ -179,8 +198,10 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
             className="description-input"
             type="text"
             id="description"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.descriptionField}
+            onChange={(e) =>
+              serviceSalesViewModel.changeDescriptionField(e.target.value)
+            }
           />
 
           <label className="value-label" htmlFor="value">
@@ -190,8 +211,10 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
             className="value-input"
             type="number"
             id="value"
-            value={1}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.valueField}
+            onChange={(e) =>
+              serviceSalesViewModel.changeValueField(parseInt(e.target.value))
+            }
           />
 
           <label className="date-label" htmlFor="date">
@@ -199,10 +222,12 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
           </label>
           <input
             className="date-input"
-            type="datetime-local"
+            type="date"
             id="date"
-            value={"15/09/2024"}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.dateField}
+            onChange={(e) =>
+              serviceSalesViewModel.changeDateField(e.target.value)
+            }
           />
         </form>
 
@@ -218,7 +243,7 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
           <button
             type="submit"
             className="cancel-register"
-            onClick={() => console.log("Cancelando edição")}
+            onClick={() => serviceSalesViewModel.closeModal()}
           >
             Cancelar
           </button>

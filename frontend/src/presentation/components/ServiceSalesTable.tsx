@@ -9,12 +9,14 @@ interface ServiceSalesTableProps {
   serviceSales: ServiceSale[];
   customers: Customer[];
   openModal(isCreateModal: boolean): void;
+  changeServiceSaleCode(serviceSaleCode: number): void;
 }
 
 export const ServiceSalesTable: FC<ServiceSalesTableProps> = ({
   serviceSales,
   customers,
   openModal,
+  changeServiceSaleCode,
 }) => {
   const serviceSaleLines = serviceSales.map((serviceSale) => {
     const customer = customers.find((customer) => {
@@ -29,6 +31,7 @@ export const ServiceSalesTable: FC<ServiceSalesTableProps> = ({
         value={serviceSale.value}
         date={serviceSale.date}
         openModal={openModal}
+        changeServiceSaleCode={changeServiceSaleCode}
         key={serviceSale.id}
       />
     );
@@ -36,7 +39,7 @@ export const ServiceSalesTable: FC<ServiceSalesTableProps> = ({
 
   return (
     <table className="service-sales-table">
-      <thead className="service-sales-head">
+      <thead className="service-sales-table-head">
         <tr>
           <th
             className="service-sale-table-head-column"

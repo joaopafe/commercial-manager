@@ -2,6 +2,7 @@ import { GetServiceSales } from "../../domain/useCases/GetServiceSales";
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
 import { CreateServiceSale } from "../../domain/useCases/CreateServiceSale";
 import { EditServiceSale } from "../../domain/useCases/EditServiceSale";
+import { RemoveServiceSale } from "../../domain/useCases/RemoveServiceSale";
 
 import { ServiceSale } from "../../domain/entities/ServiceSale";
 import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
@@ -17,11 +18,13 @@ export interface ServiceSalesState {
   isSearchingCustomers: boolean;
   isCreatingServiceSale: boolean;
   isEditingServiceSale: boolean;
+  isRemovingServiceSale: boolean;
 
   isServiceSalesNotFound: boolean;
   isCustomersNotFound: boolean;
   isErrorInServiceSaleRegistration: boolean;
   isErrorInServiceSaleEdition: boolean;
+  isErrorInServiceSaleRemotion: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -47,7 +50,8 @@ export class ServiceSalesViewModel {
     private getServiceSalesUseCase: GetServiceSales,
     private getCustomersUseCase: GetCustomers,
     private createServiceSaleUseCase: CreateServiceSale,
-    private editServiceSaleUseCase: EditServiceSale
+    private editServiceSaleUseCase: EditServiceSale,
+    private removeServiceSaleUseCase: RemoveServiceSale
   ) {}
 
   private _state: ServiceSalesState = {
@@ -58,11 +62,13 @@ export class ServiceSalesViewModel {
     isSearchingCustomers: false,
     isCreatingServiceSale: false,
     isEditingServiceSale: false,
+    isRemovingServiceSale: false,
 
     isServiceSalesNotFound: false,
     isCustomersNotFound: false,
     isErrorInServiceSaleRegistration: false,
     isErrorInServiceSaleEdition: false,
+    isErrorInServiceSaleRemotion: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -214,6 +220,44 @@ export class ServiceSalesViewModel {
         isEditingServiceSale: false,
         isErrorInServiceSaleEdition: false,
         message: "Service sale successfully edited",
+      });
+
+      this.closeModal();
+
+      await this.getServiceSales();
+
+      await this.showToast(this._state.message, "success");
+    }
+  }
+
+  async removeServiceSale(serviceSaleCode: number) {
+    this.updateState({
+      ...this._state,
+      isRemovingServiceSale: true,
+      isErrorInServiceSaleRemotion: false,
+    });
+
+    const removedServiceSale = await this.removeServiceSaleUseCase.exec(
+      serviceSaleCode
+    );
+
+    if (removedServiceSale instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isRemovingServiceSale: false,
+        isErrorInServiceSaleRemotion: true,
+        message: removedServiceSale.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(removedServiceSale instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isRemovingServiceSale: false,
+        isErrorInServiceSaleRemotion: false,
+        message: "Service sale successfully removed",
       });
 
       this.closeModal();

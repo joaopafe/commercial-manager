@@ -4,6 +4,7 @@ import { ProductSale } from "../../domain/entities/ProductSale";
 import { SaleDataSource } from "../repositories/SaleRepositoryImpl";
 
 import { delay } from "../../shared/utils/delay";
+import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
 
 const serviceSalesMock: ServiceSale[] = [
   {
@@ -99,5 +100,25 @@ export class SaleMockDataSource implements SaleDataSource {
 
     return productSalesMock;
     // return null
+  }
+
+  async addServiceSale(
+    serviceSale: AddServiceSaleParams
+  ): Promise<ServiceSale | Error> {
+    await delay(300);
+
+    try {
+      serviceSalesMock.push({
+        id: serviceSalesMock.length + 1,
+        clientId: serviceSale.clientId,
+        name: serviceSale.name,
+        value: serviceSale.value,
+        date: serviceSale.date,
+      });
+
+      return serviceSalesMock[length - 1];
+    } catch {
+      return Error("Unable to register a new service sale");
+    }
   }
 }

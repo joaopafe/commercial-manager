@@ -8,4 +8,5 @@ export interface SaleRepository {
   addServiceSale(
     serviceSale: AddServiceSaleParams
   ): Promise<ServiceSale | Error>;
+  editServiceSale(serviceSale: ServiceSale): Promise<ServiceSale | Error>;
 }

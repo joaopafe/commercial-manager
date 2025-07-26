@@ -11,6 +11,7 @@ export interface SaleDataSource {
   addServiceSale(
     serviceSale: AddServiceSaleParams
   ): Promise<ServiceSale | Error>;
+  editServiceSale(serviceSale: ServiceSale): Promise<ServiceSale | Error>;
 }
 
 export class SaleRepositoryImpl implements SaleRepository {
@@ -36,5 +37,15 @@ export class SaleRepositoryImpl implements SaleRepository {
     );
 
     return registeredServiceSale;
+  }
+
+  async editServiceSale(
+    serviceSale: ServiceSale
+  ): Promise<ServiceSale | Error> {
+    const editedServiceSale = await this.dataSource.editServiceSale(
+      serviceSale
+    );
+
+    return editedServiceSale;
   }
 }

@@ -236,7 +236,18 @@ export const ServiceSalesView: React.FC<ServiceSalesViewProps> = ({
             type="submit"
             className="confirm-register"
             disabled={false}
-            onClick={() => console.log("Editando venda...")}
+            onClick={() => {
+              const [year, month, day] = state.dateField.split("-").map(Number);
+              const localDate = new Date(year, month - 1, day);
+
+              serviceSalesViewModel.editServiceSale({
+                id: state.serviceSaleCode,
+                name: state.descriptionField,
+                clientId: state.customerCode,
+                value: state.valueField,
+                date: localDate,
+              });
+            }}
           >
             Salvar
           </button>

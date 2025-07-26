@@ -1,7 +1,9 @@
 import { GetServiceSales } from "../../domain/useCases/GetServiceSales";
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
+import { CreateServiceSale } from "../../domain/useCases/CreateServiceSale";
 
 import { ServiceSale } from "../../domain/entities/ServiceSale";
+import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
 import { Customer } from "../../domain/entities/Customer";
 
 import { delay } from "../../shared/utils/delay";
@@ -12,18 +14,23 @@ export interface ServiceSalesState {
 
   isSearchingServiceSales: boolean;
   isSearchingCustomers: boolean;
+  isCreatingServiceSale: boolean;
 
   isServiceSalesNotFound: boolean;
   isCustomersNotFound: boolean;
+  isErrorInServiceSaleRegistration: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
 
-  // Implements the field states
+  serviceSaleCode: number;
   customerField: string;
   customerCode: number;
+  descriptionField: string;
+  valueField: number;
+  dateField: string;
 
-  // Implement the allowedCreateSale
+  allowedToCreateServiceSale: boolean;
 
   showToast: boolean;
   toastStatus: "success" | "error";
@@ -35,7 +42,8 @@ export type ServiceSalesStateListener = (state: ServiceSalesState) => void;
 export class ServiceSalesViewModel {
   constructor(
     private getServiceSalesUseCase: GetServiceSales,
-    private getCustomersUseCase: GetCustomers
+    private getCustomersUseCase: GetCustomers,
+    private createServiceSaleUseCase: CreateServiceSale
   ) {}
 
   private _state: ServiceSalesState = {
@@ -44,15 +52,23 @@ export class ServiceSalesViewModel {
 
     isSearchingServiceSales: false,
     isSearchingCustomers: false,
+    isCreatingServiceSale: false,
 
     isServiceSalesNotFound: false,
     isCustomersNotFound: false,
+    isErrorInServiceSaleRegistration: false,
 
     showCreateModal: false,
     showEditModal: false,
 
+    serviceSaleCode: 1,
     customerField: "",
     customerCode: 1,
+    descriptionField: "",
+    valueField: 0,
+    dateField: "",
+
+    allowedToCreateServiceSale: false,
 
     showToast: false,
     toastStatus: "success",
@@ -126,6 +142,51 @@ export class ServiceSalesViewModel {
     }
   }
 
+  async createServiceSale(serviceSale: AddServiceSaleParams) {
+    this.updateState({
+      ...this._state,
+      isCreatingServiceSale: true,
+      isErrorInServiceSaleRegistration: false,
+    });
+
+    const registeredServiceSale = await this.createServiceSaleUseCase.exec(
+      serviceSale
+    );
+
+    if (registeredServiceSale instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isCreatingServiceSale: false,
+        isErrorInServiceSaleRegistration: true,
+        message: registeredServiceSale.message,
+      });
+
+      await this.showToast(registeredServiceSale.message, "error");
+    }
+
+    if (!(registeredServiceSale instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isCreatingServiceSale: false,
+        isErrorInServiceSaleRegistration: false,
+        message: "",
+      });
+
+      this.closeModal();
+
+      await this.getServiceSales();
+
+      await this.showToast("Service sale successfully create", "success");
+    }
+  }
+
+  changeServiceSaleCode(serviceSaleCode: number) {
+    this.updateState({
+      ...this._state,
+      serviceSaleCode,
+    });
+  }
+
   changeCustomerField(customer: string) {
     this.updateState({
       ...this._state,
@@ -137,6 +198,75 @@ export class ServiceSalesViewModel {
     this.updateState({
       ...this._state,
       customerCode: customer,
+    });
+  }
+
+  changeDescriptionField(description: string) {
+    this.updateState({
+      ...this._state,
+      descriptionField: description,
+    });
+
+    const serviceSaleFields = {
+      description: this._state.descriptionField,
+      value: this._state.valueField,
+      date: this._state.dateField,
+    };
+
+    this.allowServiceSaleCreation(serviceSaleFields);
+  }
+
+  changeValueField(value: number) {
+    if (value >= 0) {
+      this.updateState({
+        ...this._state,
+        valueField: value,
+      });
+
+      const serviceSaleFields = {
+        description: this._state.descriptionField,
+        value: this._state.valueField,
+        date: this._state.dateField,
+      };
+
+      this.allowServiceSaleCreation(serviceSaleFields);
+    }
+  }
+
+  changeDateField(date: string) {
+    const formattedDate = new Date(date);
+
+    const dateField = !isNaN(formattedDate.getTime()) ? date : "";
+
+    this.updateState({
+      ...this._state,
+      dateField,
+    });
+
+    const serviceSaleFields = {
+      description: this._state.descriptionField,
+      value: this._state.valueField,
+      date: this._state.dateField,
+    };
+
+    this.allowServiceSaleCreation(serviceSaleFields);
+  }
+
+  allowServiceSaleCreation(serviceSaleFields: {
+    description: string;
+    value: number;
+    date: string;
+  }) {
+    const isValidDate = !isNaN(new Date(serviceSaleFields.date).getTime());
+
+    const allowServiceSaleCreation =
+      serviceSaleFields.description.length >= 3 &&
+      serviceSaleFields.value >= 0 &&
+      isValidDate;
+
+    this.updateState({
+      ...this._state,
+      allowedToCreateServiceSale: allowServiceSaleCreation,
     });
   }
 

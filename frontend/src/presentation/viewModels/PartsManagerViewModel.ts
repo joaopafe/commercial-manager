@@ -112,7 +112,7 @@ export class PartsManagerViewModel {
       isSearching: true,
     });
 
-    const parts = await this.getPartsUseCase.execute();
+    const parts = await this.getPartsUseCase.exec();
 
     if (parts === null) {
       this.updateState({

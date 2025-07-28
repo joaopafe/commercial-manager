@@ -14,6 +14,7 @@ import "./presentation/style/stock.css";
 import "./presentation/style/suppliers-manager.css";
 import "./presentation/style/customers-manager.css";
 import "./presentation/style/service-sale.css";
+import "./presentation/style/product-sale.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

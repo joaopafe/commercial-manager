@@ -18,7 +18,7 @@ import { SaleMockDataSource } from "../../../data/dataSources/SaleMockDataSource
 import { CustomerMockDataSource } from "../../../data/dataSources/CustomersMockDataSource";
 
 // View model:
-import { ServiceSalesViewModel } from "../../../presentation/viewModels/ServiceSalesViewMode";
+import { ServiceSalesViewModel } from "../../../presentation/viewModels/ServiceSalesViewModel";
 
 export class ServiceSalesViewModelFactory {
   private _saleDataSource: SaleDataSource;

@@ -160,8 +160,12 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
             className="quantity-input"
             type="number"
             id="quantity"
-            value={1}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.quantityField}
+            onChange={(e) =>
+              productSalesViewModel.changeQuantityField(
+                parseInt(e.target.value)
+              )
+            }
           />
 
           <label className="value-label" htmlFor="value">
@@ -171,8 +175,10 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
             className="value-input"
             type="number"
             id="value"
-            value={1}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.valueField}
+            onChange={(e) =>
+              productSalesViewModel.changeValueField(parseInt(e.target.value))
+            }
           />
 
           <label className="date-label" htmlFor="date">
@@ -182,8 +188,10 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
             className="date-input"
             type="date"
             id="date"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.dateField}
+            onChange={(e) =>
+              productSalesViewModel.changeDateField(e.target.value)
+            }
           />
         </form>
 
@@ -191,7 +199,7 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
           <button
             type="submit"
             className="confirm-register"
-            disabled={false}
+            disabled={!state.allowedToCreateProductSale}
             onClick={() => console.log("Cadastrando venda...")}
           >
             Salvar
@@ -230,8 +238,12 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
             className="quantity-input"
             type="number"
             id="quantity"
-            value={1}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.quantityField}
+            onChange={(e) =>
+              productSalesViewModel.changeQuantityField(
+                parseInt(e.target.value)
+              )
+            }
           />
 
           <label className="value-label" htmlFor="value">
@@ -241,8 +253,10 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
             className="value-input"
             type="number"
             id="value"
-            value={1}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.valueField}
+            onChange={(e) =>
+              productSalesViewModel.changeValueField(parseInt(e.target.value))
+            }
           />
 
           <label className="date-label" htmlFor="date">
@@ -252,8 +266,10 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
             className="date-input"
             type="date"
             id="date"
-            value={""}
-            onChange={(e) => console.log(e.target.value)}
+            value={state.dateField}
+            onChange={(e) =>
+              productSalesViewModel.changeDateField(e.target.value)
+            }
           />
         </form>
 
@@ -261,7 +277,7 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
           <button
             type="submit"
             className="confirm-register"
-            disabled={false}
+            disabled={!state.allowedToCreateProductSale}
             onClick={() => console.log("Editando venda...")}
           >
             Salvar

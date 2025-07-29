@@ -32,7 +32,7 @@ export const ProductSaleLine: FC<ProductSaleLineProps> = ({
       <td className="product-sale-piece-name">{pieceName}</td>
       <td className="product-sale-quantity">{quantity}</td>
       <td className="product-sale-client-name">{clientName}</td>
-      <td className="product-sale-value">{value}</td>
+      <td className="product-sale-value">R$ {value}</td>
       <td className="product-sale-date">{date.toLocaleDateString()}</td>
       <td className="product-sale-actions">
         <button className="edit-button" onClick={() => openModal(false)}>

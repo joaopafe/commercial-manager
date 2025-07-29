@@ -29,8 +29,11 @@ export interface ProductSalesState {
   customerCode: number;
   pieceField: string;
   pieceCode: number;
+  quantityField: number;
+  valueField: number;
+  dateField: string;
 
-  // Implements the allowedToCreateProductSale
+  allowedToCreateProductSale: boolean;
 
   showToast: boolean;
   toastStatus: "success" | "error";
@@ -67,6 +70,11 @@ export class ProductSalesViewModel {
     customerField: "",
     pieceCode: 1,
     pieceField: "",
+    quantityField: 1,
+    valueField: 0,
+    dateField: "",
+
+    allowedToCreateProductSale: false,
 
     showToast: false,
     toastStatus: "success",
@@ -184,6 +192,77 @@ export class ProductSalesViewModel {
     this.updateState({
       ...this._state,
       customerField: customer,
+    });
+  }
+
+  changeQuantityField(quantity: number) {
+    if (quantity >= 1) {
+      this.updateState({
+        ...this._state,
+        quantityField: quantity,
+      });
+
+      const productSaleFields = {
+        quantity: this._state.quantityField,
+        value: this._state.valueField,
+        date: this._state.dateField,
+      };
+
+      this.allowProductSaleCreation(productSaleFields);
+    }
+  }
+
+  changeValueField(value: number) {
+    if (value >= 0) {
+      this.updateState({
+        ...this._state,
+        valueField: value,
+      });
+
+      const productSaleFields = {
+        quantity: this._state.quantityField,
+        value: this._state.valueField,
+        date: this._state.dateField,
+      };
+
+      this.allowProductSaleCreation(productSaleFields);
+    }
+  }
+
+  changeDateField(date: string) {
+    const formattedDate = new Date(date);
+
+    const dateField = !isNaN(formattedDate.getTime()) ? date : "";
+
+    this.updateState({
+      ...this._state,
+      dateField,
+    });
+
+    const productSaleFields = {
+      quantity: this._state.quantityField,
+      value: this._state.valueField,
+      date: this._state.dateField,
+    };
+
+    this.allowProductSaleCreation(productSaleFields);
+  }
+
+  allowProductSaleCreation(productSaleFields: {
+    quantity: number;
+    value: number;
+    date: string;
+  }) {
+    const isValidDate = !isNaN(new Date(productSaleFields.date).getTime());
+
+    const allowProductSaleCreation =
+      productSaleFields.quantity >= 1 &&
+      productSaleFields.value >= 0 &&
+      isValidDate;
+
+    this.updateState({
+      ...this._state,
+      allowedToCreateProductSale: allowProductSaleCreation,
     });
   }
 

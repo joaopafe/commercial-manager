@@ -35,12 +35,20 @@ export const ProductSaleLine: FC<ProductSaleLineProps> = ({
       <td className="product-sale-value">R$ {value}</td>
       <td className="product-sale-date">{date.toLocaleDateString()}</td>
       <td className="product-sale-actions">
-        <button className="edit-button" onClick={() => openModal(false)}>
+        <button
+          className="edit-button"
+          onClick={() => {
+            changeProductSaleCode(code);
+            openModal(false);
+          }}
+        >
           Editar
         </button>
         <button
           className="exclude-button"
-          onClick={() => console.log("Excluindo venda...")}
+          onClick={() => {
+            removeProductSale(code);
+          }}
         >
           Excluir
         </button>

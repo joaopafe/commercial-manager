@@ -4,6 +4,7 @@ import { GetCustomers } from "../../../domain/useCases/GetCustomers";
 import { GetParts } from "../../../domain/useCases/GetParts";
 import { CreateProductSale } from "../../../domain/useCases/CreateProductSale";
 import { EditProductSale } from "../../../domain/useCases/EditProductSale";
+import { RemoveProductSale } from "../../../domain/useCases/RemoveProductSale";
 
 // Repositories implementations:
 import { SaleRepositoryImpl } from "../../../data/repositories/SaleRepositoryImpl";
@@ -67,13 +68,15 @@ export class ProductSalesViewModelFactory {
       this._pieceRepository,
       this._stockRepository
     );
+    const removeProductSale = new RemoveProductSale(this._saleRepository);
 
     return new ProductSalesViewModel(
       getProductSales,
       getCustomers,
       getParts,
       createProductSale,
-      editProductSale
+      editProductSale,
+      removeProductSale
     );
   }
 }

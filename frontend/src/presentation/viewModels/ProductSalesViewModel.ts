@@ -3,6 +3,7 @@ import { GetCustomers } from "../../domain/useCases/GetCustomers";
 import { GetParts } from "../../domain/useCases/GetParts";
 import { CreateProductSale } from "../../domain/useCases/CreateProductSale";
 import { EditProductSale } from "../../domain/useCases/EditProductSale";
+import { RemoveProductSale } from "../../domain/useCases/RemoveProductSale";
 
 import { ProductSale } from "../../domain/entities/ProductSale";
 import { AddProductSaleParams } from "../../domain/useCases/CreateProductSale";
@@ -21,12 +22,14 @@ export interface ProductSalesState {
   isSearchingParts: boolean;
   isCreatingProductSale: boolean;
   isEditingProductSale: boolean;
+  isRemovingProductSale: boolean;
 
   isProductSalesNotFound: boolean;
   isCustomersNotFound: boolean;
   isPartsNotFound: boolean;
   isErrorInProductSaleRegistration: boolean;
   isErrorInProductSaleEdition: boolean;
+  isErrorInProductSaleRemotion: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -55,7 +58,8 @@ export class ProductSalesViewModel {
     private getCustomersUseCase: GetCustomers,
     private getPartsUseCase: GetParts,
     private createProductSaleUseCase: CreateProductSale,
-    private editProductSaleUseCase: EditProductSale
+    private editProductSaleUseCase: EditProductSale,
+    private removeProductSaleUseCase: RemoveProductSale
   ) {}
 
   private _state: ProductSalesState = {
@@ -68,12 +72,14 @@ export class ProductSalesViewModel {
     isSearchingParts: false,
     isCreatingProductSale: false,
     isEditingProductSale: false,
+    isRemovingProductSale: false,
 
     isProductSalesNotFound: false,
     isCustomersNotFound: false,
     isPartsNotFound: false,
     isErrorInProductSaleRegistration: false,
     isErrorInProductSaleEdition: false,
+    isErrorInProductSaleRemotion: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -266,8 +272,40 @@ export class ProductSalesViewModel {
     }
   }
 
-  removeProductSale(productSaleCode: number) {
-    console.log("Venda a ser removida:", productSaleCode);
+  async removeProductSale(productSaleCode: number) {
+    this.updateState({
+      ...this._state,
+      isRemovingProductSale: true,
+      isErrorInProductSaleRemotion: false,
+    });
+
+    const removedProductSale = await this.removeProductSaleUseCase.exec(
+      productSaleCode
+    );
+
+    if (removedProductSale instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isRemovingProductSale: false,
+        isErrorInProductSaleRemotion: true,
+        message: removedProductSale.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(removedProductSale instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isRemovingProductSale: false,
+        isErrorInProductSaleRemotion: false,
+        message: "Product sale successfully removed",
+      });
+
+      await this.getProductSales();
+
+      await this.showToast(this._state.message, "success");
+    }
   }
 
   changeProductSaleCode(productSaleCode: number) {

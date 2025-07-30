@@ -188,7 +188,7 @@ export class ServiceSalesViewModel {
 
       await this.getServiceSales();
 
-      await this.showToast("Service sale successfully create", "success");
+      await this.showToast("Service sale successfully created", "success");
     }
   }
 

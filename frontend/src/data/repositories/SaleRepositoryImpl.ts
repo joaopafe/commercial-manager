@@ -2,6 +2,7 @@ import { ServiceSale } from "../../domain/entities/ServiceSale";
 import { ProductSale } from "../../domain/entities/ProductSale";
 
 import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
+import { AddProductSaleParams } from "../../domain/useCases/CreateProductSale";
 
 import { SaleRepository } from "../../domain/repositories/SaleRepository";
 
@@ -13,6 +14,9 @@ export interface SaleDataSource {
   ): Promise<ServiceSale | Error>;
   editServiceSale(serviceSale: ServiceSale): Promise<ServiceSale | Error>;
   removeServiceSale(serviceSaleCode: number): Promise<ServiceSale | Error>;
+  addProductSale(
+    productSale: AddProductSaleParams
+  ): Promise<ProductSale | Error>;
 }
 
 export class SaleRepositoryImpl implements SaleRepository {
@@ -58,5 +62,15 @@ export class SaleRepositoryImpl implements SaleRepository {
     );
 
     return removedServiceSale;
+  }
+
+  async addProductSale(
+    productSale: AddProductSaleParams
+  ): Promise<ProductSale | Error> {
+    const registeredProductSale = await this.dataSource.addProductSale(
+      productSale
+    );
+
+    return registeredProductSale;
   }
 }

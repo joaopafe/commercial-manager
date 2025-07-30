@@ -289,7 +289,19 @@ export const ProductSalesView: React.FC<ProductSalesViewProps> = ({
             type="submit"
             className="confirm-register"
             disabled={!state.allowedToCreateProductSale}
-            onClick={() => console.log("Editando venda...")}
+            onClick={() => {
+              const [year, month, day] = state.dateField.split("-").map(Number);
+              const localDate = new Date(year, month - 1, day);
+
+              productSalesViewModel.editProductSale({
+                id: state.productSaleCode,
+                clientId: state.customerCode,
+                pieceId: state.pieceCode,
+                quantity: state.quantityField,
+                value: state.valueField,
+                date: localDate,
+              });
+            }}
           >
             Salvar
           </button>

@@ -2,6 +2,7 @@ import { GetProductSales } from "../../domain/useCases/GetProductSales";
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
 import { GetParts } from "../../domain/useCases/GetParts";
 import { CreateProductSale } from "../../domain/useCases/CreateProductSale";
+import { EditProductSale } from "../../domain/useCases/EditProductSale";
 
 import { ProductSale } from "../../domain/entities/ProductSale";
 import { AddProductSaleParams } from "../../domain/useCases/CreateProductSale";
@@ -19,11 +20,13 @@ export interface ProductSalesState {
   isSearchingCustomers: boolean;
   isSearchingParts: boolean;
   isCreatingProductSale: boolean;
+  isEditingProductSale: boolean;
 
   isProductSalesNotFound: boolean;
   isCustomersNotFound: boolean;
   isPartsNotFound: boolean;
   isErrorInProductSaleRegistration: boolean;
+  isErrorInProductSaleEdition: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -51,7 +54,8 @@ export class ProductSalesViewModel {
     private getProductSalesUseCase: GetProductSales,
     private getCustomersUseCase: GetCustomers,
     private getPartsUseCase: GetParts,
-    private createProductSaleUseCase: CreateProductSale
+    private createProductSaleUseCase: CreateProductSale,
+    private editProductSaleUseCase: EditProductSale
   ) {}
 
   private _state: ProductSalesState = {
@@ -63,11 +67,13 @@ export class ProductSalesViewModel {
     isSearchingCustomers: false,
     isSearchingParts: false,
     isCreatingProductSale: false,
+    isEditingProductSale: false,
 
     isProductSalesNotFound: false,
     isCustomersNotFound: false,
     isPartsNotFound: false,
     isErrorInProductSaleRegistration: false,
+    isErrorInProductSaleEdition: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -219,6 +225,44 @@ export class ProductSalesViewModel {
       await this.getProductSales();
 
       await this.showToast("Product sale successfully created", "success");
+    }
+  }
+
+  async editProductSale(productSale: ProductSale) {
+    this.updateState({
+      ...this._state,
+      isEditingProductSale: true,
+      isErrorInProductSaleEdition: false,
+    });
+
+    const editedProductSale = await this.editProductSaleUseCase.exec(
+      productSale
+    );
+
+    if (editedProductSale instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isEditingProductSale: false,
+        isErrorInProductSaleEdition: true,
+        message: editedProductSale.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(editedProductSale instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isEditingProductSale: false,
+        isErrorInProductSaleEdition: false,
+        message: "Product sale successfully edited",
+      });
+
+      this.closeModal();
+
+      await this.getProductSales();
+
+      await this.showToast(this._state.message, "success");
     }
   }
 

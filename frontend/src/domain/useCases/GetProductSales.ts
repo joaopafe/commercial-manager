@@ -6,6 +6,12 @@ export class GetProductSales {
   async exec() {
     const productSales = await this.productSaleRepository.listProductSales();
 
+    const orderedSales = productSales?.sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
+
+    if (orderedSales) return orderedSales;
+
     return productSales;
   }
 }

@@ -7,6 +7,12 @@ export class GetProductPurchases {
     const productPurchases =
       await this.purchaseRepository.listProductPurchases();
 
+    const orderedPurchases = productPurchases?.sort(
+      (a, b) => b.date.getTime() - a.date.getTime()
+    );
+
+    if (orderedPurchases) return orderedPurchases;
+
     return productPurchases;
   }
 }

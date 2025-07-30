@@ -7,6 +7,7 @@ import { SuppliersManagerView } from "../../presentation/views/SuppliersManagerV
 import { CustomersManagerView } from "../../presentation/views/CustomersManagerView";
 import { ServiceSalesView } from "../../presentation/views/ServiceSalesView";
 import { ProductSalesView } from "../../presentation/views/ProductSalesView";
+import { ServicePurchasesView } from "../../presentation/views/ServicePurchasesView";
 
 import { HomeViewModelFactory } from "../providers/di/HomeViewModelFactory";
 import { PartsManagerViewModelFactory } from "../providers/di/PartsManagerViewModelFactory";
@@ -15,6 +16,7 @@ import { SuppliersManagerViewModelFactory } from "../providers/di/SuppliersManag
 import { CustomersManagerViewModelFactory } from "../providers/di/CustomersManagerViewModelFactory";
 import { ServiceSalesViewModelFactory } from "../providers/di/ServiceSalesViewModelFactory";
 import { ProductSalesViewModelFactory } from "../providers/di/ProductSalesViewModelFactory";
+import { ServicePurchasesViewModelFactory } from "../providers/di/ServicePurchasesViewModelFactory";
 
 const homeViewModelFactory = new HomeViewModelFactory();
 const partsManagerViewModelFactory = new PartsManagerViewModelFactory();
@@ -23,6 +25,7 @@ const suppliersManagerViewModelFactory = new SuppliersManagerViewModelFactory();
 const customersManagerViewModelFactory = new CustomersManagerViewModelFactory();
 const serviceSalesViewModelFactory = new ServiceSalesViewModelFactory();
 const productSalesViewModelFactory = new ProductSalesViewModelFactory();
+const servicePurchasesViewModelFactory = new ServicePurchasesViewModelFactory();
 
 export const AppRoutes = () => {
   return (
@@ -74,6 +77,15 @@ export const AppRoutes = () => {
         element={
           <ProductSalesView
             productSalesViewModelFactory={productSalesViewModelFactory}
+          />
+        }
+      />
+
+      <Route
+        path="service-purchases"
+        element={
+          <ServicePurchasesView
+            servicePurchasesViewModelFactory={servicePurchasesViewModelFactory}
           />
         }
       />

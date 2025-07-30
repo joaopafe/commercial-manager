@@ -1,8 +1,10 @@
 import { GetProductSales } from "../../domain/useCases/GetProductSales";
 import { GetCustomers } from "../../domain/useCases/GetCustomers";
 import { GetParts } from "../../domain/useCases/GetParts";
+import { CreateProductSale } from "../../domain/useCases/CreateProductSale";
 
 import { ProductSale } from "../../domain/entities/ProductSale";
+import { AddProductSaleParams } from "../../domain/useCases/CreateProductSale";
 import { Customer } from "../../domain/entities/Customer";
 import { Piece } from "../../domain/entities/Piece";
 
@@ -16,10 +18,12 @@ export interface ProductSalesState {
   isSearchingProductSales: boolean;
   isSearchingCustomers: boolean;
   isSearchingParts: boolean;
+  isCreatingProductSale: boolean;
 
   isProductSalesNotFound: boolean;
   isCustomersNotFound: boolean;
   isPartsNotFound: boolean;
+  isErrorInProductSaleRegistration: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -46,7 +50,8 @@ export class ProductSalesViewModel {
   constructor(
     private getProductSalesUseCase: GetProductSales,
     private getCustomersUseCase: GetCustomers,
-    private getPartsUseCase: GetParts
+    private getPartsUseCase: GetParts,
+    private createProductSaleUseCase: CreateProductSale
   ) {}
 
   private _state: ProductSalesState = {
@@ -57,10 +62,12 @@ export class ProductSalesViewModel {
     isSearchingProductSales: false,
     isSearchingCustomers: false,
     isSearchingParts: false,
+    isCreatingProductSale: false,
 
     isProductSalesNotFound: false,
     isCustomersNotFound: false,
     isPartsNotFound: false,
+    isErrorInProductSaleRegistration: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -174,6 +181,44 @@ export class ProductSalesViewModel {
         isSearchingParts: false,
         isPartsNotFound: false,
       });
+    }
+  }
+
+  async createProductSale(productSale: AddProductSaleParams) {
+    this.updateState({
+      ...this._state,
+      isCreatingProductSale: true,
+      isErrorInProductSaleRegistration: false,
+    });
+
+    const registeredProductSale = await this.createProductSaleUseCase.exec(
+      productSale
+    );
+
+    if (registeredProductSale instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isCreatingProductSale: false,
+        isErrorInProductSaleRegistration: true,
+        message: registeredProductSale.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(registeredProductSale instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isCreatingProductSale: false,
+        isErrorInProductSaleRegistration: false,
+        message: "",
+      });
+
+      this.closeModal();
+
+      await this.getProductSales();
+
+      await this.showToast("Product sale successfully created", "success");
     }
   }
 

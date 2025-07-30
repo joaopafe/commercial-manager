@@ -16,4 +16,5 @@ export interface SaleRepository {
     productSale: AddProductSaleParams
   ): Promise<ProductSale | Error>;
   editProductSale(productSale: ProductSale): Promise<ProductSale | Error>;
+  removeProductSale(productSaleCode: number): Promise<ProductSale | Error>;
 }

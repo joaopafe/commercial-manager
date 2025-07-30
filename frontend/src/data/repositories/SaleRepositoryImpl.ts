@@ -18,6 +18,7 @@ export interface SaleDataSource {
     productSale: AddProductSaleParams
   ): Promise<ProductSale | Error>;
   editProductSale(productSale: ProductSale): Promise<ProductSale | Error>;
+  removeProductSale(productSaleCode: number): Promise<ProductSale | Error>;
 }
 
 export class SaleRepositoryImpl implements SaleRepository {
@@ -83,5 +84,15 @@ export class SaleRepositoryImpl implements SaleRepository {
     );
 
     return editedProductSale;
+  }
+
+  async removeProductSale(
+    productSaleCode: number
+  ): Promise<ProductSale | Error> {
+    const removedProductSale = await this.dataSource.removeProductSale(
+      productSaleCode
+    );
+
+    return removedProductSale;
   }
 }

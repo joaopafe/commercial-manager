@@ -190,4 +190,29 @@ export class SaleMockDataSource implements SaleDataSource {
       return Error("Unable to register a new product sale");
     }
   }
+
+  async editProductSale(
+    productSale: ProductSale
+  ): Promise<ProductSale | Error> {
+    await delay(100);
+
+    try {
+      const editedProductSaleIndex = productSalesMock.findIndex(
+        (registeredProductSale) => registeredProductSale.id === productSale.id
+      );
+
+      productSalesMock[editedProductSaleIndex] = {
+        id: productSale.id,
+        pieceId: productSale.pieceId,
+        quantity: productSale.quantity,
+        clientId: productSale.clientId,
+        value: productSale.value,
+        date: productSale.date,
+      };
+
+      return productSalesMock[editedProductSaleIndex];
+    } catch {
+      return Error("It was not possible to edit the service sale");
+    }
+  }
 }

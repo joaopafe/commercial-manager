@@ -1,10 +1,12 @@
 import { ServiceSale } from "../../domain/entities/ServiceSale";
 import { ProductSale } from "../../domain/entities/ProductSale";
 
+import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
+import { AddProductSaleParams } from "../../domain/useCases/CreateProductSale";
+
 import { SaleDataSource } from "../repositories/SaleRepositoryImpl";
 
 import { delay } from "../../shared/utils/delay";
-import { AddServiceSaleParams } from "../../domain/useCases/CreateServiceSale";
 
 const serviceSalesMock: ServiceSale[] = [
   {
@@ -165,6 +167,27 @@ export class SaleMockDataSource implements SaleDataSource {
       return removedServiceSale;
     } catch {
       return Error("It was not possible to remove the service sale");
+    }
+  }
+
+  async addProductSale(
+    productSale: AddProductSaleParams
+  ): Promise<ProductSale | Error> {
+    await delay(100);
+
+    try {
+      productSalesMock.push({
+        id: productSalesMock.length + 1,
+        clientId: productSale.clientId,
+        pieceId: productSale.pieceId,
+        quantity: productSale.quantity,
+        value: productSale.value,
+        date: productSale.date,
+      });
+
+      return productSalesMock[length - 1];
+    } catch {
+      return Error("Unable to register a new product sale");
     }
   }
 }

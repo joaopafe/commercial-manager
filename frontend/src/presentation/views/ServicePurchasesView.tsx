@@ -247,17 +247,18 @@ export const ServicePurchasesView: React.FC<ServicePurchasesViewProps> = ({
               className="confirm-register"
               disabled={!state.allowedToCreateServicePurchase}
               onClick={() => {
-                //   const [year, month, day] = state.dateField.split("-").map(Number);
-                //   const localDate = new Date(year, month - 1, day);
+                const [year, month, day] = state.dateField
+                  .split("-")
+                  .map(Number);
+                const localDate = new Date(year, month - 1, day);
 
-                //   servicePurchasesViewModel.editServicePurchase({
-                //     supplierId: state.supplierCode,
-                //     name: state.descriptionField,
-                //     value: state.valueField,
-                //     date: localDate,
-                //   });
-                // }}
-                console.log("Editando compra...");
+                servicePurchasesViewModel.editServicePurchase({
+                  id: state.servicePurchaseCode,
+                  supplierId: state.supplierCode,
+                  name: state.descriptionField,
+                  value: state.valueField,
+                  date: localDate,
+                });
               }}
             >
               Salvar

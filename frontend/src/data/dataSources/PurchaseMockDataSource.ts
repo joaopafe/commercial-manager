@@ -107,4 +107,30 @@ export class PurchaseMockDataSource implements PurchaseDataSource {
       return Error("Unable to register a new service purchase");
     }
   }
+
+  async editServicePurchase(
+    servicePurchase: ServicePurchase
+  ): Promise<ServicePurchase | Error> {
+    await delay(100);
+
+    try {
+      const editedServicePurchaseIndex = servicePurchasesMock.findIndex(
+        (registeredServicePurchase) => {
+          return registeredServicePurchase.id === servicePurchase.id;
+        }
+      );
+
+      servicePurchasesMock[editedServicePurchaseIndex] = {
+        id: servicePurchase.id,
+        supplierId: servicePurchase.supplierId,
+        name: servicePurchase.name,
+        value: servicePurchase.value,
+        date: servicePurchase.date,
+      };
+
+      return servicePurchasesMock[editedServicePurchaseIndex];
+    } catch {
+      return Error("It was not possible to create the service purchase");
+    }
+  }
 }

@@ -9,4 +9,7 @@ export interface PurchaseRepository {
   addServicePurchase(
     servicePurchase: AddServicePurchaseParams
   ): Promise<ServicePurchase | Error>;
+  editServicePurchase(
+    servicePurchase: ServicePurchase
+  ): Promise<ServicePurchase | Error>;
 }

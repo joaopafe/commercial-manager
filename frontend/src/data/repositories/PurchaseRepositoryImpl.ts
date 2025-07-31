@@ -11,6 +11,9 @@ export interface PurchaseDataSource {
   addServicePurchase(
     servicePurchase: AddServicePurchaseParams
   ): Promise<ServicePurchase | Error>;
+  editServicePurchase(
+    servicePurchase: ServicePurchase
+  ): Promise<ServicePurchase | Error>;
 }
 
 export class PurchaseRepositoryImpl implements PurchaseRepository {
@@ -36,5 +39,15 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
     );
 
     return createdServicePurchase;
+  }
+
+  async editServicePurchase(
+    servicePurchase: ServicePurchase
+  ): Promise<ServicePurchase | Error> {
+    const editedServicePurchase = await this.dataSource.editServicePurchase(
+      servicePurchase
+    );
+
+    return editedServicePurchase;
   }
 }

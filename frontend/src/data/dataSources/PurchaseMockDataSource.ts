@@ -4,6 +4,7 @@ import { ProductPurchase } from "../../domain/entities/ProductPurchase";
 import { PurchaseDataSource } from "../repositories/PurchaseRepositoryImpl";
 
 import { delay } from "../../shared/utils/delay";
+import { AddServicePurchaseParams } from "../../domain/useCases/CreateServicePurchase";
 
 const servicePurchasesMock: ServicePurchase[] = [
   {
@@ -85,5 +86,25 @@ export class PurchaseMockDataSource implements PurchaseDataSource {
 
     return productPurchasesMock;
     // return null
+  }
+
+  async addServicePurchase(
+    servicePurchase: AddServicePurchaseParams
+  ): Promise<ServicePurchase | Error> {
+    await delay(100);
+
+    try {
+      servicePurchasesMock.push({
+        id: servicePurchasesMock.length + 1,
+        supplierId: servicePurchase.supplierId,
+        name: servicePurchase.name,
+        value: servicePurchase.value,
+        date: servicePurchase.date,
+      });
+
+      return servicePurchasesMock[length - 1];
+    } catch {
+      return Error("Unable to register a new service purchase");
+    }
   }
 }

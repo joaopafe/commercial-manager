@@ -1,6 +1,7 @@
 import { GetServicePurchases } from "../../domain/useCases/GetServicePurchases";
 import { GetSuppliers } from "../../domain/useCases/GetSuppliers";
 import { CreateServicePurchase } from "../../domain/useCases/CreateServicePurchase";
+import { EditServicePurchase } from "../../domain/useCases/EditServicePurchase";
 
 import { ServicePurchase } from "../../domain/entities/ServicePurchase";
 import { Supplier } from "../../domain/entities/Supplier";
@@ -15,10 +16,12 @@ export interface ServicePurchasesState {
   isSearchingServicePurchases: boolean;
   isSearchingSuppliers: boolean;
   isCreatingServicePurchase: boolean;
+  isEditingServicePurchase: boolean;
 
   isServicePurchasesNotFound: boolean;
   isSuppliersNotFound: boolean;
   isErrorInServicePurchaseRegistration: boolean;
+  isErrorInServicePurchaseEdition: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -45,7 +48,8 @@ export class ServicePurchasesViewModel {
   constructor(
     private getServicePurchasesUseCase: GetServicePurchases,
     private getSuppliersUseCase: GetSuppliers,
-    private createServicePurchaseUseCase: CreateServicePurchase
+    private createServicePurchaseUseCase: CreateServicePurchase,
+    private editServicePurchaseUseCase: EditServicePurchase
   ) {}
 
   private _state: ServicePurchasesState = {
@@ -55,10 +59,12 @@ export class ServicePurchasesViewModel {
     isSearchingServicePurchases: false,
     isSearchingSuppliers: false,
     isCreatingServicePurchase: false,
+    isEditingServicePurchase: false,
 
     isServicePurchasesNotFound: false,
     isSuppliersNotFound: false,
     isErrorInServicePurchaseRegistration: false,
+    isErrorInServicePurchaseEdition: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -171,6 +177,44 @@ export class ServicePurchasesViewModel {
         isCreatingServicePurchase: false,
         isErrorInServicePurchaseRegistration: false,
         message: "Service purchase successfully created",
+      });
+
+      this.closeModal();
+
+      await this.getServicePurchases();
+
+      await this.showToast(this._state.message, "success");
+    }
+  }
+
+  async editServicePurchase(servicePurchase: ServicePurchase) {
+    this.updateState({
+      ...this._state,
+      isEditingServicePurchase: true,
+      isErrorInServicePurchaseEdition: false,
+    });
+
+    const editedServicePurchase = await this.editServicePurchaseUseCase.exec(
+      servicePurchase
+    );
+
+    if (editedServicePurchase instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isEditingServicePurchase: false,
+        isErrorInServicePurchaseEdition: true,
+        message: editedServicePurchase.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(editedServicePurchase instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isEditingServicePurchase: false,
+        isErrorInServicePurchaseEdition: false,
+        message: "Service purchase successfully edited",
       });
 
       this.closeModal();

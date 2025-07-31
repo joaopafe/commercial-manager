@@ -1,8 +1,10 @@
 import { GetServicePurchases } from "../../domain/useCases/GetServicePurchases";
 import { GetSuppliers } from "../../domain/useCases/GetSuppliers";
+import { CreateServicePurchase } from "../../domain/useCases/CreateServicePurchase";
 
 import { ServicePurchase } from "../../domain/entities/ServicePurchase";
 import { Supplier } from "../../domain/entities/Supplier";
+import { AddServicePurchaseParams } from "../../domain/useCases/CreateServicePurchase";
 
 import { delay } from "../../shared/utils/delay";
 
@@ -12,9 +14,11 @@ export interface ServicePurchasesState {
 
   isSearchingServicePurchases: boolean;
   isSearchingSuppliers: boolean;
+  isCreatingServicePurchase: boolean;
 
   isServicePurchasesNotFound: boolean;
   isSuppliersNotFound: boolean;
+  isErrorInServicePurchaseRegistration: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -40,7 +44,8 @@ export type ServicePurchasesStateListener = (
 export class ServicePurchasesViewModel {
   constructor(
     private getServicePurchasesUseCase: GetServicePurchases,
-    private getSuppliersUseCase: GetSuppliers
+    private getSuppliersUseCase: GetSuppliers,
+    private createServicePurchaseUseCase: CreateServicePurchase
   ) {}
 
   private _state: ServicePurchasesState = {
@@ -49,9 +54,11 @@ export class ServicePurchasesViewModel {
 
     isSearchingServicePurchases: false,
     isSearchingSuppliers: false,
+    isCreatingServicePurchase: false,
 
     isServicePurchasesNotFound: false,
     isSuppliersNotFound: false,
+    isErrorInServicePurchaseRegistration: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -134,6 +141,43 @@ export class ServicePurchasesViewModel {
         isSearchingSuppliers: false,
         isSuppliersNotFound: false,
       });
+    }
+  }
+
+  async createServicePurchase(servicePurchase: AddServicePurchaseParams) {
+    this.updateState({
+      ...this._state,
+      isCreatingServicePurchase: true,
+      isErrorInServicePurchaseRegistration: false,
+    });
+
+    const registeredServicePurchase =
+      await this.createServicePurchaseUseCase.exec(servicePurchase);
+
+    if (registeredServicePurchase instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isCreatingServicePurchase: false,
+        isErrorInServicePurchaseRegistration: true,
+        message: registeredServicePurchase.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(registeredServicePurchase instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isCreatingServicePurchase: false,
+        isErrorInServicePurchaseRegistration: false,
+        message: "Service purchase successfully created",
+      });
+
+      this.closeModal();
+
+      await this.getServicePurchases();
+
+      await this.showToast(this._state.message, "success");
     }
   }
 

@@ -1,6 +1,7 @@
 // Use cases:
 import { GetServicePurchases } from "../../../domain/useCases/GetServicePurchases";
 import { GetSuppliers } from "../../../domain/useCases/GetSuppliers";
+import { CreateServicePurchase } from "../../../domain/useCases/CreateServicePurchase";
 
 // Repositories implementations:
 import { PurchaseRepositoryImpl } from "../../../data/repositories/PurchaseRepositoryImpl";
@@ -41,7 +42,15 @@ export class ServicePurchasesViewModelFactory {
       this._purchaseRepository
     );
     const getSuppliers = new GetSuppliers(this._supplierRepository);
+    const createServicePurchase = new CreateServicePurchase(
+      this._purchaseRepository,
+      this._supplierRepository
+    );
 
-    return new ServicePurchasesViewModel(getServicePurchases, getSuppliers);
+    return new ServicePurchasesViewModel(
+      getServicePurchases,
+      getSuppliers,
+      createServicePurchase
+    );
   }
 }

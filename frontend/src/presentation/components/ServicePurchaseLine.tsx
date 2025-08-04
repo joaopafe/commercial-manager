@@ -43,7 +43,7 @@ export const ServicePurchaseLine: FC<ServicePurchaseLineProps> = ({
         </button>
         <button
           className="exclude-button"
-          onClick={() => console.log("Removendo compra...")}
+          onClick={() => removeServicePurchase(code)}
         >
           Excluir
         </button>

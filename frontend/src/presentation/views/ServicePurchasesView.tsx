@@ -49,7 +49,9 @@ export const ServicePurchasesView: React.FC<ServicePurchasesViewProps> = ({
       changeServicePurchaseCode={(servicePurchaseCode) =>
         servicePurchasesViewModel.changeServicePurchaseCode(servicePurchaseCode)
       }
-      removeServicePurchase={() => console.log("Removendo compra...")}
+      removeServicePurchase={(servicePurchaseCode) =>
+        servicePurchasesViewModel.removeServicePurchase(servicePurchaseCode)
+      }
     />
   );
 

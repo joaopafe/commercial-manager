@@ -3,6 +3,7 @@ import { GetServicePurchases } from "../../../domain/useCases/GetServicePurchase
 import { GetSuppliers } from "../../../domain/useCases/GetSuppliers";
 import { CreateServicePurchase } from "../../../domain/useCases/CreateServicePurchase";
 import { EditServicePurchase } from "../../../domain/useCases/EditServicePurchase";
+import { RemoveServicePurchase } from "../../../domain/useCases/RemoveServicePurchase";
 
 // Repositories implementations:
 import { PurchaseRepositoryImpl } from "../../../data/repositories/PurchaseRepositoryImpl";
@@ -51,12 +52,16 @@ export class ServicePurchasesViewModelFactory {
       this._purchaseRepository,
       this._supplierRepository
     );
+    const removeServicePurchase = new RemoveServicePurchase(
+      this._purchaseRepository
+    );
 
     return new ServicePurchasesViewModel(
       getServicePurchases,
       getSuppliers,
       createServicePurchase,
-      editServicePurchase
+      editServicePurchase,
+      removeServicePurchase
     );
   }
 }

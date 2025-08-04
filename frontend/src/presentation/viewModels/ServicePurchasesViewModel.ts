@@ -2,6 +2,7 @@ import { GetServicePurchases } from "../../domain/useCases/GetServicePurchases";
 import { GetSuppliers } from "../../domain/useCases/GetSuppliers";
 import { CreateServicePurchase } from "../../domain/useCases/CreateServicePurchase";
 import { EditServicePurchase } from "../../domain/useCases/EditServicePurchase";
+import { RemoveServicePurchase } from "../../domain/useCases/RemoveServicePurchase";
 
 import { ServicePurchase } from "../../domain/entities/ServicePurchase";
 import { Supplier } from "../../domain/entities/Supplier";
@@ -17,11 +18,13 @@ export interface ServicePurchasesState {
   isSearchingSuppliers: boolean;
   isCreatingServicePurchase: boolean;
   isEditingServicePurchase: boolean;
+  isRemovingServicePurchase: boolean;
 
   isServicePurchasesNotFound: boolean;
   isSuppliersNotFound: boolean;
   isErrorInServicePurchaseRegistration: boolean;
   isErrorInServicePurchaseEdition: boolean;
+  isErrorInServicePurchaseRemotion: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -49,7 +52,8 @@ export class ServicePurchasesViewModel {
     private getServicePurchasesUseCase: GetServicePurchases,
     private getSuppliersUseCase: GetSuppliers,
     private createServicePurchaseUseCase: CreateServicePurchase,
-    private editServicePurchaseUseCase: EditServicePurchase
+    private editServicePurchaseUseCase: EditServicePurchase,
+    private removeServicePurchaseUseCase: RemoveServicePurchase
   ) {}
 
   private _state: ServicePurchasesState = {
@@ -60,11 +64,13 @@ export class ServicePurchasesViewModel {
     isSearchingSuppliers: false,
     isCreatingServicePurchase: false,
     isEditingServicePurchase: false,
+    isRemovingServicePurchase: false,
 
     isServicePurchasesNotFound: false,
     isSuppliersNotFound: false,
     isErrorInServicePurchaseRegistration: false,
     isErrorInServicePurchaseEdition: false,
+    isErrorInServicePurchaseRemotion: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -218,6 +224,42 @@ export class ServicePurchasesViewModel {
       });
 
       this.closeModal();
+
+      await this.getServicePurchases();
+
+      await this.showToast(this._state.message, "success");
+    }
+  }
+
+  async removeServicePurchase(servicePurchaseCode: number) {
+    this.updateState({
+      ...this._state,
+      isRemovingServicePurchase: true,
+      isErrorInServicePurchaseRemotion: false,
+    });
+
+    const removedServicePurchase = await this.removeServicePurchaseUseCase.exec(
+      servicePurchaseCode
+    );
+
+    if (removedServicePurchase instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isRemovingServicePurchase: false,
+        isErrorInServicePurchaseRemotion: true,
+        message: removedServicePurchase.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(removedServicePurchase instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isRemovingServicePurchase: false,
+        isErrorInServicePurchaseRemotion: false,
+        message: "Service purchase successfully deleted",
+      });
 
       await this.getServicePurchases();
 

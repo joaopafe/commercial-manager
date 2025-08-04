@@ -346,14 +346,14 @@ export class ServicePurchasesViewModel {
   }) {
     const isValidDate = !isNaN(new Date(servicePurchaseFields.date).getTime());
 
-    const allowServiceSaleCreation =
+    const allowServicePurchaseCreation =
       servicePurchaseFields.description.length >= 3 &&
       servicePurchaseFields.value >= 0 &&
       isValidDate;
 
     this.updateState({
       ...this._state,
-      allowedToCreateServicePurchase: allowServiceSaleCreation,
+      allowedToCreateServicePurchase: allowServicePurchaseCreation,
     });
   }
 

@@ -133,4 +133,27 @@ export class PurchaseMockDataSource implements PurchaseDataSource {
       return Error("It was not possible to create the service purchase");
     }
   }
+
+  async removeServicePurchase(
+    servicePurchaseCode: number
+  ): Promise<ServicePurchase | Error> {
+    await delay(100);
+
+    try {
+      const removedServicePurchaseIndex = servicePurchasesMock.findIndex(
+        (registeredServicePurchase) => {
+          return registeredServicePurchase.id === servicePurchaseCode;
+        }
+      );
+
+      const removedServicePurchase =
+        servicePurchasesMock[removedServicePurchaseIndex];
+
+      servicePurchasesMock.splice(removedServicePurchaseIndex, 1);
+
+      return removedServicePurchase;
+    } catch {
+      return Error("It was not possible to remove the service purchase");
+    }
+  }
 }

@@ -21,6 +21,9 @@ export interface PurchaseDataSource {
   addProductPurchase(
     productPurchase: AddProductPurchaseParams
   ): Promise<ProductPurchase | Error>;
+  editProductPurchase(
+    productPurchase: ProductPurchase
+  ): Promise<ProductPurchase | Error>;
 }
 
 export class PurchaseRepositoryImpl implements PurchaseRepository {
@@ -76,5 +79,15 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
     );
 
     return createdProductPurchase;
+  }
+
+  async editProductPurchase(
+    productPurchase: ProductPurchase
+  ): Promise<ProductPurchase | Error> {
+    const editedProductPurchase = await this.dataSource.editProductPurchase(
+      productPurchase
+    );
+
+    return editedProductPurchase;
   }
 }

@@ -19,4 +19,7 @@ export interface PurchaseRepository {
   addProductPurchase(
     productPurchase: AddProductPurchaseParams
   ): Promise<ProductPurchase | Error>;
+  editProductPurchase(
+    productPurchase: ProductPurchase
+  ): Promise<ProductPurchase | Error>;
 }

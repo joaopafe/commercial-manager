@@ -12,4 +12,7 @@ export interface PurchaseRepository {
   editServicePurchase(
     servicePurchase: ServicePurchase
   ): Promise<ServicePurchase | Error>;
+  removeServicePurchase(
+    servicePurchaseCode: number
+  ): Promise<ServicePurchase | Error>;
 }

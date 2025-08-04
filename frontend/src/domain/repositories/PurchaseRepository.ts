@@ -22,4 +22,7 @@ export interface PurchaseRepository {
   editProductPurchase(
     productPurchase: ProductPurchase
   ): Promise<ProductPurchase | Error>;
+  removeProductPurchase(
+    productPurchaseCode: number
+  ): Promise<ProductPurchase | Error>;
 }

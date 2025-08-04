@@ -2,6 +2,7 @@ import { ServicePurchase } from "../entities/ServicePurchase";
 import { ProductPurchase } from "../entities/ProductPurchase";
 
 import { AddServicePurchaseParams } from "../useCases/CreateServicePurchase";
+import { AddProductPurchaseParams } from "../useCases/CreateProductPurchase";
 
 export interface PurchaseRepository {
   listServicePurchases(): Promise<ServicePurchase[] | null>;
@@ -15,4 +16,7 @@ export interface PurchaseRepository {
   removeServicePurchase(
     servicePurchaseCode: number
   ): Promise<ServicePurchase | Error>;
+  addProductPurchase(
+    productPurchase: AddProductPurchaseParams
+  ): Promise<ProductPurchase | Error>;
 }

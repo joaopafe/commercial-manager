@@ -2,6 +2,7 @@ import { ServicePurchase } from "../../domain/entities/ServicePurchase";
 import { ProductPurchase } from "../../domain/entities/ProductPurchase";
 
 import { AddServicePurchaseParams } from "../../domain/useCases/CreateServicePurchase";
+import { AddProductPurchaseParams } from "../../domain/useCases/CreateProductPurchase";
 
 import { PurchaseRepository } from "../../domain/repositories/PurchaseRepository";
 
@@ -17,6 +18,9 @@ export interface PurchaseDataSource {
   removeServicePurchase(
     servicePurchaseCode: number
   ): Promise<ServicePurchase | Error>;
+  addProductPurchase(
+    productPurchase: AddProductPurchaseParams
+  ): Promise<ProductPurchase | Error>;
 }
 
 export class PurchaseRepositoryImpl implements PurchaseRepository {
@@ -62,5 +66,15 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
     );
 
     return removedServicePurchase;
+  }
+
+  async addProductPurchase(
+    productPurchase: AddProductPurchaseParams
+  ): Promise<ProductPurchase | Error> {
+    const createdProductPurchase = await this.dataSource.addProductPurchase(
+      productPurchase
+    );
+
+    return createdProductPurchase;
   }
 }

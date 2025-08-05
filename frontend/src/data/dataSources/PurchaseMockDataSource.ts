@@ -5,6 +5,7 @@ import { PurchaseDataSource } from "../repositories/PurchaseRepositoryImpl";
 
 import { delay } from "../../shared/utils/delay";
 import { AddServicePurchaseParams } from "../../domain/useCases/CreateServicePurchase";
+import { AddProductPurchaseParams } from "../../domain/useCases/CreateProductPurchase";
 
 const servicePurchasesMock: ServicePurchase[] = [
   {
@@ -130,7 +131,7 @@ export class PurchaseMockDataSource implements PurchaseDataSource {
 
       return servicePurchasesMock[editedServicePurchaseIndex];
     } catch {
-      return Error("It was not possible to create the service purchase");
+      return Error("It was not possible to edit the service purchase");
     }
   }
 
@@ -154,6 +155,77 @@ export class PurchaseMockDataSource implements PurchaseDataSource {
       return removedServicePurchase;
     } catch {
       return Error("It was not possible to remove the service purchase");
+    }
+  }
+
+  async addProductPurchase(
+    productPurchase: AddProductPurchaseParams
+  ): Promise<ProductPurchase | Error> {
+    await delay(100);
+
+    try {
+      productPurchasesMock.push({
+        id: productPurchasesMock.length + 1,
+        supplierId: productPurchase.supplierId,
+        pieceId: productPurchase.pieceId,
+        quantity: productPurchase.quantity,
+        value: productPurchase.value,
+        date: productPurchase.date,
+      });
+
+      return productPurchasesMock[length - 1];
+    } catch {
+      return Error("It was not possible to create the product purchase");
+    }
+  }
+
+  async editProductPurchase(
+    productPurchase: ProductPurchase
+  ): Promise<ProductPurchase | Error> {
+    await delay(100);
+
+    try {
+      const editedProductPurchaseIndex = productPurchasesMock.findIndex(
+        (registeredProductPurchase) => {
+          return registeredProductPurchase.id === productPurchase.id;
+        }
+      );
+
+      productPurchasesMock[editedProductPurchaseIndex] = {
+        id: productPurchase.id,
+        supplierId: productPurchase.supplierId,
+        pieceId: productPurchase.pieceId,
+        quantity: productPurchase.quantity,
+        value: productPurchase.value,
+        date: productPurchase.date,
+      };
+
+      return productPurchasesMock[editedProductPurchaseIndex];
+    } catch {
+      return Error("It was not possible to edit the product purchase");
+    }
+  }
+
+  async removeProductPurchase(
+    productPurchaseCode: number
+  ): Promise<ProductPurchase | Error> {
+    await delay(100);
+
+    try {
+      const removedProductPurchaseIndex = productPurchasesMock.findIndex(
+        (registeredProductPurchase) => {
+          return registeredProductPurchase.id === productPurchaseCode;
+        }
+      );
+
+      const removedServicePurchase =
+        productPurchasesMock[removedProductPurchaseIndex];
+
+      productPurchasesMock.splice(removedProductPurchaseIndex, 1);
+
+      return removedServicePurchase;
+    } catch {
+      return Error("It was not possible to remove the product purchase");
     }
   }
 }

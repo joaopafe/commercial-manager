@@ -1,20 +1,36 @@
 import { GetProductPurchases } from "../../domain/useCases/GetProductPurchases";
 import { GetSuppliers } from "../../domain/useCases/GetSuppliers";
+import { GetParts } from "../../domain/useCases/GetParts";
+import { CreateProductPurchase } from "../../domain/useCases/CreateProductPurchase";
+import { EditProductPurchase } from "../../domain/useCases/EditProductPurchase";
+import { RemoveProductPurchase } from "../../domain/useCases/RemoveProductPurchase";
 
 import { ProductPurchase } from "../../domain/entities/ProductPurchase";
 import { Supplier } from "../../domain/entities/Supplier";
+import { Piece } from "../../domain/entities/Piece";
+
+import { AddProductPurchaseParams } from "../../domain/useCases/CreateProductPurchase";
 
 import { delay } from "../../shared/utils/delay";
 
 export interface ProductPurchaseState {
   productPurchases: ProductPurchase[] | null;
   suppliers: Supplier[] | null;
+  parts: Piece[] | null;
 
   isSearchingProductPurchases: boolean;
   isSearchingSuppliers: boolean;
+  isSearchingParts: boolean;
+  isCreatingProductPurchase: boolean;
+  isEditingProductPurchase: boolean;
+  isRemovingProductPurchase: boolean;
 
   isProductPurchasesNotFound: boolean;
   isSuppliersNotFound: boolean;
+  isPartsNotFound: boolean;
+  isErrorInProductPurchaseCreation: boolean;
+  isErrorInProductPurchaseEdition: boolean;
+  isErrorInProductPurchaseRemotion: boolean;
 
   showCreateModal: boolean;
   showEditModal: boolean;
@@ -42,18 +58,31 @@ export type ProductPurchaseStateListener = (
 export class ProductPurchasesViewModel {
   constructor(
     private getProductPurchasesUseCase: GetProductPurchases,
-    private getSuppliersUseCase: GetSuppliers
+    private getSuppliersUseCase: GetSuppliers,
+    private getPartsUseCase: GetParts,
+    private createProductPurchaseUseCase: CreateProductPurchase,
+    private editProductPurchaseUseCase: EditProductPurchase,
+    private removeProductPurchaseUseCase: RemoveProductPurchase
   ) {}
 
   private _state: ProductPurchaseState = {
     productPurchases: null,
     suppliers: null,
+    parts: null,
 
     isSearchingProductPurchases: false,
     isSearchingSuppliers: false,
+    isSearchingParts: false,
+    isCreatingProductPurchase: false,
+    isEditingProductPurchase: false,
+    isRemovingProductPurchase: false,
 
     isProductPurchasesNotFound: false,
     isSuppliersNotFound: false,
+    isPartsNotFound: false,
+    isErrorInProductPurchaseCreation: false,
+    isErrorInProductPurchaseEdition: false,
+    isErrorInProductPurchaseRemotion: false,
 
     showCreateModal: false,
     showEditModal: false,
@@ -139,6 +168,143 @@ export class ProductPurchasesViewModel {
         isSearchingSuppliers: false,
         isSuppliersNotFound: false,
       });
+    }
+  }
+
+  async getParts() {
+    this.updateState({
+      ...this._state,
+      isSearchingParts: true,
+      isPartsNotFound: false,
+    });
+
+    const parts = await this.getPartsUseCase.exec();
+
+    if (parts === null) {
+      this.updateState({
+        ...this._state,
+        isSearchingParts: false,
+        isPartsNotFound: true,
+      });
+
+      await this.showToast("It was not possible to get the parts", "error");
+    }
+
+    if (parts) {
+      this.updateState({
+        ...this._state,
+        parts,
+        isSearchingParts: false,
+        isPartsNotFound: false,
+      });
+    }
+  }
+
+  async createProductPurchase(productPurchase: AddProductPurchaseParams) {
+    this.updateState({
+      ...this._state,
+      isCreatingProductPurchase: true,
+      isErrorInProductPurchaseCreation: false,
+    });
+
+    const createdProductPurchase = await this.createProductPurchaseUseCase.exec(
+      productPurchase
+    );
+
+    if (createdProductPurchase instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isCreatingProductPurchase: false,
+        isErrorInProductPurchaseCreation: true,
+        message: createdProductPurchase.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(createdProductPurchase instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isCreatingProductPurchase: false,
+        isErrorInProductPurchaseCreation: false,
+        message: "Product purchase created successfully",
+      });
+
+      this.closeModal();
+
+      await this.showToast(this._state.message, "success");
+    }
+  }
+
+  async editProductPurchase(productPurchase: ProductPurchase) {
+    this.updateState({
+      ...this._state,
+      isEditingProductPurchase: true,
+      isErrorInProductPurchaseEdition: false,
+    });
+
+    const editedProductPurchase = await this.editProductPurchaseUseCase.exec(
+      productPurchase
+    );
+
+    if (editedProductPurchase instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isEditingProductPurchase: false,
+        isErrorInProductPurchaseEdition: true,
+        message: editedProductPurchase.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(editedProductPurchase instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isEditingProductPurchase: false,
+        isErrorInProductPurchaseEdition: false,
+        message: "Product purchase edited successfully",
+      });
+
+      this.closeModal();
+
+      await this.showToast(this._state.message, "success");
+    }
+  }
+
+  async removeProductPurchase(productPurchaseCode: number) {
+    this.updateState({
+      ...this._state,
+      isRemovingProductPurchase: true,
+      isErrorInProductPurchaseRemotion: false,
+    });
+
+    const removedProductPurchase = await this.removeProductPurchaseUseCase.exec(
+      productPurchaseCode
+    );
+
+    if (removedProductPurchase instanceof Error) {
+      this.updateState({
+        ...this._state,
+        isRemovingProductPurchase: false,
+        isErrorInProductPurchaseRemotion: true,
+        message: removedProductPurchase.message,
+      });
+
+      await this.showToast(this._state.message, "error");
+    }
+
+    if (!(removedProductPurchase instanceof Error)) {
+      this.updateState({
+        ...this._state,
+        isRemovingProductPurchase: false,
+        isErrorInProductPurchaseRemotion: false,
+        message: "Product purchase successfully deleted",
+      });
+
+      this.closeModal();
+
+      await this.showToast(this._state.message, "success");
     }
   }
 

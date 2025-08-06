@@ -8,6 +8,7 @@ import { CustomersManagerView } from "../../presentation/views/CustomersManagerV
 import { ServiceSalesView } from "../../presentation/views/ServiceSalesView";
 import { ProductSalesView } from "../../presentation/views/ProductSalesView";
 import { ServicePurchasesView } from "../../presentation/views/ServicePurchasesView";
+import { ProductPurchasesView } from "../../presentation/views/ProductPurchasesView";
 
 import { HomeViewModelFactory } from "../providers/di/HomeViewModelFactory";
 import { PartsManagerViewModelFactory } from "../providers/di/PartsManagerViewModelFactory";
@@ -17,6 +18,7 @@ import { CustomersManagerViewModelFactory } from "../providers/di/CustomersManag
 import { ServiceSalesViewModelFactory } from "../providers/di/ServiceSalesViewModelFactory";
 import { ProductSalesViewModelFactory } from "../providers/di/ProductSalesViewModelFactory";
 import { ServicePurchasesViewModelFactory } from "../providers/di/ServicePurchasesViewModelFactory";
+import { ProductPurchasesViewModelFactory } from "../providers/di/ProductPurchasesViewModelFactory";
 
 const homeViewModelFactory = new HomeViewModelFactory();
 const partsManagerViewModelFactory = new PartsManagerViewModelFactory();
@@ -26,6 +28,7 @@ const customersManagerViewModelFactory = new CustomersManagerViewModelFactory();
 const serviceSalesViewModelFactory = new ServiceSalesViewModelFactory();
 const productSalesViewModelFactory = new ProductSalesViewModelFactory();
 const servicePurchasesViewModelFactory = new ServicePurchasesViewModelFactory();
+const productPurchaseViewModelFactory = new ProductPurchasesViewModelFactory();
 
 export const AppRoutes = () => {
   return (
@@ -86,6 +89,15 @@ export const AppRoutes = () => {
         element={
           <ServicePurchasesView
             servicePurchasesViewModelFactory={servicePurchasesViewModelFactory}
+          />
+        }
+      />
+
+      <Route
+        path="product-purchases"
+        element={
+          <ProductPurchasesView
+            productPurchasesViewModelFactory={productPurchaseViewModelFactory}
           />
         }
       />

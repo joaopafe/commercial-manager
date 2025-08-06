@@ -16,6 +16,7 @@ import "./presentation/style/customers-manager.css";
 import "./presentation/style/service-sale.css";
 import "./presentation/style/product-sale.css";
 import "./presentation/style/service-purchase.css";
+import "./presentation/style/product-purchase.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

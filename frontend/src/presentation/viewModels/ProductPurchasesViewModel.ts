@@ -232,6 +232,8 @@ export class ProductPurchasesViewModel {
 
       this.closeModal();
 
+      await this.getProductPurchases();
+
       await this.showToast(this._state.message, "success");
     }
   }
@@ -267,6 +269,8 @@ export class ProductPurchasesViewModel {
       });
 
       this.closeModal();
+
+      await this.getProductPurchases();
 
       await this.showToast(this._state.message, "success");
     }

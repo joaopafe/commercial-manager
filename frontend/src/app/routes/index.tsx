@@ -9,6 +9,7 @@ import { ServiceSalesView } from "../../presentation/views/ServiceSalesView";
 import { ProductSalesView } from "../../presentation/views/ProductSalesView";
 import { ServicePurchasesView } from "../../presentation/views/ServicePurchasesView";
 import { ProductPurchasesView } from "../../presentation/views/ProductPurchasesView";
+import { CashView } from "../../presentation/views/CashView";
 
 import { HomeViewModelFactory } from "../providers/di/HomeViewModelFactory";
 import { PartsManagerViewModelFactory } from "../providers/di/PartsManagerViewModelFactory";
@@ -101,6 +102,8 @@ export const AppRoutes = () => {
           />
         }
       />
+
+      <Route path="cash" element={<CashView />} />
     </Routes>
   );
 };

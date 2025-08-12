@@ -20,6 +20,7 @@ import { ServiceSalesViewModelFactory } from "../providers/di/ServiceSalesViewMo
 import { ProductSalesViewModelFactory } from "../providers/di/ProductSalesViewModelFactory";
 import { ServicePurchasesViewModelFactory } from "../providers/di/ServicePurchasesViewModelFactory";
 import { ProductPurchasesViewModelFactory } from "../providers/di/ProductPurchasesViewModelFactory";
+import { CashViewModelFactory } from "../providers/di/CashViewModelFactory";
 
 const homeViewModelFactory = new HomeViewModelFactory();
 const partsManagerViewModelFactory = new PartsManagerViewModelFactory();
@@ -30,6 +31,7 @@ const serviceSalesViewModelFactory = new ServiceSalesViewModelFactory();
 const productSalesViewModelFactory = new ProductSalesViewModelFactory();
 const servicePurchasesViewModelFactory = new ServicePurchasesViewModelFactory();
 const productPurchaseViewModelFactory = new ProductPurchasesViewModelFactory();
+const cashViewModelFactory = new CashViewModelFactory();
 
 export const AppRoutes = () => {
   return (
@@ -103,7 +105,10 @@ export const AppRoutes = () => {
         }
       />
 
-      <Route path="cash" element={<CashView />} />
+      <Route
+        path="cash"
+        element={<CashView cashViewModelFactory={cashViewModelFactory} />}
+      />
     </Routes>
   );
 };

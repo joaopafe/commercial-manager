@@ -1,3 +1,5 @@
+import { CategoryError } from "./errors/CategoryError";
+
 class Id {
   private _id: number;
 
@@ -13,11 +15,17 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error("The category id cannot be less than or equal to zero");
+      throw new CategoryError(
+        "id_is_invalid",
+        "The category id cannot be less than or equal to zero"
+      );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The category id must be an integer");
+      throw new CategoryError(
+        "id_is_invalid",
+        "The category id must be an integer"
+      );
     }
   }
 }
@@ -37,7 +45,10 @@ class Name {
 
   validate() {
     if (this._name.length <= 3) {
-      throw new Error("The name cannot be less than 3 characters");
+      throw new CategoryError(
+        "name_is_invalid",
+        "The name cannot be less than 3 characters"
+      );
     }
   }
 }

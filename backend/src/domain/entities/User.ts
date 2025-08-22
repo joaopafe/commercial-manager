@@ -1,3 +1,5 @@
+import { UserError } from "./errors/UserError";
+
 class Id {
   private _id: number;
 
@@ -13,11 +15,14 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error("The user id cannot be less than or equal to zero");
+      throw new UserError(
+        "id_is_invalid",
+        "The user id cannot be less than or equal to zero"
+      );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The user id must be an integer");
+      throw new UserError("id_is_invalid", "The user id must be an integer");
     }
   }
 }
@@ -37,7 +42,10 @@ class Name {
 
   validate() {
     if (this._name.length <= 2) {
-      throw new Error("The username cannot be less than 3 characters");
+      throw new UserError(
+        "username_is_invalid",
+        "The username cannot be less than 3 characters"
+      );
     }
   }
 }
@@ -57,16 +65,28 @@ class Password {
 
   validate() {
     if (this._password !== this._password.trim())
-      throw new Error("Password cannot contain empty spaces");
+      throw new UserError(
+        "password_is_invalid",
+        "Password cannot contain empty spaces"
+      );
 
     if (this._password.length < 8)
-      throw new Error("The password must contain 8 or more characters");
+      throw new UserError(
+        "password_is_invalid",
+        "The password must contain 8 or more characters"
+      );
 
     if (!/[a-zA-Z]/.test(this._password))
-      throw new Error("The password must have least one letter");
+      throw new UserError(
+        "password_is_invalid",
+        "The password must have least one letter"
+      );
 
     if (!/\d/.test(this._password))
-      throw new Error("The password must have least one number");
+      throw new UserError(
+        "password_is_invalid",
+        "The password must have least one number"
+      );
   }
 }
 

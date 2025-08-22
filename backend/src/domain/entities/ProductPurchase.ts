@@ -1,3 +1,5 @@
+import { ProductPurchaseError } from "./errors/ProductPurchaseError";
+
 class Id {
   private _id: number;
 
@@ -13,13 +15,17 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error(
+      throw new ProductPurchaseError(
+        "id_is_invalid",
         "The product purchase id cannot be less than or equal to zero"
       );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The product purchase id must be an integer");
+      throw new ProductPurchaseError(
+        "id_is_invalid",
+        "The product purchase id must be an integer"
+      );
     }
   }
 }
@@ -39,10 +45,16 @@ class SupplierId {
 
   validate() {
     if (this._supplierId <= 0)
-      throw new Error("The supplier id cannot be less than or equal to zero");
+      throw new ProductPurchaseError(
+        "supplier_id_is_invalid",
+        "The supplier id cannot be less than or equal to zero"
+      );
 
     if (!Number.isInteger(this._supplierId))
-      throw new Error("The supplier id must be an integer");
+      throw new ProductPurchaseError(
+        "supplier_id_is_invalid",
+        "The supplier id must be an integer"
+      );
   }
 }
 
@@ -61,10 +73,16 @@ class ItemId {
 
   validate() {
     if (this._itemId <= 0)
-      throw new Error("The item id cannot be less than or equal to zero");
+      throw new ProductPurchaseError(
+        "item_id_is_invalid",
+        "The item id cannot be less than or equal to zero"
+      );
 
     if (!Number.isInteger(this._itemId))
-      throw new Error("The item id must be an integer");
+      throw new ProductPurchaseError(
+        "item_id_is_invalid",
+        "The item id must be an integer"
+      );
   }
 }
 
@@ -83,10 +101,16 @@ class Quantity {
 
   validate() {
     if (this._quantity <= 0)
-      throw new Error("The purchase quantity cannot be less or equal to zero");
+      throw new ProductPurchaseError(
+        "quantity_is_invalid",
+        "The purchase quantity cannot be less or equal to zero"
+      );
 
     if (!Number.isInteger(this._quantity))
-      throw new Error("The purchase quantity must be an integer");
+      throw new ProductPurchaseError(
+        "quantity_is_invalid",
+        "The purchase quantity must be an integer"
+      );
   }
 }
 
@@ -105,7 +129,10 @@ class Value {
 
   validate() {
     if (this._value < 0)
-      throw new Error("The product purchase value cannot be less to zero");
+      throw new ProductPurchaseError(
+        "value_is_invalid",
+        "The product purchase value cannot be less to zero"
+      );
   }
 }
 
@@ -124,7 +151,10 @@ class PurchaseDate {
 
   validate() {
     if (!(this._date instanceof Date) || isNaN(this._date.getTime())) {
-      throw new Error("The service purchase date is invalid");
+      throw new ProductPurchaseError(
+        "date_is_invalid",
+        "The service purchase date is invalid"
+      );
     }
   }
 

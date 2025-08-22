@@ -7,13 +7,13 @@
 **Operations on the items:**
 
 - get items (without the stock quantity);
-- get items (with the stock quantity and returning the entity StockGroup);
 - create item (with stock quantity equals zero);
 - update item (keeping the same stock quantity);
 - remove item;
 
 **Operations on items stock:**
 
+- get items (with the stock quantity and returning the entity StockGroup);
 - add stock quantity on an existing item;
 - remove stock quantity on an existing item;
 - get items based on stock group entity;

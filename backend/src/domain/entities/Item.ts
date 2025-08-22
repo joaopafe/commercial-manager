@@ -1,3 +1,5 @@
+import { ItemError } from "./errors/ItemError";
+
 class Id {
   private _id: number;
 
@@ -13,11 +15,14 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error("The item id cannot be less than or equal to zero");
+      throw new ItemError(
+        "id_is_invalid",
+        "The item id cannot be less than or equal to zero"
+      );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The item id must be an integer");
+      throw new ItemError("id_is_invalid", "The item id must be an integer");
     }
   }
 }
@@ -37,7 +42,10 @@ class Name {
 
   validate() {
     if (this._name.length <= 3) {
-      throw new Error("The item name cannot be less than 3 characters");
+      throw new ItemError(
+        "name_is_invalid",
+        "The item name cannot be less than 3 characters"
+      );
     }
   }
 }
@@ -57,11 +65,17 @@ class CategoryId {
 
   validate() {
     if (this._categoryId <= 0) {
-      throw new Error("The category id cannot be less than or equal to zero");
+      throw new ItemError(
+        "category_id_is_invalid",
+        "The category id cannot be less than or equal to zero"
+      );
     }
 
     if (!Number.isInteger(this._categoryId)) {
-      throw new Error("The category id must be an integer");
+      throw new ItemError(
+        "category_id_is_invalid",
+        "The category id must be an integer"
+      );
     }
   }
 }
@@ -85,7 +99,10 @@ class Price {
 
   validate() {
     if (this._price <= 0) {
-      throw new Error("The price cannot be less than or equal to zero");
+      throw new ItemError(
+        "price_is_invalid",
+        "The price cannot be less than or equal to zero"
+      );
     }
   }
 }
@@ -105,11 +122,17 @@ class SupplierId {
 
   validate() {
     if (this._supplierId <= 0) {
-      throw new Error("The supplier id cannot be less than or equal to zero");
+      throw new ItemError(
+        "supplier_id_is_invalid",
+        "The supplier id cannot be less than or equal to zero"
+      );
     }
 
     if (!Number.isInteger(this._supplierId)) {
-      throw new Error("The supplier id must be an integer");
+      throw new ItemError(
+        "supplier_id_is_invalid",
+        "The supplier id must be an integer"
+      );
     }
   }
 }
@@ -129,11 +152,17 @@ class StockQuantity {
 
   validate() {
     if (this._stockQuantity <= 0) {
-      throw new Error("The stock quantity cannot be less than zero");
+      throw new ItemError(
+        "stock_quantity_is_invalid",
+        "The stock quantity cannot be less than zero"
+      );
     }
 
     if (!Number.isInteger(this._stockQuantity)) {
-      throw new Error("The stock quantity must be an integer");
+      throw new ItemError(
+        "stock_quantity_is_invalid",
+        "The stock quantity must be an integer"
+      );
     }
   }
 }

@@ -1,3 +1,5 @@
+import { ServicePurchaseError } from "./errors/ServicePurchaseError";
+
 class Id {
   private _id: number;
 
@@ -13,13 +15,17 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error(
+      throw new ServicePurchaseError(
+        "id_is_invalid",
         "The service purchase id cannot be less than or equal to zero"
       );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The service purchase id must be an integer");
+      throw new ServicePurchaseError(
+        "id_is_invalid",
+        "The service purchase id must be an integer"
+      );
     }
   }
 }
@@ -39,10 +45,16 @@ class SupplierId {
 
   validate() {
     if (this._supplierId <= 0)
-      throw new Error("The supplier id cannot be less than or equal to zero");
+      throw new ServicePurchaseError(
+        "supplier_id_is_invalid",
+        "The supplier id cannot be less than or equal to zero"
+      );
 
     if (!Number.isInteger(this._supplierId))
-      throw new Error("The supplier id must be an integer");
+      throw new ServicePurchaseError(
+        "supplier_id_is_invalid",
+        "The supplier id must be an integer"
+      );
   }
 }
 
@@ -61,7 +73,8 @@ class Name {
 
   validate() {
     if (this._name.length <= 3) {
-      throw new Error(
+      throw new ServicePurchaseError(
+        "name_is_invalid",
         "The service purchase name cannot be less than 3 characters"
       );
     }
@@ -83,7 +96,10 @@ class Value {
 
   validate() {
     if (this._value < 0)
-      throw new Error("The service purchase value cannot be less to zero");
+      throw new ServicePurchaseError(
+        "value_is_invalid",
+        "The service purchase value cannot be less to zero"
+      );
   }
 }
 
@@ -102,7 +118,10 @@ class PurchaseDate {
 
   validate() {
     if (!(this._date instanceof Date) || isNaN(this._date.getTime())) {
-      throw new Error("The service purchase date is invalid");
+      throw new ServicePurchaseError(
+        "date_is_invalid",
+        "The service purchase date is invalid"
+      );
     }
   }
 

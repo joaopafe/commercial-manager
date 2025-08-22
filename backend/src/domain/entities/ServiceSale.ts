@@ -1,3 +1,5 @@
+import { ServiceSaleError } from "./errors/ServiceSaleError";
+
 class Id {
   private _id: number;
 
@@ -13,13 +15,17 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error(
+      throw new ServiceSaleError(
+        "id_is_invalid",
         "The service sale id cannot be less than or equal to zero"
       );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The service sale id must be an integer");
+      throw new ServiceSaleError(
+        "id_is_invalid",
+        "The service sale id must be an integer"
+      );
     }
   }
 }
@@ -39,10 +45,16 @@ class CustomerId {
 
   validate() {
     if (this._customerId <= 0)
-      throw new Error("The customer id cannot be less than or equal to zero");
+      throw new ServiceSaleError(
+        "customer_id_is_invalid",
+        "The customer id cannot be less than or equal to zero"
+      );
 
     if (!Number.isInteger(this._customerId))
-      throw new Error("The customer id must be an integer");
+      throw new ServiceSaleError(
+        "customer_id_is_invalid",
+        "The customer id must be an integer"
+      );
   }
 }
 
@@ -61,7 +73,10 @@ class Name {
 
   validate() {
     if (this._name.length <= 3) {
-      throw new Error("The service sale name cannot be less than 3 characters");
+      throw new ServiceSaleError(
+        "name_is_invalid",
+        "The service sale name cannot be less than 3 characters"
+      );
     }
   }
 }
@@ -81,7 +96,10 @@ class Value {
 
   validate() {
     if (this._value < 0)
-      throw new Error("The service sale value cannot be less to zero");
+      throw new ServiceSaleError(
+        "value_is_invalid",
+        "The service sale value cannot be less to zero"
+      );
   }
 }
 
@@ -100,7 +118,10 @@ class SaleDate {
 
   validate() {
     if (!(this._date instanceof Date) || isNaN(this._date.getTime())) {
-      throw new Error("The service sale date is invalid");
+      throw new ServiceSaleError(
+        "date_is_invalid",
+        "The service sale date is invalid"
+      );
     }
   }
 

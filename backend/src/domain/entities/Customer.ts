@@ -1,3 +1,5 @@
+import { CustomerError } from "./errors/CustomerError";
+
 class Id {
   private _id: number;
 
@@ -13,11 +15,17 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error("The customer id cannot be less than or equal to zero");
+      throw new CustomerError(
+        "id_is_invalid",
+        "The customer id cannot be less than or equal to zero"
+      );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The customer id must be an integer");
+      throw new CustomerError(
+        "id_is_invalid",
+        "The customer id must be an integer"
+      );
     }
   }
 }
@@ -39,10 +47,16 @@ class CPF {
     const cpf = this._cpf.replace(/[^\d]+/g, "");
 
     if (cpf.length !== 11)
-      throw new Error("The CPF must contain 11 numeric characters.");
+      throw new CustomerError(
+        "cpf_is_invalid",
+        "The CPF must contain 11 numeric characters."
+      );
 
     if (/^(\d)\1{10}$/.test(cpf))
-      throw new Error("The CPF cannot contain all the same digits.");
+      throw new CustomerError(
+        "cpf_is_invalid",
+        "The CPF cannot contain all the same digits."
+      );
 
     let sum = 0;
     for (let i = 0; i < 9; i++) {
@@ -50,7 +64,10 @@ class CPF {
     }
     let result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
     if (result !== parseInt(cpf.charAt(9))) {
-      throw new Error("The first verification digit of the CPF is invalid");
+      throw new CustomerError(
+        "cpf_is_invalid",
+        "The first verification digit of the CPF is invalid"
+      );
     }
 
     sum = 0;
@@ -59,7 +76,10 @@ class CPF {
     }
     result = sum % 11 < 2 ? 0 : 11 - (sum % 11);
     if (result !== parseInt(cpf.charAt(10))) {
-      throw new Error("The second verification digit of the CPF is invalid");
+      throw new CustomerError(
+        "cpf_is_invalid",
+        "The second verification digit of the CPF is invalid"
+      );
     }
 
     this.formatCPF(cpf);
@@ -89,7 +109,10 @@ class Name {
 
   validate() {
     if (this._name.length <= 3) {
-      throw new Error("The customer name cannot be less than 2 characters");
+      throw new CustomerError(
+        "name_is_invalid",
+        "The customer name cannot be less than 2 characters"
+      );
     }
   }
 }
@@ -114,7 +137,8 @@ class Email {
 
     const isValidEmail = regex.test(email);
 
-    if (!isValidEmail) throw new Error("The email is invalid");
+    if (!isValidEmail)
+      throw new CustomerError("email_is_invalid", "The email is invalid");
   }
 }
 
@@ -136,19 +160,26 @@ class Phone {
 
     // Check if it has 10 (landline) or 11 digits (mobile with 9)
     if (!(tel.length === 10 || tel.length === 11))
-      throw new Error("The phone number must contain 10 or 11 digits");
+      throw new CustomerError(
+        "phone_is_invalid",
+        "The phone number must contain 10 or 11 digits"
+      );
 
     // If it is a cell phone, the ninth digit must be 9
     if (tel.length === 11 && tel[2] !== "9")
-      throw new Error("The third digit must be 9");
+      throw new CustomerError("phone_is_invalid", "The third digit must be 9");
 
     // Checks if DDD is valid (01 to 99, without 00)
     const ddd = tel.substring(0, 2);
-    if (!/^[1-9]{2}$/.test(ddd)) throw new Error("The DDD is invalid");
+    if (!/^[1-9]{2}$/.test(ddd))
+      throw new CustomerError("phone_is_invalid", "The DDD is invalid");
 
     // Eliminates repeated numbers like "11111111111"
     if (/^(\d)\1+$/.test(tel))
-      throw new Error("The phone cannot contain the same digits");
+      throw new CustomerError(
+        "phone_is_invalid",
+        "The phone cannot contain the same digits"
+      );
 
     this.formatPhone(this._phone);
   }

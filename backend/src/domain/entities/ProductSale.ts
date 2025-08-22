@@ -1,3 +1,5 @@
+import { ProductSaleError } from "./errors/ProductSaleError";
+
 class Id {
   private _id: number;
 
@@ -13,13 +15,17 @@ class Id {
 
   validate() {
     if (this._id <= 0) {
-      throw new Error(
+      throw new ProductSaleError(
+        "id_is_invalid",
         "The product sale id cannot be less than or equal to zero"
       );
     }
 
     if (!Number.isInteger(this._id)) {
-      throw new Error("The product sale id must be an integer");
+      throw new ProductSaleError(
+        "id_is_invalid",
+        "The product sale id must be an integer"
+      );
     }
   }
 }
@@ -39,10 +45,16 @@ class CustomerId {
 
   validate() {
     if (this._customerId <= 0)
-      throw new Error("The customer id cannot be less than or equal to zero");
+      throw new ProductSaleError(
+        "customer_id_is_invalid",
+        "The customer id cannot be less than or equal to zero"
+      );
 
     if (!Number.isInteger(this._customerId))
-      throw new Error("The customer id must be an integer");
+      throw new ProductSaleError(
+        "customer_id_is_invalid",
+        "The customer id must be an integer"
+      );
   }
 }
 
@@ -61,10 +73,16 @@ class ItemId {
 
   validate() {
     if (this._itemId <= 0)
-      throw new Error("The item id cannot be less than or equal to zero");
+      throw new ProductSaleError(
+        "item_id_is_invalid",
+        "The item id cannot be less than or equal to zero"
+      );
 
     if (!Number.isInteger(this._itemId))
-      throw new Error("The item id must be an integer");
+      throw new ProductSaleError(
+        "item_id_is_invalid",
+        "The item id must be an integer"
+      );
   }
 }
 
@@ -83,10 +101,16 @@ class Quantity {
 
   validate() {
     if (this._quantity <= 0)
-      throw new Error("The sale quantity cannot be less or equal to zero");
+      throw new ProductSaleError(
+        "quantity_is_invalid",
+        "The sale quantity cannot be less or equal to zero"
+      );
 
     if (!Number.isInteger(this._quantity))
-      throw new Error("The sale quantity must be an integer");
+      throw new ProductSaleError(
+        "quantity_is_invalid",
+        "The sale quantity must be an integer"
+      );
   }
 }
 
@@ -105,7 +129,10 @@ class Value {
 
   validate() {
     if (this._value < 0)
-      throw new Error("The product sale value cannot be less to zero");
+      throw new ProductSaleError(
+        "value_is_invalid",
+        "The product sale value cannot be less to zero"
+      );
   }
 }
 
@@ -124,7 +151,10 @@ class SaleDate {
 
   validate() {
     if (!(this._date instanceof Date) || isNaN(this._date.getTime())) {
-      throw new Error("The service sale date is invalid");
+      throw new ProductSaleError(
+        "date_is_invalid",
+        "The service sale date is invalid"
+      );
     }
   }
 

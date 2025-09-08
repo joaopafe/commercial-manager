@@ -2,7 +2,7 @@ import { ItemRepository } from "../repositories/ItemRepository";
 import { ItemCategoryRepository } from "../repositories/ItemCategoryRepository";
 import { SupplierRepository } from "../repositories/SupplierRepository";
 
-import { Name, CategoryId, Price, SupplierId, Item } from "../entities/Item";
+import { Name, CategoryId, Price, SupplierId } from "../entities/Item";
 import { Id } from "../entities/shared/Id";
 
 import { DomainError } from "../entities/errors/DomainError";
@@ -42,13 +42,13 @@ export class CreateItem {
       throw new DomainError("invalid_value", "The supplier id does not exist");
     const supplierId = new SupplierId(item.supplierId);
 
-    try {
-      const createdItem = await this.itemRepository.createItem({
-        name,
-        categoryId,
-        price,
-        supplierId,
-      });
-    } catch {}
+    const createdItem = await this.itemRepository.createItem({
+      name,
+      categoryId,
+      price,
+      supplierId,
+    });
+
+    return createdItem;
   }
 }

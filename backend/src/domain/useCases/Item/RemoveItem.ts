@@ -2,7 +2,7 @@ import { ItemRepository } from "../../repositories/ItemRepository";
 
 import { Id } from "../../entities/shared/Id";
 
-import { DomainError } from "../../entities/errors/DomainError";
+import { ItemError } from "../../entities/errors/ItemError";
 
 export class RemoveItem {
   constructor(private itemRepository: ItemRepository) {}
@@ -11,7 +11,7 @@ export class RemoveItem {
     const itemExists = await this.itemRepository.getItemById(new Id(id));
 
     if (!itemExists)
-      throw new DomainError("invalid_value", "The item id does not exist");
+      throw new ItemError("item_not_found", "The item id does not exist");
 
     const itemId = new Id(id);
 

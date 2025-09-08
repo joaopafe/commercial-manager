@@ -16,13 +16,13 @@
 - get items (with the stock quantity and returning the entity StockGroup);
 - add stock quantity on an existing item;
 - remove stock quantity on an existing item;
-- get items based on stock group entity;
 
 ### Item Category:
 
 **Operations on the item categories:**
 
 - get the item categories;
+- get item category by id;
 - add item category;
 - update item category;
 - remove item category;
@@ -32,6 +32,7 @@
 **Operations on the suppliers:**
 
 - get the suppliers;
+- get supplier by id;
 - add supplier;
 - update supplier;
 - remove supplier;

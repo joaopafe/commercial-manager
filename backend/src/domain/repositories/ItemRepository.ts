@@ -19,7 +19,7 @@ export interface ItemWithoutStock {
 
 export type ParamsForItemCreation = Omit<ItemWithoutStock, "id">;
 
-interface StockByCategory {
+export interface StockByCategory {
   items: Item[];
   category: string;
 }

@@ -1,36 +1,8 @@
 import { CategoryError } from "./errors/CategoryError";
 
-class Id {
-  private _id: number;
+import { Id } from "./shared/Id";
 
-  constructor(id: number) {
-    this._id = id;
-
-    this.validate();
-  }
-
-  get id(): number {
-    return this._id;
-  }
-
-  validate() {
-    if (this._id <= 0) {
-      throw new CategoryError(
-        "id_is_invalid",
-        "The category id cannot be less than or equal to zero"
-      );
-    }
-
-    if (!Number.isInteger(this._id)) {
-      throw new CategoryError(
-        "id_is_invalid",
-        "The category id must be an integer"
-      );
-    }
-  }
-}
-
-class Name {
+export class Name {
   private _name: string;
 
   constructor(name: string) {

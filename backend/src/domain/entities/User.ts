@@ -1,31 +1,6 @@
 import { UserError } from "./errors/UserError";
 
-class Id {
-  private _id: number;
-
-  constructor(id: number) {
-    this._id = id;
-
-    this.validate();
-  }
-
-  get id(): number {
-    return this._id;
-  }
-
-  validate() {
-    if (this._id <= 0) {
-      throw new UserError(
-        "id_is_invalid",
-        "The user id cannot be less than or equal to zero"
-      );
-    }
-
-    if (!Number.isInteger(this._id)) {
-      throw new UserError("id_is_invalid", "The user id must be an integer");
-    }
-  }
-}
+import { Id } from "./shared/Id";
 
 class Name {
   private _name: string;

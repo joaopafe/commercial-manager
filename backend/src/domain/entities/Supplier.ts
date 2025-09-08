@@ -1,36 +1,8 @@
 import { SupplierError } from "./errors/SupplierError";
 
-class Id {
-  private _id: number;
+import { Id } from "./shared/Id";
 
-  constructor(id: number) {
-    this._id = id;
-
-    this.validate();
-  }
-
-  get id(): number {
-    return this._id;
-  }
-
-  validate() {
-    if (this._id <= 0) {
-      throw new SupplierError(
-        "id_is_invalid",
-        "The supplier id cannot be less than or equal to zero"
-      );
-    }
-
-    if (!Number.isInteger(this._id)) {
-      throw new SupplierError(
-        "id_is_invalid",
-        "The supplier id must be an integer"
-      );
-    }
-  }
-}
-
-class CNPJ {
+export class CNPJ {
   private _cnpj: string;
 
   constructor(cnpj: string) {
@@ -115,7 +87,7 @@ class CNPJ {
   };
 }
 
-class Name {
+export class Name {
   private _name: string;
 
   constructor(name: string) {
@@ -138,7 +110,7 @@ class Name {
   }
 }
 
-class Phone {
+export class Phone {
   private _phone: string;
 
   constructor(phone: string) {

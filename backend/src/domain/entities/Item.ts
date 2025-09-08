@@ -1,33 +1,8 @@
 import { ItemError } from "./errors/ItemError";
 
-class Id {
-  private _id: number;
+import { Id } from "./shared/Id";
 
-  constructor(id: number) {
-    this._id = id;
-
-    this.validate();
-  }
-
-  get id(): number {
-    return this._id;
-  }
-
-  validate() {
-    if (this._id <= 0) {
-      throw new ItemError(
-        "id_is_invalid",
-        "The item id cannot be less than or equal to zero"
-      );
-    }
-
-    if (!Number.isInteger(this._id)) {
-      throw new ItemError("id_is_invalid", "The item id must be an integer");
-    }
-  }
-}
-
-class Name {
+export class Name {
   private _name: string;
 
   constructor(name: string) {
@@ -50,7 +25,7 @@ class Name {
   }
 }
 
-class CategoryId {
+export class CategoryId {
   private _categoryId: number;
 
   constructor(categoryId: number) {
@@ -80,7 +55,7 @@ class CategoryId {
   }
 }
 
-class Price {
+export class Price {
   private _price: number;
 
   constructor(price: number) {
@@ -107,7 +82,7 @@ class Price {
   }
 }
 
-class SupplierId {
+export class SupplierId {
   private _supplierId: number;
 
   constructor(supplierId: number) {
@@ -137,7 +112,7 @@ class SupplierId {
   }
 }
 
-class StockQuantity {
+export class StockQuantity {
   private _stockQuantity: number;
 
   constructor(stockQuantity: number) {

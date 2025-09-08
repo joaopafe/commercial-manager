@@ -1,34 +1,6 @@
 import { ProductSaleError } from "./errors/ProductSaleError";
 
-class Id {
-  private _id: number;
-
-  constructor(id: number) {
-    this._id = id;
-
-    this.validate();
-  }
-
-  get id(): number {
-    return this._id;
-  }
-
-  validate() {
-    if (this._id <= 0) {
-      throw new ProductSaleError(
-        "id_is_invalid",
-        "The product sale id cannot be less than or equal to zero"
-      );
-    }
-
-    if (!Number.isInteger(this._id)) {
-      throw new ProductSaleError(
-        "id_is_invalid",
-        "The product sale id must be an integer"
-      );
-    }
-  }
-}
+import { Id } from "./shared/Id";
 
 class CustomerId {
   private _customerId: number;

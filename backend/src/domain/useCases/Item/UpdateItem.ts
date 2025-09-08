@@ -1,27 +1,33 @@
-import { ItemRepository } from "../repositories/ItemRepository";
-import { ItemCategoryRepository } from "../repositories/ItemCategoryRepository";
-import { SupplierRepository } from "../repositories/SupplierRepository";
+import { ItemRepository } from "../../repositories/ItemRepository";
+import { ItemCategoryRepository } from "../../repositories/ItemCategoryRepository";
+import { SupplierRepository } from "../../repositories/SupplierRepository";
 
-import { Name, CategoryId, Price, SupplierId } from "../entities/Item";
-import { Id } from "../entities/shared/Id";
+import { Name, CategoryId, Price, SupplierId } from "../../entities/Item";
+import { Id } from "../../entities/shared/Id";
 
-import { DomainError } from "../entities/errors/DomainError";
+import { DomainError } from "../../entities/errors/DomainError";
 
-export interface AddItemParams {
-  name: string;
-  categoryId: number;
-  price: number;
-  supplierId: number;
+import { AddItemParams } from "./CreateItem";
+
+export interface UpdateItemParams extends AddItemParams {
+  id: number;
 }
 
-export class CreateItem {
+export class UpdateItem {
   constructor(
     private itemRepository: ItemRepository,
     private itemCategoryRepository: ItemCategoryRepository,
     private supplierRepository: SupplierRepository
   ) {}
 
-  async exec(item: AddItemParams) {
+  async exec(item: UpdateItemParams) {
+    // Verify if the item id exists:
+    const itemExists = this.itemRepository.getItemById(new Id(item.id));
+    if (!itemExists) {
+      throw new DomainError("invalid_value", "The item id does not exist");
+    }
+    const id = new Id(item.id);
+
     const name = new Name(item.name);
 
     // Verify if the category id exists:
@@ -42,13 +48,14 @@ export class CreateItem {
       throw new DomainError("invalid_value", "The supplier id does not exist");
     const supplierId = new SupplierId(item.supplierId);
 
-    const createdItem = await this.itemRepository.createItem({
+    const editedItem = await this.itemRepository.updateItem({
+      id,
       name,
       categoryId,
       price,
       supplierId,
     });
 
-    return createdItem;
+    return editedItem;
   }
 }

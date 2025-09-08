@@ -1,9 +1,9 @@
-import { ItemRepository } from "../repositories/ItemRepository";
+import { ItemRepository } from "../../repositories/ItemRepository";
 
-import { Id } from "../entities/shared/Id";
-import { StockQuantity } from "../entities/Item";
+import { Id } from "../../entities/shared/Id";
+import { StockQuantity } from "../../entities/Item";
 
-import { DomainError } from "../entities/errors/DomainError";
+import { DomainError } from "../../entities/errors/DomainError";
 
 export interface AddStockParams {
   id: number;

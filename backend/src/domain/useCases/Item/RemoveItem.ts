@@ -1,8 +1,8 @@
-import { ItemRepository } from "../repositories/ItemRepository";
+import { ItemRepository } from "../../repositories/ItemRepository";
 
-import { Id } from "../entities/shared/Id";
+import { Id } from "../../entities/shared/Id";
 
-import { DomainError } from "../entities/errors/DomainError";
+import { DomainError } from "../../entities/errors/DomainError";
 
 export class RemoveItem {
   constructor(private itemRepository: ItemRepository) {}

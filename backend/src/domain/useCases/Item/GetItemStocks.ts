@@ -1,4 +1,4 @@
-import { ItemRepository } from "../repositories/ItemRepository";
+import { ItemRepository } from "../../repositories/ItemRepository";
 
 export class GetItemStocks {
   constructor(private itemRepository: ItemRepository) {}

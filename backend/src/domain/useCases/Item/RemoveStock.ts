@@ -20,7 +20,7 @@ export class RemoveStock {
       throw new ItemError("item_not_found", "The item id does not exist");
     const id = new Id(item.id);
 
-    const currentStock = this.itemRepository.getStockById(id);
+    const currentStock = await this.itemRepository.getStockById(id);
 
     if (currentStock === null)
       throw new DomainError("unknown", "The item id does not exist");

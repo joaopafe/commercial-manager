@@ -15,6 +15,6 @@ export class RemoveItem {
 
     const itemId = new Id(id);
 
-    return this.itemRepository.removeItem(itemId);
+    return await this.itemRepository.removeItem(itemId);
   }
 }

@@ -22,7 +22,7 @@ export class UpdateItem {
 
   async exec(item: UpdateItemParams) {
     // Verify if the item id exists:
-    const itemExists = this.itemRepository.getItemById(new Id(item.id));
+    const itemExists = await this.itemRepository.getItemById(new Id(item.id));
     if (!itemExists) {
       throw new ItemError("item_not_found", "The item id does not exist");
     }
@@ -31,9 +31,10 @@ export class UpdateItem {
     const name = new Name(item.name);
 
     // Verify if the category id exists:
-    const categoryIdExists = this.itemCategoryRepository.getItemCategoryById(
-      new Id(item.categoryId)
-    );
+    const categoryIdExists =
+      await this.itemCategoryRepository.getItemCategoryById(
+        new Id(item.categoryId)
+      );
     if (!categoryIdExists)
       throw new ItemError(
         "category_id_is_invalid",
@@ -44,7 +45,7 @@ export class UpdateItem {
     const price = new Price(item.price);
 
     // Verify if the supplier id exists:
-    const supplierExists = this.supplierRepository.getSupplierById(
+    const supplierExists = await this.supplierRepository.getSupplierById(
       new Id(item.supplierId)
     );
     if (!supplierExists)

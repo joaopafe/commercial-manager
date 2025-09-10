@@ -25,9 +25,10 @@ export class CreateItem {
     const name = new Name(item.name);
 
     // Verify if the category id exists:
-    const categoryIdExists = this.itemCategoryRepository.getItemCategoryById(
-      new Id(item.categoryId)
-    );
+    const categoryIdExists =
+      await this.itemCategoryRepository.getItemCategoryById(
+        new Id(item.categoryId)
+      );
     if (!categoryIdExists)
       throw new ItemError(
         "category_id_is_invalid",
@@ -38,7 +39,7 @@ export class CreateItem {
     const price = new Price(item.price);
 
     // Verify if the supplier id exists:
-    const supplierExists = this.supplierRepository.getSupplierById(
+    const supplierExists = await this.supplierRepository.getSupplierById(
       new Id(item.supplierId)
     );
     if (!supplierExists)

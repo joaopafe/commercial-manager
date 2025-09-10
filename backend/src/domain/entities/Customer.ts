@@ -2,7 +2,7 @@ import { CustomerError } from "./errors/CustomerError";
 
 import { Id } from "./shared/Id";
 
-class CPF {
+export class CPF {
   private _cpf: string;
 
   constructor(cpf: string) {
@@ -66,7 +66,7 @@ class CPF {
   }
 }
 
-class Name {
+export class Name {
   private _name: string;
 
   constructor(name: string) {
@@ -89,7 +89,7 @@ class Name {
   }
 }
 
-class Email {
+export class Email {
   private _email: string;
 
   constructor(email: string) {
@@ -114,7 +114,7 @@ class Email {
   }
 }
 
-class Phone {
+export class Phone {
   private _phone: string;
 
   constructor(phone: string) {

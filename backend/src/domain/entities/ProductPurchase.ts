@@ -2,7 +2,7 @@ import { ProductPurchaseError } from "./errors/ProductPurchaseError";
 
 import { Id } from "./shared/Id";
 
-class SupplierId {
+export class SupplierId {
   private _supplierId: number;
 
   constructor(supplierId: number) {
@@ -30,7 +30,7 @@ class SupplierId {
   }
 }
 
-class ItemId {
+export class ItemId {
   private _itemId: number;
 
   constructor(itemId: number) {
@@ -58,7 +58,7 @@ class ItemId {
   }
 }
 
-class Quantity {
+export class Quantity {
   private _quantity: number;
 
   constructor(quantity: number) {
@@ -86,7 +86,7 @@ class Quantity {
   }
 }
 
-class Value {
+export class Value {
   private _value: number;
 
   constructor(value: number) {
@@ -108,7 +108,7 @@ class Value {
   }
 }
 
-class PurchaseDate {
+export class PurchaseDate {
   private _date: Date;
 
   constructor(date: Date) {

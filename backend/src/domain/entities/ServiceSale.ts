@@ -2,7 +2,7 @@ import { ServiceSaleError } from "./errors/ServiceSaleError";
 
 import { Id } from "./shared/Id";
 
-class CustomerId {
+export class CustomerId {
   private _customerId: number;
 
   constructor(customerId: number) {
@@ -30,7 +30,7 @@ class CustomerId {
   }
 }
 
-class Name {
+export class Name {
   private _name: string;
 
   constructor(name: string) {
@@ -53,7 +53,7 @@ class Name {
   }
 }
 
-class Value {
+export class Value {
   private _value: number;
 
   constructor(value: number) {
@@ -75,7 +75,7 @@ class Value {
   }
 }
 
-class SaleDate {
+export class SaleDate {
   private _date: Date;
 
   constructor(date: Date) {

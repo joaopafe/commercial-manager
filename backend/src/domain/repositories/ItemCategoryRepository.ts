@@ -1,4 +1,5 @@
-import { Id, Name, ItemCategory } from "../entities/ItemCategory";
+import { Name, ItemCategory } from "../entities/ItemCategory";
+import { Id } from "../entities/shared/Id";
 
 export interface ItemCategoryRepository {
   getAllItemCategories(): Promise<ItemCategory[] | null>;

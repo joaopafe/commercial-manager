@@ -144,7 +144,7 @@ export class CustomerDataSource {
 
   static async remove(id: number): Promise<Customer> {
     const query = `
-        DELETE FROM customer
+        DELETE FROM customers
         WHERE id = $1
         RETURNING id, cpf, name, email, phone;
     `;

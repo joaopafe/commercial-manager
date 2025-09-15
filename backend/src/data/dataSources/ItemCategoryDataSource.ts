@@ -15,7 +15,7 @@ export class ItemCategoryDataSource {
     const query = `
         CREATE TABLE IF NOT EXISTS item_categories
         (
-            id INTEGER PRIMARY KET AUTOINCREMENT,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL
         );
     `;

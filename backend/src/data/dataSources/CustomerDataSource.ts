@@ -18,11 +18,11 @@ export class CustomerDataSource {
     const query = `
             CREATE TABLE IF NOT EXISTS customers
             (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                cpf TEXT NOT NULL,
-                name TEXT NOT NULL,
-                email TEXT NOT NULL,
-                phone TEXT NOT NULL
+              id SERIAL PRIMARY KEY,
+              cpf TEXT NOT NULL,
+              name TEXT NOT NULL,
+              email TEXT NOT NULL,
+              phone TEXT NOT NULL
             );
         `;
 

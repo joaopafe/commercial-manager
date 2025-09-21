@@ -17,7 +17,7 @@ export class SupplierDataSource {
     const query = `
       CREATE TABLE IF NOT EXISTS suppliers
       (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        id SERIAL PRIMARY KEY,
         cnpj TEXT NOT NULL,
         name TEXT NOT NULL,
         phone TEXT NOT NULL
@@ -97,7 +97,7 @@ export class SupplierDataSource {
     } catch (error) {
       throw new DomainError(
         "unknown",
-        `It was not possible to create the supplier: ${supplier}`
+        `It was not possible to create the supplier: ${error}`
       );
     }
   }

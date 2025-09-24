@@ -36,15 +36,23 @@ export class SupplierDataSource {
     }
   }
 
+  private static mapRowToSupplier(row: any): Supplier {
+    return {
+      id: row.id,
+      cnpj: row.cnpj,
+      name: row.name,
+      phone: row.phone,
+    };
+  }
+
   static async findAll(): Promise<Supplier[]> {
     const query = `
       SELECT * FROM suppliers;
     `;
 
     try {
-      const suppliers: QueryResult<Supplier> = await pool.query(query);
-
-      return suppliers.rows;
+      const suppliers: QueryResult<any> = await pool.query(query);
+      return suppliers.rows.map(this.mapRowToSupplier);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -60,7 +68,7 @@ export class SupplierDataSource {
     `;
 
     try {
-      const supplier: QueryResult<Supplier> = await pool.query(query, [id]);
+      const supplier: QueryResult<any> = await pool.query(query, [id]);
 
       if (supplier.rows.length === 0)
         throw new SupplierError(
@@ -68,7 +76,7 @@ export class SupplierDataSource {
           "The supplier does not exist"
         );
 
-      return supplier.rows[0] as Supplier;
+      return this.mapRowToSupplier(supplier.rows[0]);
     } catch (error) {
       if (error instanceof SupplierError) throw error;
 
@@ -87,13 +95,13 @@ export class SupplierDataSource {
     `;
 
     try {
-      const createdSupplier: QueryResult<Supplier> = await pool.query(query, [
+      const createdSupplier: QueryResult<any> = await pool.query(query, [
         supplier.cnpj,
         supplier.name,
         supplier.phone,
       ]);
 
-      return createdSupplier.rows[0] as Supplier;
+      return this.mapRowToSupplier(createdSupplier.rows[0]);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -113,7 +121,7 @@ export class SupplierDataSource {
     `;
 
     try {
-      const updatedSupplier: QueryResult<Supplier> = await pool.query(query, [
+      const updatedSupplier: QueryResult<any> = await pool.query(query, [
         supplier.cnpj,
         supplier.name,
         supplier.phone,
@@ -126,7 +134,7 @@ export class SupplierDataSource {
           "The supplier does not exist"
         );
 
-      return updatedSupplier.rows[0] as Supplier;
+      return this.mapRowToSupplier(updatedSupplier.rows[0]);
     } catch (error) {
       if (error instanceof SupplierError) throw error;
 
@@ -145,9 +153,7 @@ export class SupplierDataSource {
     `;
 
     try {
-      const removedSupplier: QueryResult<Supplier> = await pool.query(query, [
-        id,
-      ]);
+      const removedSupplier: QueryResult<any> = await pool.query(query, [id]);
 
       if (removedSupplier.rows.length === 0)
         throw new SupplierError(
@@ -155,7 +161,7 @@ export class SupplierDataSource {
           "The supplier does not exist"
         );
 
-      return removedSupplier.rows[0] as Supplier;
+      return this.mapRowToSupplier(removedSupplier.rows[0]);
     } catch (error) {
       if (error instanceof SupplierError) throw error;
 

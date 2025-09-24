@@ -17,20 +17,19 @@ export interface ProductSale {
 export class ProductSaleDataSource {
   static async createTable() {
     const query = `
-            CREATE TABLE IF NOT EXISTS product_sales
-            (
-                id SERIAL PRIMARY KEY,
-                customer_id INT NOT NULL,
-                item_id INT NOT NULL,
-                quantity INT NOT NULL,
-                value FLOAT NOT NULL,
-                date DATE NOT NULL
-            );
-        `;
+      CREATE TABLE IF NOT EXISTS product_sales
+      (
+          id SERIAL PRIMARY KEY,
+          customer_id INT NOT NULL,
+          item_id INT NOT NULL,
+          quantity INT NOT NULL,
+          value FLOAT NOT NULL,
+          date DATE NOT NULL
+      );
+    `;
 
     try {
       await pool.query(query);
-
       return true;
     } catch (error) {
       throw new DomainError(
@@ -40,15 +39,25 @@ export class ProductSaleDataSource {
     }
   }
 
+  private static mapRowToProductSale(row: any): ProductSale {
+    return {
+      id: row.id,
+      customerId: row.customer_id,
+      itemId: row.item_id,
+      quantity: row.quantity,
+      value: row.value,
+      date: row.date,
+    };
+  }
+
   static async findAll(): Promise<ProductSale[]> {
     const query = `
-        SELECT * FROM product_sales;
+      SELECT * FROM product_sales;
     `;
 
     try {
-      const productSales: QueryResult<ProductSale> = await pool.query(query);
-
-      return productSales.rows;
+      const productSales: QueryResult<any> = await pool.query(query);
+      return productSales.rows.map(this.mapRowToProductSale);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -59,14 +68,12 @@ export class ProductSaleDataSource {
 
   static async findById(id: number): Promise<ProductSale> {
     const query = `
-        SELECT * FROM product_sales
-        WHERE id = $1
+      SELECT * FROM product_sales
+      WHERE id = $1
     `;
 
     try {
-      const productSale: QueryResult<ProductSale> = await pool.query(query, [
-        id,
-      ]);
+      const productSale: QueryResult<any> = await pool.query(query, [id]);
 
       if (productSale.rows.length === 0)
         throw new ProductSaleError(
@@ -74,7 +81,7 @@ export class ProductSaleDataSource {
           "The product sale does not exist"
         );
 
-      return productSale.rows[0] as ProductSale;
+      return this.mapRowToProductSale(productSale.rows[0]);
     } catch (error) {
       if (error instanceof ProductSaleError) throw error;
 
@@ -89,24 +96,21 @@ export class ProductSaleDataSource {
     productSale: Omit<ProductSale, "id">
   ): Promise<ProductSale> {
     const query = `
-        INSERT INTO product_sales (customer_id, item_id, quantity, value, date)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, customer_id, item_id, quantity, value, date;
+      INSERT INTO product_sales (customer_id, item_id, quantity, value, date)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, customer_id, item_id, quantity, value, date;
     `;
 
     try {
-      const createdProductSale: QueryResult<ProductSale> = await pool.query(
-        query,
-        [
-          productSale.customerId,
-          productSale.itemId,
-          productSale.quantity,
-          productSale.value,
-          productSale.date,
-        ]
-      );
+      const createdProductSale: QueryResult<any> = await pool.query(query, [
+        productSale.customerId,
+        productSale.itemId,
+        productSale.quantity,
+        productSale.value,
+        productSale.date,
+      ]);
 
-      return createdProductSale.rows[0] as ProductSale;
+      return this.mapRowToProductSale(createdProductSale.rows[0]);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -117,28 +121,25 @@ export class ProductSaleDataSource {
 
   static async update(productSale: ProductSale): Promise<ProductSale> {
     const query = `
-        UPDATE product_sales
-        SET customer_id = COALESCE($1, customer_id),
-            item_id = COALESCE($2, item_id),
-            quantity = COALESCE($3, quantity),
-            value = COALESCE($4, value),
-            date = COALESCE($5, date)
-        WHERE id = $6
-        RETURNING id, customer_id, item_id, quantity, value, date;
+      UPDATE product_sales
+      SET customer_id = COALESCE($1, customer_id),
+          item_id = COALESCE($2, item_id),
+          quantity = COALESCE($3, quantity),
+          value = COALESCE($4, value),
+          date = COALESCE($5, date)
+      WHERE id = $6
+      RETURNING id, customer_id, item_id, quantity, value, date;
     `;
 
     try {
-      const updatedProductSale: QueryResult<ProductSale> = await pool.query(
-        query,
-        [
-          productSale.customerId,
-          productSale.itemId,
-          productSale.quantity,
-          productSale.value,
-          productSale.date,
-          productSale.id,
-        ]
-      );
+      const updatedProductSale: QueryResult<any> = await pool.query(query, [
+        productSale.customerId,
+        productSale.itemId,
+        productSale.quantity,
+        productSale.value,
+        productSale.date,
+        productSale.id,
+      ]);
 
       if (updatedProductSale.rows.length === 0)
         throw new ProductSaleError(
@@ -146,7 +147,7 @@ export class ProductSaleDataSource {
           "The product sale does not exist"
         );
 
-      return updatedProductSale.rows[0] as ProductSale;
+      return this.mapRowToProductSale(updatedProductSale.rows[0]);
     } catch (error) {
       if (error instanceof ProductSaleError) throw error;
 
@@ -159,16 +160,15 @@ export class ProductSaleDataSource {
 
   static async remove(id: number): Promise<ProductSale> {
     const query = `
-          DELETE FROM product_sales
-          WHERE id = $1
-          RETURNING id, customer_id, item_id, quantity, value, date;
-      `;
+      DELETE FROM product_sales
+      WHERE id = $1
+      RETURNING id, customer_id, item_id, quantity, value, date;
+    `;
 
     try {
-      const removedProductSale: QueryResult<ProductSale> = await pool.query(
-        query,
-        [id]
-      );
+      const removedProductSale: QueryResult<any> = await pool.query(query, [
+        id,
+      ]);
 
       if (removedProductSale.rows.length === 0)
         throw new ProductSaleError(
@@ -176,7 +176,7 @@ export class ProductSaleDataSource {
           "The product sale does not exist"
         );
 
-      return removedProductSale.rows[0] as ProductSale;
+      return this.mapRowToProductSale(removedProductSale.rows[0]);
     } catch (error) {
       if (error instanceof ProductSaleError) throw error;
 

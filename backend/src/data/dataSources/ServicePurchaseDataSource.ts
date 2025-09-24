@@ -16,19 +16,18 @@ export interface ServicePurchase {
 export class ServicePurchaseDataSource {
   static async createTable() {
     const query = `
-            CREATE TABLE IF NOT EXISTS service_purchases
-            (
-                id SERIAL PRIMARY KEY,
-                supplier_id INT NOT NULL,
-                name TEXT NOT NULL,
-                value FLOAT NOT NULL,
-                date DATE NOT NULL
-            );
-        `;
+      CREATE TABLE IF NOT EXISTS service_purchases
+      (
+          id SERIAL PRIMARY KEY,
+          supplier_id INT NOT NULL,
+          name TEXT NOT NULL,
+          value FLOAT NOT NULL,
+          date DATE NOT NULL
+      );
+    `;
 
     try {
       await pool.query(query);
-
       return true;
     } catch (error) {
       throw new DomainError(
@@ -38,17 +37,22 @@ export class ServicePurchaseDataSource {
     }
   }
 
+  private static mapRowToServicePurchase(row: any): ServicePurchase {
+    return {
+      id: row.id,
+      supplierId: row.supplier_id,
+      name: row.name,
+      value: row.value,
+      date: row.date,
+    };
+  }
+
   static async findAll(): Promise<ServicePurchase[]> {
-    const query = `
-        SELECT * FROM service_purchases;
-    `;
+    const query = `SELECT * FROM service_purchases;`;
 
     try {
-      const servicePurchases: QueryResult<ServicePurchase> = await pool.query(
-        query
-      );
-
-      return servicePurchases.rows;
+      const servicePurchases: QueryResult<any> = await pool.query(query);
+      return servicePurchases.rows.map(this.mapRowToServicePurchase);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -58,16 +62,10 @@ export class ServicePurchaseDataSource {
   }
 
   static async findById(id: number): Promise<ServicePurchase> {
-    const query = `
-        SELECT * FROM service_purchases
-        WHERE id = $1
-    `;
+    const query = `SELECT * FROM service_purchases WHERE id = $1`;
 
     try {
-      const servicePurchase: QueryResult<ServicePurchase> = await pool.query(
-        query,
-        [id]
-      );
+      const servicePurchase: QueryResult<any> = await pool.query(query, [id]);
 
       if (servicePurchase.rows.length === 0)
         throw new ServicePurchaseError(
@@ -75,7 +73,7 @@ export class ServicePurchaseDataSource {
           "The service purchase does not exist"
         );
 
-      return servicePurchase.rows[0] as ServicePurchase;
+      return this.mapRowToServicePurchase(servicePurchase.rows[0]);
     } catch (error) {
       if (error instanceof ServicePurchaseError) throw error;
 
@@ -90,21 +88,20 @@ export class ServicePurchaseDataSource {
     servicePurchase: Omit<ServicePurchase, "id">
   ): Promise<ServicePurchase> {
     const query = `
-        INSERT INTO service_purchases (supplier_id, name, value, date)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, supplier_id, name, value, date;
+      INSERT INTO service_purchases (supplier_id, name, value, date)
+      VALUES ($1, $2, $3, $4)
+      RETURNING id, supplier_id, name, value, date;
     `;
 
     try {
-      const createdServicePurchase: QueryResult<ServicePurchase> =
-        await pool.query(query, [
-          servicePurchase.supplierId,
-          servicePurchase.name,
-          servicePurchase.value,
-          servicePurchase.date,
-        ]);
+      const createdServicePurchase: QueryResult<any> = await pool.query(query, [
+        servicePurchase.supplierId,
+        servicePurchase.name,
+        servicePurchase.value,
+        servicePurchase.date,
+      ]);
 
-      return createdServicePurchase.rows[0] as ServicePurchase;
+      return this.mapRowToServicePurchase(createdServicePurchase.rows[0]);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -117,24 +114,23 @@ export class ServicePurchaseDataSource {
     servicePurchase: ServicePurchase
   ): Promise<ServicePurchase> {
     const query = `
-        UPDATE service_purchases
-        SET supplier_id = COALESCE($1, supplier_id),
-            name = COALESCE($2, name),
-            value = COALESCE($3, value),
-            date = COALESCE($4, date)
-        WHERE id = $5
-        RETURNING id, supplier_id, name, value, date;
+      UPDATE service_purchases
+      SET supplier_id = COALESCE($1, supplier_id),
+          name = COALESCE($2, name),
+          value = COALESCE($3, value),
+          date = COALESCE($4, date)
+      WHERE id = $5
+      RETURNING id, supplier_id, name, value, date;
     `;
 
     try {
-      const updatedServicePurchase: QueryResult<ServicePurchase> =
-        await pool.query(query, [
-          servicePurchase.supplierId,
-          servicePurchase.name,
-          servicePurchase.value,
-          servicePurchase.date,
-          servicePurchase.id,
-        ]);
+      const updatedServicePurchase: QueryResult<any> = await pool.query(query, [
+        servicePurchase.supplierId,
+        servicePurchase.name,
+        servicePurchase.value,
+        servicePurchase.date,
+        servicePurchase.id,
+      ]);
 
       if (updatedServicePurchase.rows.length === 0)
         throw new ServicePurchaseError(
@@ -142,7 +138,7 @@ export class ServicePurchaseDataSource {
           "The service purchase does not exist"
         );
 
-      return updatedServicePurchase.rows[0] as ServicePurchase;
+      return this.mapRowToServicePurchase(updatedServicePurchase.rows[0]);
     } catch (error) {
       if (error instanceof ServicePurchaseError) throw error;
 
@@ -155,14 +151,15 @@ export class ServicePurchaseDataSource {
 
   static async remove(id: number): Promise<ServicePurchase> {
     const query = `
-          DELETE FROM service_purchases
-          WHERE id = $1
-          RETURNING id, supplier_id, name, value, date;
-      `;
+      DELETE FROM service_purchases
+      WHERE id = $1
+      RETURNING id, supplier_id, name, value, date;
+    `;
 
     try {
-      const removedServicePurchase: QueryResult<ServicePurchase> =
-        await pool.query(query, [id]);
+      const removedServicePurchase: QueryResult<any> = await pool.query(query, [
+        id,
+      ]);
 
       if (removedServicePurchase.rows.length === 0)
         throw new ServicePurchaseError(
@@ -170,7 +167,7 @@ export class ServicePurchaseDataSource {
           "The service purchase does not exist"
         );
 
-      return removedServicePurchase.rows[0] as ServicePurchase;
+      return this.mapRowToServicePurchase(removedServicePurchase.rows[0]);
     } catch (error) {
       if (error instanceof ServicePurchaseError) throw error;
 

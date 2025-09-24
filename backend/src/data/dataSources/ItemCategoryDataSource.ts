@@ -13,16 +13,15 @@ export interface ItemCategory {
 export class ItemCategoryDataSource {
   static async createTable() {
     const query = `
-        CREATE TABLE IF NOT EXISTS item_categories
-        (
-          id SERIAL PRIMARY KEY,
-          name TEXT NOT NULL
-        );
+      CREATE TABLE IF NOT EXISTS item_categories
+      (
+        id SERIAL PRIMARY KEY,
+        name TEXT NOT NULL
+      );
     `;
 
     try {
       await pool.query(query);
-
       return true;
     } catch (error) {
       throw new DomainError(
@@ -32,15 +31,21 @@ export class ItemCategoryDataSource {
     }
   }
 
+  private static mapRow(row: any): ItemCategory {
+    return {
+      id: row.id,
+      name: row.name,
+    };
+  }
+
   static async findAll(): Promise<ItemCategory[]> {
     const query = `
-        SELECT * FROM item_categories;
+      SELECT * FROM item_categories;
     `;
 
     try {
-      const itemCategories: QueryResult<ItemCategory> = await pool.query(query);
-
-      return itemCategories.rows;
+      const itemCategories: QueryResult<any> = await pool.query(query);
+      return itemCategories.rows.map(this.mapRow);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -51,14 +56,11 @@ export class ItemCategoryDataSource {
 
   static async findById(id: number): Promise<ItemCategory> {
     const query = `
-        SELECT * FROM item_categories
-        WHERE id = $1;
+      SELECT * FROM item_categories WHERE id = $1;
     `;
 
     try {
-      const itemCategory: QueryResult<ItemCategory> = await pool.query(query, [
-        id,
-      ]);
+      const itemCategory: QueryResult<any> = await pool.query(query, [id]);
 
       if (itemCategory.rows.length === 0)
         throw new CategoryError(
@@ -66,7 +68,7 @@ export class ItemCategoryDataSource {
           "The category does not exist"
         );
 
-      return itemCategory.rows[0] as ItemCategory;
+      return this.mapRow(itemCategory.rows[0]);
     } catch (error) {
       if (error instanceof CategoryError) throw error;
 
@@ -79,18 +81,17 @@ export class ItemCategoryDataSource {
 
   static async create(name: string): Promise<ItemCategory> {
     const query = `
-        INSERT INTO item_categories (name)
-        VALUES ($1)
-        RETURNING id, name;
+      INSERT INTO item_categories (name)
+      VALUES ($1)
+      RETURNING id, name;
     `;
 
     try {
-      const createdItemCategory: QueryResult<ItemCategory> = await pool.query(
-        query,
-        [name]
-      );
+      const createdItemCategory: QueryResult<any> = await pool.query(query, [
+        name,
+      ]);
 
-      return createdItemCategory.rows[0] as ItemCategory;
+      return this.mapRow(createdItemCategory.rows[0]);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -101,17 +102,17 @@ export class ItemCategoryDataSource {
 
   static async update(itemCategory: ItemCategory): Promise<ItemCategory> {
     const query = `
-        UPDATE item_categories
-        SET name = COALESCE($1, name)
-        WHERE id = $2
-        RETURNING id, name;
+      UPDATE item_categories
+      SET name = COALESCE($1, name)
+      WHERE id = $2
+      RETURNING id, name;
     `;
 
     try {
-      const updatedItemCategory: QueryResult<ItemCategory> = await pool.query(
-        query,
-        [itemCategory.name, itemCategory.id]
-      );
+      const updatedItemCategory: QueryResult<any> = await pool.query(query, [
+        itemCategory.name,
+        itemCategory.id,
+      ]);
 
       if (updatedItemCategory.rows.length === 0)
         throw new CategoryError(
@@ -119,7 +120,7 @@ export class ItemCategoryDataSource {
           "The item category does not exist"
         );
 
-      return updatedItemCategory.rows[0] as ItemCategory;
+      return this.mapRow(updatedItemCategory.rows[0]);
     } catch (error) {
       if (error instanceof CategoryError) throw error;
 
@@ -132,16 +133,15 @@ export class ItemCategoryDataSource {
 
   static async remove(id: number): Promise<ItemCategory> {
     const query = `
-        DELETE FROM item_categories
-        WHERE id = $1
-        RETURNING id, name;
+      DELETE FROM item_categories
+      WHERE id = $1
+      RETURNING id, name;
     `;
 
     try {
-      const removedItemCategory: QueryResult<ItemCategory> = await pool.query(
-        query,
-        [id]
-      );
+      const removedItemCategory: QueryResult<any> = await pool.query(query, [
+        id,
+      ]);
 
       if (removedItemCategory.rows.length === 0)
         throw new CategoryError(
@@ -149,7 +149,7 @@ export class ItemCategoryDataSource {
           "The item category does not exist"
         );
 
-      return removedItemCategory.rows[0] as ItemCategory;
+      return this.mapRow(removedItemCategory.rows[0]);
     } catch (error) {
       if (error instanceof CategoryError) throw error;
 

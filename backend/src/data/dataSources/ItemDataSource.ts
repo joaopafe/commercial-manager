@@ -17,20 +17,19 @@ export interface Item {
 export class ItemDataSource {
   static async createTable() {
     const query = `
-            CREATE TABLE IF NOT EXISTS items
-            (
-                id SERIAL PRIMARY KEY,
-                name TEXT NOT NULL,
-                category_id INT NOT NULL,
-                price FLOAT NOT NULL,
-                supplier_id INT NOT NULL,
-                stock_quantity INT NOT NULL
-            );
-        `;
+      CREATE TABLE IF NOT EXISTS items
+      (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          category_id INT NOT NULL,
+          price FLOAT NOT NULL,
+          supplier_id INT NOT NULL,
+          stock_quantity INT NOT NULL
+      );
+    `;
 
     try {
       await pool.query(query);
-
       return true;
     } catch (error) {
       throw new DomainError(
@@ -40,15 +39,25 @@ export class ItemDataSource {
     }
   }
 
+  private static mapRow(row: any): Item {
+    return {
+      id: row.id,
+      name: row.name,
+      categoryId: row.category_id,
+      price: row.price,
+      supplierId: row.supplier_id,
+      stockQuantity: row.stock_quantity,
+    };
+  }
+
   static async findAll(): Promise<Item[]> {
     const query = `
-        SELECT * FROM items
+      SELECT * FROM items;
     `;
 
     try {
-      const items: QueryResult<Item> = await pool.query(query);
-
-      return items.rows;
+      const items: QueryResult<any> = await pool.query(query);
+      return items.rows.map(this.mapRow);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -59,17 +68,16 @@ export class ItemDataSource {
 
   static async findById(id: number): Promise<Item> {
     const query = `
-        SELECT * FROM items
-        WHERE id = $1;
+      SELECT * FROM items WHERE id = $1;
     `;
 
     try {
-      const item: QueryResult<Item> = await pool.query(query, [id]);
+      const item: QueryResult<any> = await pool.query(query, [id]);
 
       if (item.rows.length === 0)
         throw new ItemError("item_not_found", "The item does not exist");
 
-      return item.rows[0] as Item;
+      return this.mapRow(item.rows[0]);
     } catch (error) {
       if (error instanceof ItemError) throw error;
 
@@ -82,21 +90,21 @@ export class ItemDataSource {
 
   static async create(item: Omit<Item, "id" | "stockQuantity">): Promise<Item> {
     const query = `
-        INSERT INTO items (name, category_id, price, supplier_id, stock_quantity)
-        VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, name, category, price, supplier_id, stock_quantity;
+      INSERT INTO items (name, category_id, price, supplier_id, stock_quantity)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id, name, category_id, price, supplier_id, stock_quantity;
     `;
 
     try {
-      const createdItem: QueryResult<Item> = await pool.query(query, [
+      const createdItem: QueryResult<any> = await pool.query(query, [
         item.name,
         item.categoryId,
         item.price,
         item.supplierId,
-        1,
+        1, // valor inicial para estoque
       ]);
 
-      return createdItem.rows[0] as Item;
+      return this.mapRow(createdItem.rows[0]);
     } catch (error) {
       throw new DomainError(
         "unknown",
@@ -107,17 +115,17 @@ export class ItemDataSource {
 
   static async update(item: Omit<Item, "stockQuantity">): Promise<Item> {
     const query = `
-        UPDATE items
-        set name = COALESCE($1, name),
-            category_id = COALESCE($2, category_id),
-            price = COALESCE($3, price),
-            supplier_id = COALESCE($4, supplier_id)
-        WHERE id = $5
-        RETURNING id, name, category_id, price, supplier_id, stock_quantity;
+      UPDATE items
+      SET name = COALESCE($1, name),
+          category_id = COALESCE($2, category_id),
+          price = COALESCE($3, price),
+          supplier_id = COALESCE($4, supplier_id)
+      WHERE id = $5
+      RETURNING id, name, category_id, price, supplier_id, stock_quantity;
     `;
 
     try {
-      const updatedItem: QueryResult<Item> = await pool.query(query, [
+      const updatedItem: QueryResult<any> = await pool.query(query, [
         item.name,
         item.categoryId,
         item.price,
@@ -128,31 +136,31 @@ export class ItemDataSource {
       if (updatedItem.rows.length === 0)
         throw new ItemError("item_not_found", "The item does not exist");
 
-      return updatedItem.rows[0] as Item;
+      return this.mapRow(updatedItem.rows[0]);
     } catch (error) {
       if (error instanceof ItemError) throw error;
 
       throw new DomainError(
         "unknown",
-        `It was not possible to update the item: ${item}`
+        `It was not possible to update the item: ${error}`
       );
     }
   }
 
   static async remove(id: number): Promise<Item> {
     const query = `
-        DELETE FROM items
-        WHERE id = $1
-        RETURNING id, name, category_id, price, supplier_id, stock_quantity;
+      DELETE FROM items
+      WHERE id = $1
+      RETURNING id, name, category_id, price, supplier_id, stock_quantity;
     `;
 
     try {
-      const removedItem: QueryResult<Item> = await pool.query(query, [id]);
+      const removedItem: QueryResult<any> = await pool.query(query, [id]);
 
       if (removedItem.rows.length === 0)
         throw new ItemError("item_not_found", "The item does not exist");
 
-      return removedItem.rows[0] as Item;
+      return this.mapRow(removedItem.rows[0]);
     } catch (error) {
       if (error instanceof ItemError) throw error;
 
@@ -165,14 +173,14 @@ export class ItemDataSource {
 
   static async updateStock(id: number, stockQuantity: number): Promise<Item> {
     const query = `
-        UPDATE items
-        SET stock_quantity = COALESCE($1, stock_quantity),
-        WHERE id = $2
-        RETURNING id, name, category_id, price, supplier_id, stock_quantity;
+      UPDATE items
+      SET stock_quantity = COALESCE($1, stock_quantity)
+      WHERE id = $2
+      RETURNING id, name, category_id, price, supplier_id, stock_quantity;
     `;
 
     try {
-      const updatedItem: QueryResult<Item> = await pool.query(query, [
+      const updatedItem: QueryResult<any> = await pool.query(query, [
         stockQuantity,
         id,
       ]);
@@ -180,13 +188,13 @@ export class ItemDataSource {
       if (updatedItem.rows.length === 0)
         throw new ItemError("item_not_found", "The item does not exist");
 
-      return updatedItem.rows[0] as Item;
+      return this.mapRow(updatedItem.rows[0]);
     } catch (error) {
       if (error instanceof ItemError) throw error;
 
       throw new DomainError(
         "unknown",
-        `It was not possible to update the stock to the item: ${error}`
+        `It was not possible to update the stock of the item: ${error}`
       );
     }
   }

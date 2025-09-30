@@ -5,13 +5,11 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { CategoryError } from "../../domain/entities/errors/CategoryError";
 
-export interface ItemCategory {
-  id: number;
-  name: string;
-}
+import { ItemCategoryDataSource } from "../repositories/ItemCategoryRepositoryImpl";
+import { ItemCategoryData } from "../repositories/ItemCategoryRepositoryImpl";
 
-export class ItemCategoryDataSource {
-  static async createTable() {
+export class ItemCategoryDataSourceImpl implements ItemCategoryDataSource {
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS item_categories
       (
@@ -31,14 +29,14 @@ export class ItemCategoryDataSource {
     }
   }
 
-  private static mapRow(row: any): ItemCategory {
+  private mapRow(row: any): ItemCategoryData {
     return {
       id: row.id,
       name: row.name,
     };
   }
 
-  static async findAll(): Promise<ItemCategory[]> {
+  async findAll(): Promise<ItemCategoryData[]> {
     const query = `
       SELECT * FROM item_categories;
     `;
@@ -54,7 +52,7 @@ export class ItemCategoryDataSource {
     }
   }
 
-  static async findById(id: number): Promise<ItemCategory> {
+  async findById(id: number): Promise<ItemCategoryData> {
     const query = `
       SELECT * FROM item_categories WHERE id = $1;
     `;
@@ -79,7 +77,7 @@ export class ItemCategoryDataSource {
     }
   }
 
-  static async create(name: string): Promise<ItemCategory> {
+  async create(name: string): Promise<ItemCategoryData> {
     const query = `
       INSERT INTO item_categories (name)
       VALUES ($1)
@@ -100,7 +98,7 @@ export class ItemCategoryDataSource {
     }
   }
 
-  static async update(itemCategory: ItemCategory): Promise<ItemCategory> {
+  async update(itemCategory: ItemCategoryData): Promise<ItemCategoryData> {
     const query = `
       UPDATE item_categories
       SET name = COALESCE($1, name)
@@ -131,7 +129,7 @@ export class ItemCategoryDataSource {
     }
   }
 
-  static async remove(id: number): Promise<ItemCategory> {
+  async remove(id: number): Promise<ItemCategoryData> {
     const query = `
       DELETE FROM item_categories
       WHERE id = $1

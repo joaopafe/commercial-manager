@@ -5,16 +5,11 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { CustomerError } from "../../domain/entities/errors/CustomerError";
 
-export interface Customer {
-  id: number;
-  cpf: string;
-  name: string;
-  email: string;
-  phone: string;
-}
+import { CustomerData } from "../repositories/CustomerRepositoryImpl";
+import { CustomerDataSource } from "../repositories/CustomerRepositoryImpl";
 
-export class CustomerDataSource {
-  static async createTable() {
+export class CustomerDataSourceImpl implements CustomerDataSource {
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS customers
       (
@@ -37,7 +32,7 @@ export class CustomerDataSource {
     }
   }
 
-  private static mapRow(row: any): Customer {
+  private mapRow(row: any): CustomerData {
     return {
       id: row.id,
       cpf: row.cpf,
@@ -47,7 +42,7 @@ export class CustomerDataSource {
     };
   }
 
-  static async findAll(): Promise<Customer[]> {
+  async findAll(): Promise<CustomerData[]> {
     const query = `
       SELECT * FROM customers;
     `;
@@ -63,7 +58,7 @@ export class CustomerDataSource {
     }
   }
 
-  static async findById(id: number): Promise<Customer> {
+  async findById(id: number): Promise<CustomerData> {
     const query = `
       SELECT * FROM customers WHERE id = $1;
     `;
@@ -88,7 +83,7 @@ export class CustomerDataSource {
     }
   }
 
-  static async create(customer: Omit<Customer, "id">): Promise<Customer> {
+  async create(customer: Omit<CustomerData, "id">): Promise<CustomerData> {
     const query = `
       INSERT INTO customers (cpf, name, email, phone)
       VALUES ($1, $2, $3, $4)
@@ -112,7 +107,7 @@ export class CustomerDataSource {
     }
   }
 
-  static async update(customer: Customer): Promise<Customer> {
+  async update(customer: CustomerData): Promise<CustomerData> {
     const query = `
       UPDATE customers
       SET cpf = COALESCE($1, cpf),
@@ -149,7 +144,7 @@ export class CustomerDataSource {
     }
   }
 
-  static async remove(id: number): Promise<Customer> {
+  async remove(id: number): Promise<CustomerData> {
     const query = `
       DELETE FROM customers
       WHERE id = $1

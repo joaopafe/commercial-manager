@@ -5,15 +5,11 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { SupplierError } from "../../domain/entities/errors/SupplierError";
 
-export interface Supplier {
-  id: number;
-  cnpj: string;
-  name: string;
-  phone: string;
-}
+import { SupplierData } from "../repositories/SupplierRepositoryImpl";
+import { SupplierDataSource } from "../repositories/SupplierRepositoryImpl";
 
-export class SupplierDataSource {
-  static async createTable() {
+export class SupplierDataSourceImpl implements SupplierDataSource {
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS suppliers
       (
@@ -36,7 +32,7 @@ export class SupplierDataSource {
     }
   }
 
-  private static mapRowToSupplier(row: any): Supplier {
+  private mapRowToSupplier(row: any): SupplierData {
     return {
       id: row.id,
       cnpj: row.cnpj,
@@ -45,7 +41,7 @@ export class SupplierDataSource {
     };
   }
 
-  static async findAll(): Promise<Supplier[]> {
+  async findAll(): Promise<SupplierData[]> {
     const query = `
       SELECT * FROM suppliers;
     `;
@@ -61,7 +57,7 @@ export class SupplierDataSource {
     }
   }
 
-  static async findById(id: number): Promise<Supplier> {
+  async findById(id: number): Promise<SupplierData> {
     const query = `
       SELECT * FROM suppliers
       WHERE id = $1;
@@ -87,7 +83,7 @@ export class SupplierDataSource {
     }
   }
 
-  static async create(supplier: Omit<Supplier, "id">): Promise<Supplier> {
+  async create(supplier: Omit<SupplierData, "id">): Promise<SupplierData> {
     const query = `
       INSERT INTO suppliers (cnpj, name, phone)
       VALUES ($1, $2, $3)
@@ -110,7 +106,7 @@ export class SupplierDataSource {
     }
   }
 
-  static async update(supplier: Supplier): Promise<Supplier> {
+  async update(supplier: SupplierData): Promise<SupplierData> {
     const query = `
       UPDATE suppliers
       SET cnpj = COALESCE($1, cnpj),
@@ -145,7 +141,7 @@ export class SupplierDataSource {
     }
   }
 
-  static async remove(id: number): Promise<Supplier> {
+  async remove(id: number): Promise<SupplierData> {
     const query = `
       DELETE FROM suppliers
       WHERE id = $1

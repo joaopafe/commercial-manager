@@ -5,16 +5,11 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { ServiceSaleError } from "../../domain/entities/errors/ServiceSaleError";
 
-export interface ServiceSale {
-  id: number;
-  customerId: number;
-  name: string;
-  value: number;
-  date: Date;
-}
+import { ServiceSaleData } from "../repositories/ServiceSaleRepositoryImpl";
+import { ServiceSaleDataSource } from "../repositories/ServiceSaleRepositoryImpl";
 
-export class ServiceSaleDataSource {
-  static async createTable() {
+export class ServiceSaleDataSourceImpl implements ServiceSaleDataSource {
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS service_sales
       (
@@ -37,7 +32,7 @@ export class ServiceSaleDataSource {
     }
   }
 
-  private static mapRowToServiceSale(row: any): ServiceSale {
+  private mapRowToServiceSale(row: any): ServiceSaleData {
     return {
       id: row.id,
       customerId: row.customer_id,
@@ -47,7 +42,7 @@ export class ServiceSaleDataSource {
     };
   }
 
-  static async findAll(): Promise<ServiceSale[]> {
+  async findAll(): Promise<ServiceSaleData[]> {
     const query = `
       SELECT * FROM service_sales;
     `;
@@ -63,7 +58,7 @@ export class ServiceSaleDataSource {
     }
   }
 
-  static async findById(id: number): Promise<ServiceSale> {
+  async findById(id: number): Promise<ServiceSaleData> {
     const query = `
       SELECT * FROM service_sales
       WHERE id = $1
@@ -89,9 +84,9 @@ export class ServiceSaleDataSource {
     }
   }
 
-  static async create(
-    serviceSale: Omit<ServiceSale, "id">
-  ): Promise<ServiceSale> {
+  async create(
+    serviceSale: Omit<ServiceSaleData, "id">
+  ): Promise<ServiceSaleData> {
     const query = `
       INSERT INTO service_sales (customer_id, name, value, date)
       VALUES ($1, $2, $3, $4)
@@ -115,7 +110,7 @@ export class ServiceSaleDataSource {
     }
   }
 
-  static async update(serviceSale: ServiceSale): Promise<ServiceSale> {
+  async update(serviceSale: ServiceSaleData): Promise<ServiceSaleData> {
     const query = `
       UPDATE service_sales
       SET customer_id = COALESCE($1, customer_id),
@@ -152,7 +147,7 @@ export class ServiceSaleDataSource {
     }
   }
 
-  static async remove(id: number): Promise<ServiceSale> {
+  async remove(id: number): Promise<ServiceSaleData> {
     const query = `
       DELETE FROM service_sales
       WHERE id = $1

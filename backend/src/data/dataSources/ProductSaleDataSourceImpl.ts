@@ -5,17 +5,11 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { ProductSaleError } from "../../domain/entities/errors/ProductSaleError";
 
-export interface ProductSale {
-  id: number;
-  customerId: number;
-  itemId: number;
-  quantity: number;
-  value: number;
-  date: Date;
-}
+import { ProductSaleData } from "../repositories/ProductSaleRepositoryImpl";
+import { ProductSaleDataSource } from "../repositories/ProductSaleRepositoryImpl";
 
-export class ProductSaleDataSource {
-  static async createTable() {
+export class ProductSaleDataSourceImpl implements ProductSaleDataSource {
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS product_sales
       (
@@ -39,7 +33,7 @@ export class ProductSaleDataSource {
     }
   }
 
-  private static mapRowToProductSale(row: any): ProductSale {
+  private mapRowToProductSale(row: any): ProductSaleData {
     return {
       id: row.id,
       customerId: row.customer_id,
@@ -50,7 +44,7 @@ export class ProductSaleDataSource {
     };
   }
 
-  static async findAll(): Promise<ProductSale[]> {
+  async findAll(): Promise<ProductSaleData[]> {
     const query = `
       SELECT * FROM product_sales;
     `;
@@ -66,7 +60,7 @@ export class ProductSaleDataSource {
     }
   }
 
-  static async findById(id: number): Promise<ProductSale> {
+  async findById(id: number): Promise<ProductSaleData> {
     const query = `
       SELECT * FROM product_sales
       WHERE id = $1
@@ -92,9 +86,9 @@ export class ProductSaleDataSource {
     }
   }
 
-  static async create(
-    productSale: Omit<ProductSale, "id">
-  ): Promise<ProductSale> {
+  async create(
+    productSale: Omit<ProductSaleData, "id">
+  ): Promise<ProductSaleData> {
     const query = `
       INSERT INTO product_sales (customer_id, item_id, quantity, value, date)
       VALUES ($1, $2, $3, $4, $5)
@@ -119,7 +113,7 @@ export class ProductSaleDataSource {
     }
   }
 
-  static async update(productSale: ProductSale): Promise<ProductSale> {
+  async update(productSale: ProductSaleData): Promise<ProductSaleData> {
     const query = `
       UPDATE product_sales
       SET customer_id = COALESCE($1, customer_id),
@@ -158,7 +152,7 @@ export class ProductSaleDataSource {
     }
   }
 
-  static async remove(id: number): Promise<ProductSale> {
+  async remove(id: number): Promise<ProductSaleData> {
     const query = `
       DELETE FROM product_sales
       WHERE id = $1

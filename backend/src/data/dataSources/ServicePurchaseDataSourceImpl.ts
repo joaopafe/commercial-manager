@@ -5,16 +5,15 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { ServicePurchaseError } from "../../domain/entities/errors/ServicePurchaseError";
 
-export interface ServicePurchase {
-  id: number;
-  supplierId: number;
-  name: string;
-  value: number;
-  date: Date;
-}
+import {
+  ServicePurchaseData,
+  ServicePurchaseDataSource,
+} from "../repositories/ServicePurchaseRepositoryImpl";
 
-export class ServicePurchaseDataSource {
-  static async createTable() {
+export class ServicePurchaseDataSourceImpl
+  implements ServicePurchaseDataSource
+{
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS service_purchases
       (
@@ -37,7 +36,7 @@ export class ServicePurchaseDataSource {
     }
   }
 
-  private static mapRowToServicePurchase(row: any): ServicePurchase {
+  private mapRowToServicePurchase(row: any): ServicePurchaseData {
     return {
       id: row.id,
       supplierId: row.supplier_id,
@@ -47,7 +46,7 @@ export class ServicePurchaseDataSource {
     };
   }
 
-  static async findAll(): Promise<ServicePurchase[]> {
+  async findAll(): Promise<ServicePurchaseData[]> {
     const query = `SELECT * FROM service_purchases;`;
 
     try {
@@ -61,7 +60,7 @@ export class ServicePurchaseDataSource {
     }
   }
 
-  static async findById(id: number): Promise<ServicePurchase> {
+  async findById(id: number): Promise<ServicePurchaseData> {
     const query = `SELECT * FROM service_purchases WHERE id = $1`;
 
     try {
@@ -84,9 +83,9 @@ export class ServicePurchaseDataSource {
     }
   }
 
-  static async create(
-    servicePurchase: Omit<ServicePurchase, "id">
-  ): Promise<ServicePurchase> {
+  async create(
+    servicePurchase: Omit<ServicePurchaseData, "id">
+  ): Promise<ServicePurchaseData> {
     const query = `
       INSERT INTO service_purchases (supplier_id, name, value, date)
       VALUES ($1, $2, $3, $4)
@@ -110,9 +109,9 @@ export class ServicePurchaseDataSource {
     }
   }
 
-  static async update(
-    servicePurchase: ServicePurchase
-  ): Promise<ServicePurchase> {
+  async update(
+    servicePurchase: ServicePurchaseData
+  ): Promise<ServicePurchaseData> {
     const query = `
       UPDATE service_purchases
       SET supplier_id = COALESCE($1, supplier_id),
@@ -149,7 +148,7 @@ export class ServicePurchaseDataSource {
     }
   }
 
-  static async remove(id: number): Promise<ServicePurchase> {
+  async remove(id: number): Promise<ServicePurchaseData> {
     const query = `
       DELETE FROM service_purchases
       WHERE id = $1

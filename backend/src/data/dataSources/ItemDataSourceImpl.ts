@@ -5,17 +5,10 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { ItemError } from "../../domain/entities/errors/ItemError";
 
-export interface Item {
-  id: number;
-  name: string;
-  categoryId: number;
-  price: number;
-  supplierId: number;
-  stockQuantity: number;
-}
+import { ItemData, ItemDataSource } from "../repositories/ItemRepositoryImpl";
 
-export class ItemDataSource {
-  static async createTable() {
+export class ItemDataSourceImpl implements ItemDataSource {
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS items
       (
@@ -39,7 +32,7 @@ export class ItemDataSource {
     }
   }
 
-  private static mapRow(row: any): Item {
+  private mapRow(row: any): ItemData {
     return {
       id: row.id,
       name: row.name,
@@ -50,7 +43,7 @@ export class ItemDataSource {
     };
   }
 
-  static async findAll(): Promise<Item[]> {
+  async findAll(): Promise<ItemData[]> {
     const query = `
       SELECT * FROM items;
     `;
@@ -66,7 +59,7 @@ export class ItemDataSource {
     }
   }
 
-  static async findById(id: number): Promise<Item> {
+  async findById(id: number): Promise<ItemData> {
     const query = `
       SELECT * FROM items WHERE id = $1;
     `;
@@ -88,7 +81,9 @@ export class ItemDataSource {
     }
   }
 
-  static async create(item: Omit<Item, "id" | "stockQuantity">): Promise<Item> {
+  async create(
+    item: Omit<ItemData, "id" | "stockQuantity">
+  ): Promise<ItemData> {
     const query = `
       INSERT INTO items (name, category_id, price, supplier_id, stock_quantity)
       VALUES ($1, $2, $3, $4, $5)
@@ -101,7 +96,7 @@ export class ItemDataSource {
         item.categoryId,
         item.price,
         item.supplierId,
-        1, // valor inicial para estoque
+        0, // Initial value for stock
       ]);
 
       return this.mapRow(createdItem.rows[0]);
@@ -113,7 +108,7 @@ export class ItemDataSource {
     }
   }
 
-  static async update(item: Omit<Item, "stockQuantity">): Promise<Item> {
+  async update(item: Omit<ItemData, "stockQuantity">): Promise<ItemData> {
     const query = `
       UPDATE items
       SET name = COALESCE($1, name),
@@ -147,7 +142,7 @@ export class ItemDataSource {
     }
   }
 
-  static async remove(id: number): Promise<Item> {
+  async remove(id: number): Promise<ItemData> {
     const query = `
       DELETE FROM items
       WHERE id = $1
@@ -171,7 +166,7 @@ export class ItemDataSource {
     }
   }
 
-  static async updateStock(id: number, stockQuantity: number): Promise<Item> {
+  async updateStock(id: number, stockQuantity: number): Promise<ItemData> {
     const query = `
       UPDATE items
       SET stock_quantity = COALESCE($1, stock_quantity)

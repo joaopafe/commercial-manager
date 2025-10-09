@@ -3,17 +3,15 @@ import { pool } from "../../../configDB";
 import { DomainError } from "../../domain/entities/errors/DomainError";
 import { ProductPurchaseError } from "../../domain/entities/errors/ProductPurchaseError";
 
-export interface ProductPurchase {
-  id: number;
-  supplierId: number;
-  itemId: number;
-  quantity: number;
-  value: number;
-  date: Date;
-}
+import {
+  ProductPurchaseData,
+  ProductPurchaseDataSource,
+} from "../repositories/ProductPurchaseRepositoryImpl";
 
-export class ProductPurchaseDataSource {
-  static async createTable() {
+export class ProductPurchaseDataSourceImpl
+  implements ProductPurchaseDataSource
+{
+  async createTable() {
     const query = `
       CREATE TABLE IF NOT EXISTS product_purchases
       (
@@ -37,7 +35,7 @@ export class ProductPurchaseDataSource {
     }
   }
 
-  private static mapRowToProductPurchase(row: any): ProductPurchase {
+  private mapRowToProductPurchase(row: any): ProductPurchaseData {
     return {
       id: row.id,
       supplierId: row.supplier_id,
@@ -48,7 +46,7 @@ export class ProductPurchaseDataSource {
     };
   }
 
-  static async findAll(): Promise<ProductPurchase[]> {
+  async findAll(): Promise<ProductPurchaseData[]> {
     const query = `
       SELECT * FROM product_purchases;
     `;
@@ -64,7 +62,7 @@ export class ProductPurchaseDataSource {
     }
   }
 
-  static async findById(id: number): Promise<ProductPurchase> {
+  async findById(id: number): Promise<ProductPurchaseData> {
     const query = `
       SELECT * FROM product_purchases
       WHERE id = $1;
@@ -91,9 +89,9 @@ export class ProductPurchaseDataSource {
     }
   }
 
-  static async create(
-    productPurchase: Omit<ProductPurchase, "id">
-  ): Promise<ProductPurchase> {
+  async create(
+    productPurchase: Omit<ProductPurchaseData, "id">
+  ): Promise<ProductPurchaseData> {
     const query = `
       INSERT INTO product_purchases (supplier_id, item_id, quantity, value, date)
       VALUES ($1, $2, $3, $4, $5)
@@ -118,9 +116,9 @@ export class ProductPurchaseDataSource {
     }
   }
 
-  static async update(
-    productPurchase: ProductPurchase
-  ): Promise<ProductPurchase> {
+  async update(
+    productPurchase: ProductPurchaseData
+  ): Promise<ProductPurchaseData> {
     const query = `
       UPDATE product_purchases
       SET 
@@ -161,7 +159,7 @@ export class ProductPurchaseDataSource {
     }
   }
 
-  static async remove(id: number): Promise<ProductPurchase> {
+  async remove(id: number): Promise<ProductPurchaseData> {
     const query = `
       DELETE FROM product_purchases
       WHERE id = $1

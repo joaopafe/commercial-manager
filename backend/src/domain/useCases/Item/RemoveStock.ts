@@ -36,7 +36,7 @@ export class RemoveStock {
 
     await this.itemRepository.removeStock(id, stockQuantity);
 
-    const updatedItem = await this.itemRepository.getItemById(id);
+    const updatedItem = await this.itemRepository.getStockById(id);
 
     if (updatedItem === null)
       throw new DomainError("unknown", "It was not possible to get the item");

@@ -5,7 +5,7 @@ import { AddServiceSale } from "../../domain/useCases/ServiceSale/AddServiceSale
 import { UpdateServiceSale } from "../../domain/useCases/ServiceSale/UpdateServiceSale";
 import { RemoveServiceSale } from "../../domain/useCases/ServiceSale/RemoveServiceSale";
 
-export class ServicePurchaseController {
+export class ServiceSaleController {
   constructor(
     private getAllServiceSalesUseCase: GetAllServiceSales,
     private addServiceSaleUseCase: AddServiceSale,

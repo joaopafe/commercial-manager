@@ -5,7 +5,7 @@ import { AddSupplier } from "../../domain/useCases/Supplier/AddSupplier";
 import { UpdateSupplier } from "../../domain/useCases/Supplier/UpdateSupplier";
 import { RemoveSupplier } from "../../domain/useCases/Supplier/RemoveSupplier";
 
-export class a {
+export class SupplierController {
   constructor(
     private getAllSuppliersUseCase: GetAllSuppliers,
     private addSupplierUseCase: AddSupplier,

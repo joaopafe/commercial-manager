@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "test": "npm run test",
-    "dev": "ts-node src/server.ts"
+    "dev": "ts-node src/presentation/server.ts"
   },
   "repository": {
     "type": "git",

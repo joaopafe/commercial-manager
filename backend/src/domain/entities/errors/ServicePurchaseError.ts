@@ -19,7 +19,7 @@ export class ServicePurchaseError extends Error {
     this._code = code;
   }
 
-  get code(): string {
+  get code(): ServicePurchaseErrorCode {
     return this._code;
   }
 }

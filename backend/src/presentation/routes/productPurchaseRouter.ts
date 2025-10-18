@@ -17,7 +17,7 @@ productPurchaseRouter.post(
     [Segments.BODY]: Joi.object().keys({
       supplierId: Joi.number().positive().required(),
       itemId: Joi.number().positive().required(),
-      quantity: Joi.number().positive().required(),
+      quantity: Joi.number().positive().integer().required(),
       value: Joi.number().positive().required(),
       date: Joi.string().min(10).max(10).required(),
     }),
@@ -36,7 +36,7 @@ productPurchaseRouter.put(
     [Segments.BODY]: Joi.object().keys({
       supplierId: Joi.number().positive().required(),
       itemId: Joi.number().positive().required(),
-      quantity: Joi.number().positive().required(),
+      quantity: Joi.number().positive().integer().required(),
       value: Joi.number().positive().required(),
       date: Joi.string().min(10).max(10).required(),
     }),

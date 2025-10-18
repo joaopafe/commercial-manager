@@ -18,7 +18,7 @@ export class ServiceSaleError extends Error {
     this._code = code;
   }
 
-  get code(): string {
+  get code(): ServiceSaleErrorCode {
     return this._code;
   }
 }

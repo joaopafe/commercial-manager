@@ -21,13 +21,13 @@ export class CPF {
     if (cpf.length !== 11)
       throw new CustomerError(
         "cpf_is_invalid",
-        "The CPF must contain 11 numeric characters."
+        "The CPF must contain 11 numeric characters.",
       );
 
     if (/^(\d)\1{10}$/.test(cpf))
       throw new CustomerError(
         "cpf_is_invalid",
-        "The CPF cannot contain all the same digits."
+        "The CPF cannot contain all the same digits.",
       );
 
     let sum = 0;
@@ -38,7 +38,7 @@ export class CPF {
     if (result !== parseInt(cpf.charAt(9))) {
       throw new CustomerError(
         "cpf_is_invalid",
-        "The first verification digit of the CPF is invalid"
+        "The first verification digit of the CPF is invalid",
       );
     }
 
@@ -50,7 +50,7 @@ export class CPF {
     if (result !== parseInt(cpf.charAt(10))) {
       throw new CustomerError(
         "cpf_is_invalid",
-        "The second verification digit of the CPF is invalid"
+        "The second verification digit of the CPF is invalid",
       );
     }
 
@@ -83,7 +83,7 @@ export class Name {
     if (this._name.length <= 3) {
       throw new CustomerError(
         "name_is_invalid",
-        "The customer name cannot be less than 2 characters"
+        "The customer name cannot be less than 2 characters",
       );
     }
   }
@@ -134,7 +134,7 @@ export class Phone {
     if (!(tel.length === 10 || tel.length === 11))
       throw new CustomerError(
         "phone_is_invalid",
-        "The phone number must contain 10 or 11 digits"
+        "The phone number must contain 10 or 11 digits",
       );
 
     // If it is a cell phone, the ninth digit must be 9
@@ -150,7 +150,7 @@ export class Phone {
     if (/^(\d)\1+$/.test(tel))
       throw new CustomerError(
         "phone_is_invalid",
-        "The phone cannot contain the same digits"
+        "The phone cannot contain the same digits",
       );
 
     this.formatPhone(this._phone);
@@ -162,7 +162,7 @@ export class Phone {
     if (digits.length === 11) {
       this._phone = digits.replace(
         /(\d{2})(\d{1})(\d{4})(\d{4})/,
-        "($1) $2 $3-$4"
+        "($1) $2 $3-$4",
       );
     }
 
@@ -181,7 +181,7 @@ export class Customer {
 
   constructor(id: Id, cpf: CPF, name: Name, email: Email, phone: Phone) {
     this._id = id;
-    (this._cpf = cpf), (this._name = name), (this._email = email);
+    ((this._cpf = cpf), (this._name = name), (this._email = email));
     this._phone = phone;
   }
 
@@ -207,11 +207,11 @@ export class Customer {
 
   toObject(): object {
     return {
-      id: this._id,
-      cpf: this._cpf,
-      name: this._name,
-      email: this._email,
-      phone: this._phone,
+      id: this.id,
+      cpf: this.cpf,
+      name: this.name,
+      email: this.email,
+      phone: this.phone,
     };
   }
 }

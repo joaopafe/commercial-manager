@@ -10,13 +10,17 @@ export class CustomerController {
     private getAllCustomersUseCase: GetAllCustomers,
     private addCustomerUseCase: AddCustomer,
     private updateCustomerUseCase: UpdateCustomer,
-    private removeCustomerUseCase: RemoveCustomer
+    private removeCustomerUseCase: RemoveCustomer,
   ) {}
 
   async getAll(req: Request, res: Response) {
     const customers = await this.getAllCustomersUseCase.exec();
 
-    res.json(customers);
+    const formattedCustomers = customers.map((customer) => {
+      return customer.toObject();
+    });
+
+    res.json(formattedCustomers);
   }
 
   async add(req: Request, res: Response) {

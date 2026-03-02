@@ -3,12 +3,18 @@ import { celebrate, Joi, Segments } from "celebrate";
 
 import { CustomerControllerFactory } from "../../providers/di/CustomerControllerFactory";
 
+import { CustomerDataSourceImpl } from "../../data/dataSources/CustomerDataSourceImpl";
+
 export const customerRouter = Router();
 
 const customerControllerFactory = new CustomerControllerFactory();
 const customerController = customerControllerFactory.makeCustomerController();
 
-customerRouter.get("/", customerController.getAll);
+const customerDataSource = new CustomerDataSourceImpl();
+
+customerDataSource.createTable();
+
+customerRouter.get("/", customerController.getAll.bind(customerController));
 
 customerRouter.post(
   "/",
@@ -20,7 +26,7 @@ customerRouter.post(
       phone: Joi.string().min(10).required(),
     }),
   }),
-  customerController.add
+  customerController.add.bind(customerController),
 );
 
 customerRouter.put(
@@ -38,7 +44,7 @@ customerRouter.put(
       phone: Joi.string().min(10).required(),
     }),
   }),
-  customerController.update
+  customerController.update.bind(customerController),
 );
 
 customerRouter.delete(
@@ -48,5 +54,5 @@ customerRouter.delete(
       id: Joi.number().positive().required(),
     }),
   }),
-  customerController.remove
+  customerController.remove.bind(customerController),
 );
